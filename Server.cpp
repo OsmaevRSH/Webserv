@@ -1,16 +1,13 @@
 #include "Server.hpp"
 
 Server::Server(int bind_port, int family, int type, int protocol)
-	: _bind_port(bind_port), _family(family), _type(type), _protocol(protocol),
-	  _socket_fd(0), _client_socket_fd(0)
+		: _bind_port(bind_port), _family(family), _type(type), _protocol(protocol), _socket_fd(0), _client_socket_fd(0)
 {
 }
 
 Server::Server(const Server &copy)
-	: _bind_port(copy._bind_port), _family(copy._family), _type(copy._type),
-	  _protocol(copy._protocol),
-	  _socket_fd(copy._socket_fd),
-	  _client_socket_fd(copy._client_socket_fd)
+		: _bind_port(copy._bind_port), _family(copy._family), _type(copy._type), _protocol(copy._protocol),
+		_socket_fd(copy._socket_fd), _client_socket_fd(copy._client_socket_fd)
 {
 }
 
@@ -32,8 +29,7 @@ Server &Server::operator=(const Server &copy)
 void Server::Socket()
 {
 	_socket_fd = socket(_family, _type, _protocol);
-	if (_socket_fd == -1)
-	{
+	if (_socket_fd == -1) {
 		perror("Create socket error");
 		exit(EXIT_FAILURE);
 	}
@@ -48,11 +44,8 @@ void Server::Bind()
 	addr.sin_port = htons(_bind_port);
 	addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
-	bind_res = bind(_socket_fd,
-					(struct sockaddr *) (&addr),
-					sizeof((struct sockaddr *) (&addr)));
-	if (bind_res == -1)
-	{
+	bind_res = bind(_socket_fd, (struct sockaddr *) (&addr), sizeof(addr));
+	if (bind_res == -1) {
 		perror("Create bind error");
 		exit(EXIT_FAILURE);
 	}
@@ -70,11 +63,8 @@ void Server::Accept()
 
 	addr_len = sizeof(reinterpret_cast<struct sockaddr *>(&addr));
 
-	_client_socket_fd = accept(_socket_fd,
-							   reinterpret_cast<struct sockaddr *>(&addr),
-							   &addr_len);
-	if (_client_socket_fd == -1)
-	{
+	_client_socket_fd = accept(_socket_fd, reinterpret_cast<struct sockaddr *>(&addr), &addr_len);
+	if (_client_socket_fd == -1) {
 		perror("Accept error");
 		exit(EXIT_FAILURE);
 	}
