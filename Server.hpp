@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <unistd.h>
 
 class Server
 {
@@ -14,16 +15,17 @@ class Server
 		int _type;
 		int _protocol;
 		int _bind_port;
-		int _client_socket_fd;
+		int _client_socket_fd; //cast to vector
 
 		void Socket();
 		void Bind();
 		void Listen();
 		void Accept();
 	public:
-		explicit Server(int bind_port = 7654, int family = AF_INET,
-						int type = SOCK_STREAM,
-						int protocol = 0);
+		explicit Server(int bind_port = 7655,
+						int family = AF_INET, //AF_UNIX
+						int type = SOCK_STREAM, //SOCK_DGRAM
+						int protocol = 0); // IPPROTO_TCP and IPPROTO_UDP
 		Server(const Server &);
 		~Server();
 		Server &operator=(const Server &);
