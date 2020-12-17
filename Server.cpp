@@ -76,32 +76,11 @@ void Server::Accept()
 	}
 	read(_client_socket_fd, test, 100000000);
 	std::cout << test;
-	write(_client_socket_fd, "HTTP/1.1 200 OK\nContent-type: text/html\n\n<!DOCTYPE html>\n"
-							 "<html>\n"
-							 "<head>\n"
-							 "    <title>Welcome to nginx!</title>\n"
-							 "    <style>\n"
-							 "        body {\n"
-							 "            width: 35em;\n"
-							 "            margin: 0 auto;\n"
-							 "            font-family: Tahoma, Verdana, Arial, sans-serif;\n"
-							 "        }\n"
-							 "    </style>\n"
-							 "</head>\n"
-							 "<body>\n"
-							 "<h1>Welcome to nginx!</h1>\n"
-							 "<p>If you see this page, the nginx web server is successfully installed and\n"
-							 "    working. Further configuration is required.</p>\n"
-							 "\n"
-							 "<p>For online documentation and support please refer to\n"
-							 "    <a href=\"http://nginx.org/\">nginx.org</a>.<br/>\n"
-							 "    Commercial support is available at\n"
-							 "    <a href=\"http://nginx.com/\">nginx.com</a>.</p>\n"
-							 "\n"
-							 "<p><em>Thank you for using nginx.</em></p>\n"
-							 "</body>\n"
-							 "</html>", 500);
-	close(_client_socket_fd);
+	//проврека на наличие и доступ к файлу
+	std::string html = get_page_text("./index.html"); //парсер html
+	write(_client_socket_fd, ("HTTP/1.1 200 OK\nContent-type: text/html\n\n" + html).c_str(), 44 + html.size());
+//	close(_client_socket_fd);
+//	shutdown(_client_socket_fd, SHUT_WR);
 	}
 }
 void Server::server_start()

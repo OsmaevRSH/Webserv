@@ -170,6 +170,33 @@ Server.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Webserv.dir/build.make CMakeFiles/Webserv.dir/Server.cpp.s
 .PHONY : Server.cpp.s
 
+get_page_text.o: get_page_text.cpp.o
+
+.PHONY : get_page_text.o
+
+# target to build an object file
+get_page_text.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Webserv.dir/build.make CMakeFiles/Webserv.dir/get_page_text.cpp.o
+.PHONY : get_page_text.cpp.o
+
+get_page_text.i: get_page_text.cpp.i
+
+.PHONY : get_page_text.i
+
+# target to preprocess a source file
+get_page_text.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Webserv.dir/build.make CMakeFiles/Webserv.dir/get_page_text.cpp.i
+.PHONY : get_page_text.cpp.i
+
+get_page_text.s: get_page_text.cpp.s
+
+.PHONY : get_page_text.s
+
+# target to generate assembly for a file
+get_page_text.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Webserv.dir/build.make CMakeFiles/Webserv.dir/get_page_text.cpp.s
+.PHONY : get_page_text.cpp.s
+
 main.o: main.cpp.o
 
 .PHONY : main.o
@@ -209,6 +236,9 @@ help:
 	@echo "... Server.o"
 	@echo "... Server.i"
 	@echo "... Server.s"
+	@echo "... get_page_text.o"
+	@echo "... get_page_text.i"
+	@echo "... get_page_text.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

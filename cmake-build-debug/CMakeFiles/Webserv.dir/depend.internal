@@ -4,6 +4,11 @@
 CMakeFiles/Webserv.dir/Server.cpp.o
  /Users/ltheresi/CLionProjects/Webserv/Server.cpp
  /Users/ltheresi/CLionProjects/Webserv/Server.hpp
+ /Users/ltheresi/CLionProjects/Webserv/master.hpp
+CMakeFiles/Webserv.dir/get_page_text.cpp.o
+ /Users/ltheresi/CLionProjects/Webserv/get_page_text.cpp
+ /Users/ltheresi/CLionProjects/Webserv/master.hpp
 CMakeFiles/Webserv.dir/main.cpp.o
  /Users/ltheresi/CLionProjects/Webserv/Server.hpp
  /Users/ltheresi/CLionProjects/Webserv/main.cpp
+ /Users/ltheresi/CLionProjects/Webserv/master.hpp

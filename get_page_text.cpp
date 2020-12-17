@@ -10,15 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <fstream>
-#include <iostream>
+#include "master.hpp"
 
-std::string get_page_text(std::string path_to_file)
+std::string get_page_text(const std::string &path_to_file)
 {
 	std::ifstream	ifs(path_to_file);
 	std::string		text;
 
 	getline(ifs, text, '\0');
 	ifs.close();
+	std::cout << text;
 	return (text);
 }

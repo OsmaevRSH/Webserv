@@ -11,6 +11,12 @@ Server.hpp
 /Users/ltheresi/CLionProjects/Webserv/Server.hpp
 
 /Users/ltheresi/CLionProjects/Webserv/Server.hpp
+master.hpp
+/Users/ltheresi/CLionProjects/Webserv/master.hpp
+
+/Users/ltheresi/CLionProjects/Webserv/master.hpp
+fstream
+-
 iostream
 -
 sys/socket.h
@@ -21,8 +27,4 @@ arpa/inet.h
 -
 unistd.h
 -
-
-/Users/ltheresi/CLionProjects/Webserv/main.cpp
-Server.hpp
-/Users/ltheresi/CLionProjects/Webserv/Server.hpp
 

@@ -86,7 +86,13 @@
 		<Unit filename="/Users/ltheresi/CLionProjects/Webserv/Server.hpp">
 			<Option target="Webserv"/>
 		</Unit>
+		<Unit filename="/Users/ltheresi/CLionProjects/Webserv/get_page_text.cpp">
+			<Option target="Webserv"/>
+		</Unit>
 		<Unit filename="/Users/ltheresi/CLionProjects/Webserv/main.cpp">
+			<Option target="Webserv"/>
+		</Unit>
+		<Unit filename="/Users/ltheresi/CLionProjects/Webserv/master.hpp">
 			<Option target="Webserv"/>
 		</Unit>
 		<Unit filename="/Users/ltheresi/CLionProjects/Webserv/CMakeLists.txt">

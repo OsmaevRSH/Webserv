@@ -1,11 +1,7 @@
 #ifndef WEBSERV__SERVER_HPP_
 #define WEBSERV__SERVER_HPP_
 
-#include <iostream>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <unistd.h>
+#include "master.hpp"
 
 class Server
 {
