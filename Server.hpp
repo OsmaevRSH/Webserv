@@ -6,19 +6,20 @@
 class Server
 {
 	private:
-		int _socket_fd;
+		int _master_socket_fd;
 		int _family;
 		int _type;
 		int _protocol;
 		int _bind_port;
-		int _client_socket_fd; //cast to vector
+		std::vector<int> _client_socket_fd;
 
 		void Socket();
 		void Bind();
-		void Listen();
+		void Listen() const;
 		void Accept();
+		_Noreturn void ListenLoop();
 	public:
-		explicit Server(int bind_port = 7655,
+		explicit Server(int bind_port = 8000,
 						int family = AF_INET, //AF_UNIX
 						int type = SOCK_STREAM, //SOCK_DGRAM
 						int protocol = 0); // IPPROTO_TCP and IPPROTO_UDP

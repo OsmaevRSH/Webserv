@@ -1,13 +1,15 @@
 #include "Server.hpp"
 
 Server::Server(int bind_port, int family, int type, int protocol)
-		: _bind_port(bind_port), _family(family), _type(type), _protocol(protocol), _socket_fd(0), _client_socket_fd(0)
+		: _bind_port(bind_port), _family(family), _type(type),
+		_protocol(protocol), _master_socket_fd(0)
 {
 }
 
 Server::Server(const Server &copy)
-		: _bind_port(copy._bind_port), _family(copy._family), _type(copy._type), _protocol(copy._protocol),
-		_socket_fd(copy._socket_fd), _client_socket_fd(copy._client_socket_fd)
+		: _bind_port(copy._bind_port), _family(copy._family), _type(copy._type),
+		_protocol(copy._protocol), _master_socket_fd(copy._master_socket_fd),
+		_client_socket_fd(copy._client_socket_fd)
 {
 }
 
@@ -21,15 +23,15 @@ Server &Server::operator=(const Server &copy)
 	_family = copy._family;
 	_type = copy._type;
 	_protocol = copy._protocol;
-	_socket_fd = copy._socket_fd;
+	_master_socket_fd = copy._master_socket_fd;
 	_client_socket_fd = copy._client_socket_fd;
 	return *this;
 }
 
 void Server::Socket()
 {
-	_socket_fd = socket(_family, _type, _protocol);
-	if (_socket_fd == -1) {
+	_master_socket_fd = socket(_family, _type, _protocol);
+	if (_master_socket_fd == -1) {
 		perror("Create socket error");
 		exit(EXIT_FAILURE);
 	}
@@ -45,48 +47,103 @@ void Server::Bind()
 	addr.sin_addr.s_addr = htonl(INADDR_ANY); //inet_addr("0.0.0.0")
 
 	int opt = 1;
-	setsockopt(_socket_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+	setsockopt(_master_socket_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
 
-	bind_res = bind(_socket_fd, (struct sockaddr *)(&addr), sizeof(addr));
+	bind_res = bind(_master_socket_fd, (struct sockaddr *) (&addr), sizeof(addr));
 	if (bind_res == -1) {
 		perror("Create bind error");
 		exit(EXIT_FAILURE);
 	}
 }
 
-void Server::Listen()
+void Server::Listen() const
 {
-	listen(_socket_fd, 16);
+	listen(_master_socket_fd, 16);
 }
 
 void Server::Accept()
 {
 	struct sockaddr_in addr = {0};
 	socklen_t addr_len;
+	int new_client_fd;
 
 	addr_len = sizeof(addr);
 
-	while (true)
-	{
-	_client_socket_fd = accept(_socket_fd, reinterpret_cast<struct sockaddr *>(&addr), &addr_len);
-	char *test = (char *)malloc(sizeof(char) * 100000000);
-	if (_client_socket_fd == -1) {
+	new_client_fd = accept(_master_socket_fd, reinterpret_cast<struct sockaddr *>(&addr), &addr_len);
+	if (new_client_fd == -1) {
 		perror("Accept error");
 		exit(EXIT_FAILURE);
 	}
-	read(_client_socket_fd, test, 100000000);
-	std::cout << test;
-	//проврека на наличие и доступ к файлу
-	std::string html = get_page_text("./index.html"); //парсер html
-	write(_client_socket_fd, ("HTTP/1.1 200 OK\nContent-type: text/html\n\n" + html).c_str(), 44 + html.size());
-//	close(_client_socket_fd);
-//	shutdown(_client_socket_fd, SHUT_WR);
-	}
+	std::cout << "New client connect... " << new_client_fd << std::endl;
+	_client_socket_fd.push_back(new_client_fd);
 }
 void Server::server_start()
 {
 	this->Socket();
 	this->Bind();
 	this->Listen();
-	this->Accept();
+	this->ListenLoop();
+}
+
+void Server::ListenLoop()
+{
+	int max_fd;
+	fd_set readfds, writefds;
+	std::vector<int>::iterator Iter;
+
+	while (true) {
+		FD_ZERO(&readfds);
+		FD_ZERO(&writefds);
+		FD_SET(_master_socket_fd, &readfds);
+		for (Iter = _client_socket_fd.begin();
+			 Iter != _client_socket_fd.end(); ++Iter) {
+			FD_SET(*Iter, &readfds);
+		}
+		if (!_client_socket_fd.empty()) {
+			max_fd = *(std::max_element(_client_socket_fd.begin(), _client_socket_fd.end()));
+		}
+		max_fd = max_fd > _master_socket_fd ? max_fd : _master_socket_fd;
+
+		int res = select(max_fd + 1, &readfds, nullptr, nullptr, nullptr);
+		if (res < 1) {
+			if (errno != EINTR) {
+				perror("Select error");
+				exit(1);
+			}
+			else {
+				exit(0);
+			}
+		}
+		if (res == 0) {
+			continue;
+		}
+		if (FD_ISSET(_master_socket_fd, &readfds)) {
+			Accept();
+		}
+		Iter = _client_socket_fd.begin();
+		while (Iter != _client_socket_fd.end()) {
+			if (FD_ISSET(*Iter, &readfds)) {
+				char *buf = (char *) malloc(sizeof(char) * 576);
+				std::cout << "Wait..." << std::endl;
+				if ((recv(*Iter, buf, 576, 0)) == 0) {
+					close(*Iter);
+					std::cout << "Close connection... " << *Iter << std::endl;
+					Iter = _client_socket_fd.erase(Iter);
+				}
+				else {
+//					std::cout << buf << std::endl;
+					send(*Iter, ("HTTP/1.1 200 OK\nContent-type: text/html\n\n" + get_page_text("index.html")).c_str(), 576, 0);
+					shutdown(*Iter, SHUT_RDWR);
+//					close(*Iter);
+					std::cout << "Send and close connection... " << *Iter << std::endl;
+					Iter = _client_socket_fd.erase(Iter);
+//					++Iter;
+				}
+			}
+			else {
+				std::cout << "Skip connection... " << *Iter << std::endl;
+				++Iter;
+			}
+		}
+	}
 }

@@ -21,10 +21,16 @@ iostream
 -
 sys/socket.h
 -
+sys/types.h
+-
 netinet/in.h
 -
 arpa/inet.h
 -
 unistd.h
+-
+vector
+-
+ctime
 -
 

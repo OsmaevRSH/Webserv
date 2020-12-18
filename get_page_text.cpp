@@ -19,6 +19,5 @@ std::string get_page_text(const std::string &path_to_file)
 
 	getline(ifs, text, '\0');
 	ifs.close();
-	std::cout << text;
 	return (text);
 }
