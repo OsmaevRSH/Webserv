@@ -6,7 +6,7 @@
 /*   By: jeldora <jeldora@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 19:15:56 by jeldora           #+#    #+#             */
-/*   Updated: 2020/12/18 20:55:26 by jeldora          ###   ########.fr       */
+/*   Updated: 2020/12/18 21:22:53 by jeldora          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,10 @@
 
 typedef struct					s_location
 {
-	std::string					root;
+	std::string					path;
 	std::vector<std::string>	allow_methods;
+	std::string					root;
+	// Тут будут еще всякие директивы
 }								t_location;
 
 typedef struct					s_server
@@ -39,6 +41,7 @@ typedef struct					s_server
 	// Два отдельных поля, чтобы было удобнее обращаться к ip и порту.
 	std::string 				ip;
 	int							port;
+	std::string					root;
 }								t_server;
 
 class Config
