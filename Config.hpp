@@ -6,7 +6,7 @@
 /*   By: jeldora <jeldora@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 19:15:56 by jeldora           #+#    #+#             */
-/*   Updated: 2020/12/19 22:24:33 by jeldora          ###   ########.fr       */
+/*   Updated: 2020/12/19 23:15:54 by jeldora          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ class Config
 				size_t						max_body_size;
 				std::string					root;
 				bool						autoindex;
+
+				_Everywhere();
 		};
 		class _Route
 		{
