@@ -63,10 +63,10 @@ RM = /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/ltheresi/CLionProjects/Webserv
+CMAKE_SOURCE_DIR = /Users/ruslanosmaev/Desktop/Webserv
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/ltheresi/CLionProjects/Webserv/cmake-build-debug
+CMAKE_BINARY_DIR = /Users/ruslanosmaev/Desktop/Webserv/cmake-build-debug
 
 # Include any dependencies generated for this target.
 include CMakeFiles/Webserv.dir/depend.make
@@ -79,42 +79,42 @@ include CMakeFiles/Webserv.dir/flags.make
 
 CMakeFiles/Webserv.dir/Server.cpp.o: CMakeFiles/Webserv.dir/flags.make
 CMakeFiles/Webserv.dir/Server.cpp.o: ../Server.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/ltheresi/CLionProjects/Webserv/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Webserv.dir/Server.cpp.o"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Webserv.dir/Server.cpp.o -c /Users/ltheresi/CLionProjects/Webserv/Server.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/ruslanosmaev/Desktop/Webserv/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Webserv.dir/Server.cpp.o"
+	/Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Webserv.dir/Server.cpp.o -c /Users/ruslanosmaev/Desktop/Webserv/Server.cpp
 
 CMakeFiles/Webserv.dir/Server.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Webserv.dir/Server.cpp.i"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/ltheresi/CLionProjects/Webserv/Server.cpp > CMakeFiles/Webserv.dir/Server.cpp.i
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/ruslanosmaev/Desktop/Webserv/Server.cpp > CMakeFiles/Webserv.dir/Server.cpp.i
 
 CMakeFiles/Webserv.dir/Server.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Webserv.dir/Server.cpp.s"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/ltheresi/CLionProjects/Webserv/Server.cpp -o CMakeFiles/Webserv.dir/Server.cpp.s
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/ruslanosmaev/Desktop/Webserv/Server.cpp -o CMakeFiles/Webserv.dir/Server.cpp.s
 
 CMakeFiles/Webserv.dir/main.cpp.o: CMakeFiles/Webserv.dir/flags.make
 CMakeFiles/Webserv.dir/main.cpp.o: ../main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/ltheresi/CLionProjects/Webserv/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/Webserv.dir/main.cpp.o"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Webserv.dir/main.cpp.o -c /Users/ltheresi/CLionProjects/Webserv/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/ruslanosmaev/Desktop/Webserv/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/Webserv.dir/main.cpp.o"
+	/Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Webserv.dir/main.cpp.o -c /Users/ruslanosmaev/Desktop/Webserv/main.cpp
 
 CMakeFiles/Webserv.dir/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Webserv.dir/main.cpp.i"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/ltheresi/CLionProjects/Webserv/main.cpp > CMakeFiles/Webserv.dir/main.cpp.i
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/ruslanosmaev/Desktop/Webserv/main.cpp > CMakeFiles/Webserv.dir/main.cpp.i
 
 CMakeFiles/Webserv.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Webserv.dir/main.cpp.s"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/ltheresi/CLionProjects/Webserv/main.cpp -o CMakeFiles/Webserv.dir/main.cpp.s
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/ruslanosmaev/Desktop/Webserv/main.cpp -o CMakeFiles/Webserv.dir/main.cpp.s
 
 CMakeFiles/Webserv.dir/get_page_text.cpp.o: CMakeFiles/Webserv.dir/flags.make
 CMakeFiles/Webserv.dir/get_page_text.cpp.o: ../get_page_text.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/ltheresi/CLionProjects/Webserv/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/Webserv.dir/get_page_text.cpp.o"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Webserv.dir/get_page_text.cpp.o -c /Users/ltheresi/CLionProjects/Webserv/get_page_text.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/ruslanosmaev/Desktop/Webserv/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/Webserv.dir/get_page_text.cpp.o"
+	/Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Webserv.dir/get_page_text.cpp.o -c /Users/ruslanosmaev/Desktop/Webserv/get_page_text.cpp
 
 CMakeFiles/Webserv.dir/get_page_text.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Webserv.dir/get_page_text.cpp.i"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/ltheresi/CLionProjects/Webserv/get_page_text.cpp > CMakeFiles/Webserv.dir/get_page_text.cpp.i
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/ruslanosmaev/Desktop/Webserv/get_page_text.cpp > CMakeFiles/Webserv.dir/get_page_text.cpp.i
 
 CMakeFiles/Webserv.dir/get_page_text.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Webserv.dir/get_page_text.cpp.s"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/ltheresi/CLionProjects/Webserv/get_page_text.cpp -o CMakeFiles/Webserv.dir/get_page_text.cpp.s
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/ruslanosmaev/Desktop/Webserv/get_page_text.cpp -o CMakeFiles/Webserv.dir/get_page_text.cpp.s
 
 # Object files for target Webserv
 Webserv_OBJECTS = \
@@ -130,7 +130,7 @@ Webserv: CMakeFiles/Webserv.dir/main.cpp.o
 Webserv: CMakeFiles/Webserv.dir/get_page_text.cpp.o
 Webserv: CMakeFiles/Webserv.dir/build.make
 Webserv: CMakeFiles/Webserv.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/ltheresi/CLionProjects/Webserv/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable Webserv"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/ruslanosmaev/Desktop/Webserv/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable Webserv"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/Webserv.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -143,6 +143,6 @@ CMakeFiles/Webserv.dir/clean:
 .PHONY : CMakeFiles/Webserv.dir/clean
 
 CMakeFiles/Webserv.dir/depend:
-	cd /Users/ltheresi/CLionProjects/Webserv/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/ltheresi/CLionProjects/Webserv /Users/ltheresi/CLionProjects/Webserv /Users/ltheresi/CLionProjects/Webserv/cmake-build-debug /Users/ltheresi/CLionProjects/Webserv/cmake-build-debug /Users/ltheresi/CLionProjects/Webserv/cmake-build-debug/CMakeFiles/Webserv.dir/DependInfo.cmake --color=$(COLOR)
+	cd /Users/ruslanosmaev/Desktop/Webserv/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/ruslanosmaev/Desktop/Webserv /Users/ruslanosmaev/Desktop/Webserv /Users/ruslanosmaev/Desktop/Webserv/cmake-build-debug /Users/ruslanosmaev/Desktop/Webserv/cmake-build-debug /Users/ruslanosmaev/Desktop/Webserv/cmake-build-debug/CMakeFiles/Webserv.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/Webserv.dir/depend
 

@@ -6,15 +6,15 @@
 
 #IncludeRegexTransform: 
 
-/Users/ltheresi/CLionProjects/Webserv/Server.cpp
+/Users/ruslanosmaev/Desktop/Webserv/Server.cpp
 Server.hpp
-/Users/ltheresi/CLionProjects/Webserv/Server.hpp
+/Users/ruslanosmaev/Desktop/Webserv/Server.hpp
 
-/Users/ltheresi/CLionProjects/Webserv/Server.hpp
+/Users/ruslanosmaev/Desktop/Webserv/Server.hpp
 master.hpp
-/Users/ltheresi/CLionProjects/Webserv/master.hpp
+/Users/ruslanosmaev/Desktop/Webserv/master.hpp
 
-/Users/ltheresi/CLionProjects/Webserv/master.hpp
+/Users/ruslanosmaev/Desktop/Webserv/master.hpp
 fstream
 -
 iostream
@@ -32,5 +32,9 @@ unistd.h
 vector
 -
 ctime
+-
+fcntl.h
+-
+map
 -
 
