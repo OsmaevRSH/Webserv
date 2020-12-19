@@ -6,7 +6,7 @@
 /*   By: jeldora <jeldora@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 19:15:56 by jeldora           #+#    #+#             */
-/*   Updated: 2020/12/19 23:15:54 by jeldora          ###   ########.fr       */
+/*   Updated: 2020/12/20 01:36:46 by jeldora          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ class Config
 		class _Route
 		{
 			public:
-				std::string					route_text;
 				std::vector<std::string>	allow_methods;
 				std::vector<_Route>			routes;
 				_Everywhere					ew;
@@ -66,7 +65,6 @@ class Config
 
 				_Server();
 		};
-		std::string							_config_text;	// Сырой текст конфига
 		std::vector<_Server>				_servers;		
 		std::map<int, std::string>			_error_pages; // Ключ - номер страницы. Значение - путь
 		_Everywhere							_ew;
