@@ -6,23 +6,24 @@
 class Server
 {
 	private:
-		int _master_socket_fd;
 		int _family;
 		int _type;
 		int _protocol;
-		int _bind_port;
+		std::vector<int> _master_socket_fd;
 		std::vector<int> _client_socket_fd;
+		std::vector<std::map<std::string, std::string> > _servers_config;
 
 		void Socket();
 		void Bind();
 		void Listen() const;
-		void Accept();
+		void Accept(int);
+		void setNonBlocked(int);
 		_Noreturn void ListenLoop();
 	public:
-		explicit Server(int bind_port = 8000,
-						int family = AF_INET, //AF_UNIX
-						int type = SOCK_STREAM, //SOCK_DGRAM
-						int protocol = 0); // IPPROTO_TCP and IPPROTO_UDP
+		explicit Server(const std::vector<std::map<std::string, std::string> > &servers_config,
+						int family = AF_INET,
+						int type = SOCK_STREAM,
+						int protocol = 0);
 		Server(const Server &);
 		~Server();
 		Server &operator=(const Server &);

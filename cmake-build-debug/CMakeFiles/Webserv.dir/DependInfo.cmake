@@ -4,9 +4,9 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/Users/ltheresi/CLionProjects/Webserv/Server.cpp" "/Users/ltheresi/CLionProjects/Webserv/cmake-build-debug/CMakeFiles/Webserv.dir/Server.cpp.o"
-  "/Users/ltheresi/CLionProjects/Webserv/get_page_text.cpp" "/Users/ltheresi/CLionProjects/Webserv/cmake-build-debug/CMakeFiles/Webserv.dir/get_page_text.cpp.o"
-  "/Users/ltheresi/CLionProjects/Webserv/main.cpp" "/Users/ltheresi/CLionProjects/Webserv/cmake-build-debug/CMakeFiles/Webserv.dir/main.cpp.o"
+  "/Users/ruslanosmaev/Desktop/Webserv/Server.cpp" "/Users/ruslanosmaev/Desktop/Webserv/cmake-build-debug/CMakeFiles/Webserv.dir/Server.cpp.o"
+  "/Users/ruslanosmaev/Desktop/Webserv/get_page_text.cpp" "/Users/ruslanosmaev/Desktop/Webserv/cmake-build-debug/CMakeFiles/Webserv.dir/get_page_text.cpp.o"
+  "/Users/ruslanosmaev/Desktop/Webserv/main.cpp" "/Users/ruslanosmaev/Desktop/Webserv/cmake-build-debug/CMakeFiles/Webserv.dir/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "AppleClang")
 
