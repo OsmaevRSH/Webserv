@@ -6,7 +6,8 @@ Server::Server(const std::vector<std::map<std::string, std::string> > &servers_c
 			_type(type),
 			_protocol(protocol),
 			_master_socket_fd(0),
-			_servers_config(servers_config)
+			_servers_config(servers_config),
+			_count_servers(servers_config.size())
 {
 }
 
@@ -16,7 +17,8 @@ Server::Server(const Server &copy)
 			_protocol(copy._protocol),
 			_master_socket_fd(copy._master_socket_fd),
 			_client_socket_fd(copy._client_socket_fd),
-			_servers_config(copy._servers_config)
+			_servers_config(copy._servers_config),
+			_count_servers(copy._count_servers)
 {
 }
 
@@ -32,13 +34,14 @@ Server &Server::operator=(const Server &copy)
 	_master_socket_fd = copy._master_socket_fd;
 	_client_socket_fd = copy._client_socket_fd;
 	_servers_config = copy._servers_config;
+	_count_servers =copy._count_servers;
 	return *this;
 }
 
 void Server::Socket()
 {
 	_master_socket_fd.reserve(_servers_config.size());
-	for (int i = 0; i < _servers_config.size(); ++i) {
+	for (int i = 0; i < _count_servers; ++i) {
 		_master_socket_fd[i] = socket(_family, _type, _protocol);
 		if (_master_socket_fd[i] == -1) {
 			perror("Create socket error");
@@ -53,7 +56,7 @@ void Server::Bind()
 	int bind_res;
 	struct sockaddr_in addr = {};
 
-	for (int i = 0; i < _servers_config.size(); ++i) {
+	for (int i = 0; i < _count_servers; ++i) {
 		bzero(&addr, sizeof(addr));
 		addr.sin_family = _family;
 		addr.sin_port = htons(std::stoi(_servers_config[i]["port"]));
@@ -72,7 +75,7 @@ void Server::Bind()
 
 void Server::Listen() const
 {
-	for (int i = 0; i < _servers_config.size(); ++i) {
+	for (int i = 0; i < _count_servers; ++i) {
 		listen(_master_socket_fd[i], 16);
 	}
 }
@@ -91,8 +94,6 @@ void Server::Accept(int fd)
 		exit(EXIT_FAILURE);
 	}
 	setNonBlocked(new_client_fd);
-	std::cout << addr.sin_addr.s_addr << " " << addr.sin_port << " "
-			  << addr.sin_family << std::endl;
 	std::cout << "New client connect... " << new_client_fd << std::endl;
 	_client_socket_fd.push_back(new_client_fd);
 }
@@ -113,7 +114,7 @@ void Server::ListenLoop()
 	while (true) {
 		FD_ZERO(&readfds);
 		FD_ZERO(&writefds);
-		for (int i = 0; i < _servers_config.size(); ++i) {
+		for (int i = 0; i < _count_servers; ++i) {
 			FD_SET(_master_socket_fd[i], &readfds);
 		}
 		for (Iter = _client_socket_fd.begin();
@@ -123,7 +124,7 @@ void Server::ListenLoop()
 		if (!_client_socket_fd.empty()) {
 			max_fd = *(std::max_element(_client_socket_fd.begin(), _client_socket_fd.end()));
 		}
-		for (int i = 0; i < _servers_config.size(); ++i) {
+		for (int i = 0; i < _count_servers; ++i) {
 			if (_master_socket_fd[i] > max_fd) {
 				max_fd = _master_socket_fd[i];
 			}
@@ -141,7 +142,7 @@ void Server::ListenLoop()
 		if (res == 0) {
 			continue;
 		}
-		for (int i = 0; i < _servers_config.size(); ++i) {
+		for (int i = 0; i < _count_servers; ++i) {
 			if (FD_ISSET(_master_socket_fd[i], &readfds)) {
 				Accept(_master_socket_fd[i]);
 			}
