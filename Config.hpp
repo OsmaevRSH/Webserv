@@ -6,66 +6,57 @@
 /*   By: jeldora <jeldora@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 19:15:56 by jeldora           #+#    #+#             */
-/*   Updated: 2020/12/18 23:34:27 by jeldora          ###   ########.fr       */
+/*   Updated: 2020/12/19 15:08:32 by jeldora          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "master.hpp"
 #include <vector>
 #include <map>
+
 /*
 **	 Значит, в этом классе мы соберем, обработаем и будем хранить всю
-**	информацию из конфигурационного файла.
-**	 В конструкторе мы задаем путь, из которого получаем текст всего файла в виде
-**	строки std::string.
-
-**	У нас есть простые и блочные директивы.
-**	_Everwhere - все директивы, которые могут храниться везде
-**	_Location - директивы, которые могут храниться в location
-**	_Server - директивы, которые могут храниться в server
+**	информацию из конфигурационного файла, а также, будет ряд методов, которые будут обрабатывать запросы.
+**	
+**	Мое видение конфига:
+**	◦choose the port and host of each "server" - будут две отдельные директивы ip и port вместо listen (так удобнее парсить)
+**	◦setup default error pages - область определения не указана, значит будет задаваться только в мейне
+**	◦limit client body size - область определения не указана, значит тоже будет задаваться только в мейне
+**	◦setup routes with one or multiple of the following rules/configuration (routeswont be using regexp) - все,
+**	что будет в подпунктах этого пункта, будет задаваться только в routs (аналог location). Это разрешенные методы запросов,
+**	root, autoindex, дефолтный файл ответа, если запрос - директория, все что связано с cgi.
+**
+**	Конечно, будут еще разные директивы, типо index. Но мне еще предстоит разобраться, как они работают.
 */
+
 
 class Config
 {
 	private:
-		class _Everywhere
+		class _Route
 		{
 			public:
-				std::string					root;
-				size_t						client_body_size;
-				std::map<int, std::string>	error_pages; // Ключ - номер страницы. Значение - путь
-				bool						autoindex;
-				std::string 				request_is_dir; // Файл, который будет возвращаться, если реквест есть директория
-				_Everywhere();
-		};
-		class _Location
-		{
-			public:
-				std::string					value;
-				/* Полное совпадение =
-				** Максимальное совпадение /
-				*/
+				std::string					route_text;
 				std::vector<std::string>	allow_methods;
-				std::vector<_Location>		locations;
-				_Everywhere					ew;
-				// Тут будут еще всякие директивы
-				_Location();
+				std::string					root;
+				bool						autoindex;
+				std::string					req_is_dir;
+				std::vector<_Route>			routes;
+				_Route();
 		};
 		class _Server
 		{
 			public:
-				std::string					listen;			// Тоже самое что и listen в конфиге. Порт и ip разделены двоеточием.
-				std::vector<_Location>		locations;
-				std::string					server_name;	// Сравниваем с host заголовком в реквесте.
-				// Два отдельных поля, чтобы было удобнее обращаться к ip и порту.
 				std::string 				ip;
 				int							port;
-				_Everywhere					ew;
+				std::string					server_name;
+				std::vector<_Route>			routes;
 				_Server();
 		};
-		std::string				_config_text;	// Сырой текст конфига
-		std::vector<_Server>	_servers;		
-		_Server					_def_server;
+		std::vector<_Server>				_servers;		
+		std::map<int, std::string>			_error_pages; // Ключ - номер страницы. Значение - путь
+		size_t								_client_body_size;
+		std::string							_config_text;	// Сырой текст конфига
 	public:
 		Config(const std::string& path_to_config);
 };
