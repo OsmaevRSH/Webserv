@@ -1,6 +1,6 @@
 NAME = Webserv
 
-CC = clang++
+CXX = clang++
 
 #CPPFLAGS = -W -Wextra -Werror --std=c++98
 
@@ -11,7 +11,7 @@ OBJS = $(SRCS:.cpp=.o)
 all: $(NAME)
 
 $(NAME): $(OBJS)
-		$(CC) $(CPPFLAGS) $(OBJS) -o $(NAME)
+		$(CXX) $(CPPFLAGS) $(OBJS) -o $(NAME)
 
 start: $(NAME)
 		$(MAKE) clean

@@ -9,6 +9,7 @@ class Server
 		int _family;
 		int _type;
 		int _protocol;
+		int _count_servers;
 		std::vector<int> _master_socket_fd;
 		std::vector<int> _client_socket_fd;
 		std::vector<std::map<std::string, std::string> > _servers_config;
@@ -18,7 +19,7 @@ class Server
 		void Listen() const;
 		void Accept(int);
 		void setNonBlocked(int);
-		_Noreturn void ListenLoop();
+		void ListenLoop();
 	public:
 		explicit Server(const std::vector<std::map<std::string, std::string> > &servers_config,
 						int family = AF_INET,
