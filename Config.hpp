@@ -6,7 +6,7 @@
 /*   By: jeldora <jeldora@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 19:15:56 by jeldora           #+#    #+#             */
-/*   Updated: 2020/12/19 15:08:32 by jeldora          ###   ########.fr       */
+/*   Updated: 2020/12/19 22:24:33 by jeldora          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,22 +26,31 @@
 **	что будет в подпунктах этого пункта, будет задаваться только в routs (аналог location). Это разрешенные методы запросов,
 **	root, autoindex, дефолтный файл ответа, если запрос - директория, все что связано с cgi.
 **
-**	Конечно, будут еще разные директивы, типо index. Но мне еще предстоит разобраться, как они работают.
+**	Далее, я делаю парсер.
+**	
 */
+
 
 
 class Config
 {
 	private:
+		class _Everywhere
+		{
+			public:
+				std::string					index;
+				size_t						max_body_size;
+				std::string					root;
+				bool						autoindex;
+		};
 		class _Route
 		{
 			public:
 				std::string					route_text;
 				std::vector<std::string>	allow_methods;
-				std::string					root;
-				bool						autoindex;
-				std::string					req_is_dir;
 				std::vector<_Route>			routes;
+				_Everywhere					ew;
+
 				_Route();
 		};
 		class _Server
@@ -51,12 +60,14 @@ class Config
 				int							port;
 				std::string					server_name;
 				std::vector<_Route>			routes;
+				_Everywhere					ew;
+
 				_Server();
 		};
+		std::string							_config_text;	// Сырой текст конфига
 		std::vector<_Server>				_servers;		
 		std::map<int, std::string>			_error_pages; // Ключ - номер страницы. Значение - путь
-		size_t								_client_body_size;
-		std::string							_config_text;	// Сырой текст конфига
+		_Everywhere							_ew;
 	public:
 		Config(const std::string& path_to_config);
 };
