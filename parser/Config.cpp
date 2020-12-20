@@ -6,7 +6,7 @@
 /*   By: jeldora <jeldora@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 19:18:58 by jeldora           #+#    #+#             */
-/*   Updated: 2020/12/20 02:37:48 by jeldora          ###   ########.fr       */
+/*   Updated: 2020/12/20 18:29:05 by jeldora          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,35 +39,22 @@
 
 
 /* Возвращает true, если находит новое слово, false если конец строки */
-static bool				next_word_pos(const std::string& str, size_t &pos)
-{
-	while (pos < str.length() && str[pos] == ' ')
-		pos++;
-	if (pos == str.length())
-		return false;
-	return true;
-}
 
-static size_t			word_len(const std::string& str, const size_t &pos)
-{
-	size_t length = 0;
 
-	while (pos + length < str.length() && str[pos + length] != ' ')
-		length++;
-	return length;
+
+static	void			fill_vecotors(	std::vector<std::string> &main_context, 
+										std::vector<std::string> &server_context, 
+										std::vector<std::string> &route_context)
+{
+	
 }
 
 /*
-static void				parse_server()
-{
-
-}
-
-static void				parse_route()
-{
-
-}
+1) Нашли слово? посмотрели, есть ли такое в нашем контесксте.
+2) В зависимости от того, блочная это директива или простая, ищем завершающий символ.
+3) Бросаем в соответствующую функцию начало и коней строки с аргументами директивы. Обрабатываем.
 */
+
 
 Config::				Config(const std::string& path_to_config)
 {
@@ -75,9 +62,6 @@ Config::				Config(const std::string& path_to_config)
 	size_t		pos		= 0;
 
 	std::vector<std::string> main_context;
-	std::vector<std::string> server_context;
-	std::vector<std::string> route_context;
-
 	main_context.push_back("index");
 	main_context.push_back("max_body_size");
 	main_context.push_back("root");
@@ -85,21 +69,15 @@ Config::				Config(const std::string& path_to_config)
 	main_context.push_back("server");
 	main_context.push_back("error_page");
 
-
-	server_context.push_back("index");
-	server_context.push_back("max_body_size");
-	server_context.push_back("root");
-	server_context.push_back("autoindex");
-	server_context.push_back("ip");
-	server_context.push_back("port");
-
 	while (next_word_pos(text, pos))
 	{
-		/*
-		** Получили начало слова, получили его длину. Что дальше?
-		** Вычленяем это слово, и сравниваем с возможными. Получается, для каждого
-		** возможного слова, должна быть своя функция, которая обработает это слово.
-		*/
+		std::string word = text.substr(pos, word_len(text, pos));
+
+		if (std::find(main_context.begin(), main_context.end(), word) == main_context.end())
+		{
+			show_error(text, pos);
+			exit(1);
+		}
 	}
 }
 

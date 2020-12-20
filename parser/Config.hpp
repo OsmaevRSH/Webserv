@@ -6,7 +6,7 @@
 /*   By: jeldora <jeldora@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 19:15:56 by jeldora           #+#    #+#             */
-/*   Updated: 2020/12/20 01:36:46 by jeldora          ###   ########.fr       */
+/*   Updated: 2020/12/20 18:10:49 by jeldora          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,3 +71,10 @@ class Config
 	public:
 		Config(const std::string& path_to_config);
 };
+
+static bool				next_word_pos(const std::string& str, size_t &pos);
+static size_t			word_len(const std::string& str, const size_t &pos);
+void					show_error(const std::string& str, size_t pos);
+
+static void				parse_server();
+static void				parse_route();
