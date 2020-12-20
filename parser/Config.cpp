@@ -6,7 +6,7 @@
 /*   By: jeldora <jeldora@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 19:18:58 by jeldora           #+#    #+#             */
-/*   Updated: 2020/12/20 18:29:05 by jeldora          ###   ########.fr       */
+/*   Updated: 2020/12/20 20:12:11 by jeldora          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,7 @@
 
 
 
-static	void			fill_vecotors(	std::vector<std::string> &main_context, 
-										std::vector<std::string> &server_context, 
-										std::vector<std::string> &route_context)
-{
-	
-}
+
 
 /*
 1) Нашли слово? посмотрели, есть ли такое в нашем контесксте.
@@ -78,6 +73,10 @@ Config::				Config(const std::string& path_to_config)
 			show_error(text, pos);
 			exit(1);
 		}
+
+		pos += word_len(text, pos);
+		size_t end_pos = end_directive(text, pos);
+		// позицию, конец и имя директивы я посылаю в каждую функцию. И там уже происходит парсинг.
 	}
 }
 
