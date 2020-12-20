@@ -6,7 +6,7 @@
 /*   By: jeldora <jeldora@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 19:18:58 by jeldora           #+#    #+#             */
-/*   Updated: 2020/12/20 20:21:52 by jeldora          ###   ########.fr       */
+/*   Updated: 2020/12/21 00:43:45 by jeldora          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,10 +50,34 @@
 3) Бросаем в соответствующую функцию начало и коней строки с аргументами директивы. Обрабатываем.
 */
 
+
+void	Config::		parse_block(std::vector<std::string> context, std::string text)
+{
+	size_t pos = 0;
+	/* Пока находим какое-либо слово */
+	while (next_word_pos(text, pos))
+	{
+		/* Получили само слово, чтобы по нему определить директорию */
+		std::string word = text.substr(pos, word_len(text, pos));
+		size_t		end_pos;
+		std::string dir_content;
+		/* Смотрим, есть ли такая директория в данном контексте */
+		if (std::find(context.begin(), context.end(), word) == context.end())
+			show_error(text, pos);
+		/* Сдвигаемся дальше, чтобы относительно позиции после слова взять все содержимое директории 
+			и послать в функцию, которая это обработает */
+		pos += word_len(text, pos);
+		end_pos = end_directive(text, pos);
+		dir_content = text.substr(pos, end_pos - pos);
+		/* Полученную подстроку я посылаю в подходящую функцию. Позицию в строке передвигаю за тело директивы */
+		select_directive(word, dir_content);
+		pos = end_pos + 1;
+	}
+}
+
 Config::				Config(const std::string& path_to_config)
 {
 	std::string text	= get_page_text(path_to_config);
-	size_t		pos		= 0;
 
 	std::vector<std::string> main_context;
 	main_context.push_back("index");
@@ -63,20 +87,7 @@ Config::				Config(const std::string& path_to_config)
 	main_context.push_back("server");
 	main_context.push_back("error_page");
 
-	while (next_word_pos(text, pos))
-	{
-		std::string word = text.substr(pos, word_len(text, pos));
-
-		if (std::find(main_context.begin(), main_context.end(), word) == main_context.end())
-		{
-			show_error(text, pos);
-			exit(1);
-		}
-
-		pos += word_len(text, pos);
-		size_t end_pos = end_directive(text, pos);
-		// позицию, конец и имя директивы я посылаю в каждую функцию. И там уже происходит парсинг.
-	}
+	parse_block(main_context, text);
 }
 
 Config::_Everywhere::	_Everywhere()

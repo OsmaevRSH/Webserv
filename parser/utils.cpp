@@ -6,7 +6,7 @@
 /*   By: jeldora <jeldora@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 17:53:16 by jeldora           #+#    #+#             */
-/*   Updated: 2020/12/20 20:21:35 by jeldora          ###   ########.fr       */
+/*   Updated: 2020/12/20 23:46:53 by jeldora          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ void				show_error(const std::string& str, size_t pos)
 	while ((l_pos = str.rfind('\n', pos)) != std::string::npos)
 		line++;
 	std::cout << "\nParser error: " << l_pos << " line, " << c_pos << " character.\n";
+	exit(1);
 }
 
 bool				next_word_pos(const std::string& str, size_t &pos)
@@ -77,7 +78,7 @@ static size_t		simple_directive(const std::string &text, const size_t &pos)
 	return pos_end;
 }
 
-size_t				end_directive(const std::string &text, const size_t &pos)
+size_t				end_of_directive(const std::string &text, const size_t &pos)
 {
 	size_t simple = 0;
 	size_t block = 0;
@@ -85,7 +86,7 @@ size_t				end_directive(const std::string &text, const size_t &pos)
 	block = text.find('{', pos);
 	if (simple == block)
 		show_error(text, pos);
-	if (simple == std::string::npos || simple > block)
+	if (block < simple)
 		return block_directive(text, pos);
 	else
 		return simple_directive(text, pos);
