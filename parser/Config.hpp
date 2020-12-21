@@ -6,7 +6,7 @@
 /*   By: jeldora <jeldora@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 19:15:56 by jeldora           #+#    #+#             */
-/*   Updated: 2020/12/21 19:40:48 by jeldora          ###   ########.fr       */
+/*   Updated: 2020/12/21 20:28:00 by jeldora          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ class Config
 		class _Everywhere
 		{
 			public:
-				std::string					_index;
+				std::vector<std::string>	_index;
 				size_t						_max_body_size;
 				std::string					_root;
 				bool						_autoindex;

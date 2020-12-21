@@ -6,7 +6,7 @@
 /*   By: jeldora <jeldora@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 17:53:16 by jeldora           #+#    #+#             */
-/*   Updated: 2020/12/20 23:46:53 by jeldora          ###   ########.fr       */
+/*   Updated: 2020/12/21 21:09:14 by jeldora          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,10 +61,7 @@ static size_t		block_directive(const std::string &text, const size_t &pos)
 		tmp_pos = text.rfind('{', --tmp_pos);
 		if (tmp_pos == pos_1)
 			return pos_2;
-		else if (tmp_pos < pos_1)
-			show_error(text, pos_2);
 	}
-	show_error(text, pos_2);
 	return std::string::npos;
 }
 
@@ -73,8 +70,6 @@ static size_t		simple_directive(const std::string &text, const size_t &pos)
 	size_t pos_end;
 
 	pos_end = text.find(';', pos);
-	if (pos_end == std::string::npos)
-		show_error(text, pos);
 	return pos_end;
 }
 

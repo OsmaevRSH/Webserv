@@ -6,7 +6,7 @@
 /*   By: jeldora <jeldora@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 19:18:58 by jeldora           #+#    #+#             */
-/*   Updated: 2020/12/21 19:52:37 by jeldora          ###   ########.fr       */
+/*   Updated: 2020/12/21 20:48:50 by jeldora          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,7 +167,6 @@ Config::				Config(const std::string& path_to_config)
 Config::_Everywhere::	_Everywhere()
 {
 	_root = "";
-	_index = "";
 	_max_body_size = 0;
 	_autoindex = false;
 }
