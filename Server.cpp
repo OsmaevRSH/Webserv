@@ -46,7 +46,7 @@ void Server::Socket()
 			perror("Create socket error");
 			exit(EXIT_FAILURE);
 		}
-		setNonBlocked(_master_socket_fd[i]); // переводим дескрипотры в неблокирующий режим
+		Set_non_blocked(_master_socket_fd[i]); // переводим дескрипотры в неблокирующий режим
 	}
 }
 
@@ -95,7 +95,7 @@ void Server::Accept(int fd)
 		perror("Accept error");
 		exit(EXIT_FAILURE);
 	}
-	setNonBlocked(new_client_fd); //Перевод дескриптора в неблокирующий режим
+	Set_non_blocked(new_client_fd); //Перевод дескриптора в неблокирующий режим
 	std::cout << "New client connect... " << new_client_fd << std::endl;
 	_client_socket_fd.push_back(new_client_fd); //Добавляем нового клиента в список всех клиентов
 }
@@ -111,72 +111,24 @@ void Server::server_start()
 
 
 //Основаной цикл где происходит обработка соединений
-void Server::ListenLoop()
+_Noreturn void Server::ListenLoop()
 {
 	int max_fd = 0;
 	fd_set readfds, writefds; //создем сет для чтения и записи
 	std::vector<int>::iterator Iter;
 
 	while (true) {
-		FD_ZERO(&readfds); //обнулем все биты в сете
-		FD_ZERO(&writefds); //обнулем все биты в сете
-		for (int i = 0; i < _count_servers; ++i) {
-			FD_SET(_master_socket_fd[i], &readfds); //добавляем серверные дескрипторы в сет
-		}
-		for (Iter = _client_socket_fd.begin();
-			 Iter != _client_socket_fd.end(); ++Iter) {
-			FD_SET(*Iter, &readfds); //добавляем клиентсикие дескрипторы в сет
-		}
-		if (!_client_socket_fd.empty()) {
-			max_fd = *(std::max_element(_client_socket_fd.begin(), _client_socket_fd.end())); //находим максимальный дескриптор среди клиентский
-		}
-		for (int i = 0; i <
-						_count_servers; ++i) { //проверяем нет ли среди серверных дескрипотора больше, чем максимальный
-			if (_master_socket_fd[i] > max_fd) {
-				max_fd = _master_socket_fd[i];
-			}
-		}
+		Reset_fd_set(readfds, writefds);
+		Add_new_fd_to_set(readfds, Iter);
+		Search_max_fd(max_fd);
 		int res = select(max_fd +
 						 1, &readfds, nullptr, nullptr, nullptr); //отвлеживает состояние дескрипторов и выставляет в 1 бит дескриптора если с него можно читать или писать
-		if (res < 1) {
-			if (errno != EINTR) {
-				perror("Select error");
-				exit(1);
-			}
-			else {
-				exit(0);
-			}
-		}
-		if (res == 0) {
-			continue;
-		}
-		for (int i = 0; i < _count_servers; ++i) {
-			if (FD_ISSET(_master_socket_fd[i], &readfds)) { //проверяем был ли выставлен бит серверного дескриптра, если да, то создаем новое подключение
-				Accept(_master_socket_fd[i]);
-			}
-		}
+		Checkout_call_to_select(res);
+		Accept_if_serv_fd_changed(readfds);
 		Iter = _client_socket_fd.begin();
 		while (Iter != _client_socket_fd.end()) {
 			if (FD_ISSET(*Iter, &readfds)) { //проверяем, выставлен ли какой-то бит связанный с клиентский дескрипотором
-				char *buf = (char *) malloc(
-						sizeof(char) * 576); //создаем буфер для чтения
-				if ((recv(*Iter, buf, 576, 0)) == 0) { //читаем и в случае если пришло пустое сообщение заходим в if и инициируем разрый соединения
-					shutdown(*Iter, SHUT_RDWR); //разрыв соединения
-					close(*Iter); //закрытие дескриптора
-					std::cout << "Close connection... " << *Iter << std::endl;
-					Iter = _client_socket_fd.erase(Iter); //удаление дескриптора из пула клиентских дескрипторов
-				}
-				else {
-					shutdown(*Iter, SHUT_RD); //разрый соединенеия на чтение
-					send(*Iter, (
-							"HTTP/1.1 200 OK\nContent-type: text/html\n\n" +
-							get_page_text("index.html")).c_str(), 576, 0); // передача вообщения клиенту
-					shutdown(*Iter, SHUT_WR); //разрыв соединения на передачу
-					close(*Iter); //закрытие клиентского дескриптора
-					std::cout << "Send and close connection... " << *Iter
-							  << std::endl;
-					Iter = _client_socket_fd.erase(Iter); //удаление дескриптора из пула клиентских дескрипторов
-				}
+				Act_if_client_fd_changed(Iter);
 			}
 			else {
 				++Iter;
@@ -187,11 +139,91 @@ void Server::ListenLoop()
 
 
 //Функция перевода дескриптора в неблокирующий режим
-void Server::setNonBlocked(int fd)
+void Server::Set_non_blocked(int fd)
 {
 	int flags;
 	if (-1 == (flags = fcntl(fd, F_GETFL, 0))) {
 		flags = 0;
 	}
 	fcntl(fd, F_SETFL, flags | O_NONBLOCK);
+}
+
+void Server::Reset_fd_set(fd_set &readfds, fd_set &writefds)
+{
+	FD_ZERO(&readfds); //обнулем все биты в сете
+	FD_ZERO(&writefds); //обнулем все биты в сете
+}
+
+void Server::Add_new_fd_to_set(fd_set &readfds, std::vector<int>::iterator Iter)
+{
+	for (int i = 0; i < _count_servers; ++i) {
+		FD_SET(_master_socket_fd[i], &readfds); //добавляем серверные дескрипторы в сет
+	}
+	for (Iter = _client_socket_fd.begin();
+		 Iter != _client_socket_fd.end(); ++Iter) {
+		FD_SET(*Iter, &readfds); //добавляем клиентсикие дескрипторы в сет
+	}
+}
+
+void Server::Search_max_fd(int &max_fd)
+{
+	if (!_client_socket_fd.empty()) {
+		max_fd = *(std::max_element(_client_socket_fd.begin(), _client_socket_fd.end())); //находим максимальный дескриптор среди клиентский
+	}
+	for (int i = 0; i <
+					_count_servers; ++i) { //проверяем нет ли среди серверных дескрипотора больше, чем максимальный
+		if (_master_socket_fd[i] > max_fd) {
+			max_fd = _master_socket_fd[i];
+		}
+	}
+}
+
+bool Server::Checkout_call_to_select(const int &res)
+{
+	if (res < 1) {
+		if (errno != EINTR) {
+			perror("Select error");
+			exit(1);
+		}
+		else {
+			exit(0);
+		}
+	}
+	if (res == 0) {
+		return true;
+	}
+	return false;
+}
+
+void Server::Accept_if_serv_fd_changed(fd_set &readfds)
+{
+	for (int i = 0; i < _count_servers; ++i) {
+		if (FD_ISSET(_master_socket_fd[i], &readfds)) { //проверяем был ли выставлен бит серверного дескриптра, если да, то создаем новое подключение
+			Accept(_master_socket_fd[i]);
+		}
+	}
+}
+
+void Server::Act_if_client_fd_changed(std::vector<int>::iterator &Iter)
+{
+	char *buf = (char *) malloc(
+			sizeof(char) * 576); //создаем буфер для чтения
+	if ((recv(*Iter, buf, 576, 0)) ==
+		0) { //читаем и в случае если пришло пустое сообщение заходим в if и инициируем разрый соединения
+		shutdown(*Iter, SHUT_RDWR); //разрыв соединения
+		close(*Iter); //закрытие дескриптора
+		std::cout << "Close connection... " << *Iter << std::endl;
+		Iter = _client_socket_fd.erase(Iter); //удаление дескриптора из пула клиентских дескрипторов
+	}
+	else {
+		shutdown(*Iter, SHUT_RD); //разрый соединенеия на чтение
+		send(*Iter, (
+				"HTTP/1.1 200 OK\nContent-type: text/html\n\n" +
+				get_page_text("index.html")).c_str(), 576, 0); // передача вообщения клиенту
+		shutdown(*Iter, SHUT_WR); //разрыв соединения на передачу
+		close(*Iter); //закрытие клиентского дескриптора
+		std::cout << "Send and close connection... " << *Iter
+				  << std::endl;
+		Iter = _client_socket_fd.erase(Iter); //удаление дескриптора из пула клиентских дескрипторов
+	}
 }

@@ -18,8 +18,14 @@ class Server
 		void Bind();
 		void Listen() const;
 		void Accept(int);
-		void setNonBlocked(int);
-		void ListenLoop();
+		static void Set_non_blocked(int);
+		_Noreturn void ListenLoop();
+		static void Reset_fd_set(fd_set &, fd_set &);
+		void Add_new_fd_to_set(fd_set &, std::vector<int>::iterator);
+		void Search_max_fd(int &);
+		static bool Checkout_call_to_select(const int &);
+		void Accept_if_serv_fd_changed(fd_set &);
+		void Act_if_client_fd_changed(std::vector<int>::iterator &);
 	public:
 		explicit Server(const std::vector<std::map<std::string, std::string> > &servers_config,
 						int family = AF_INET,
