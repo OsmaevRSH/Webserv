@@ -6,7 +6,7 @@
 /*   By: jeldora <jeldora@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 19:18:58 by jeldora           #+#    #+#             */
-/*   Updated: 2020/12/21 00:43:45 by jeldora          ###   ########.fr       */
+/*   Updated: 2020/12/21 19:43:25 by jeldora          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,25 +51,106 @@
 */
 
 
-void	Config::		parse_block(std::vector<std::string> context, std::string text)
+void	Config::		parse(std::string text)
 {
 	size_t pos = 0;
-	/* Пока находим какое-либо слово */
+	
+	std::vector<std::string> context;
+	context.push_back("index");
+	context.push_back("max_body_size");
+	context.push_back("root");
+	context.push_back("autoindex");
+	context.push_back("server");
+	context.push_back("error_page");
+
 	while (next_word_pos(text, pos))
 	{
-		/* Получили само слово, чтобы по нему определить директорию */
 		std::string word = text.substr(pos, word_len(text, pos));
 		size_t		end_pos;
 		std::string dir_content;
-		/* Смотрим, есть ли такая директория в данном контексте */
 		if (std::find(context.begin(), context.end(), word) == context.end())
 			show_error(text, pos);
-		/* Сдвигаемся дальше, чтобы относительно позиции после слова взять все содержимое директории 
-			и послать в функцию, которая это обработает */
 		pos += word_len(text, pos);
 		end_pos = end_directive(text, pos);
 		dir_content = text.substr(pos, end_pos - pos);
-		/* Полученную подстроку я посылаю в подходящую функцию. Позицию в строке передвигаю за тело директивы */
+		if (word == "server")
+		{
+			_Server new_server;
+			new_server.parse(dir_content);
+			_servers.push_back(new_server);
+		}
+		else
+			select_directive(word, dir_content, _ew);
+		pos = end_pos + 1;
+	}
+}
+
+void	Config::_Route::parse(std::string text)
+{
+	size_t pos = 0;
+	
+	std::vector<std::string>	context;
+	context.push_back("index");
+	context.push_back("max_body_size");
+	context.push_back("root");
+	context.push_back("autoindex");
+	context.push_back("ip");
+	context.push_back("port");
+	context.push_back("server_name");
+	context.push_back("route");
+
+	while (next_word_pos(text, pos))
+	{
+		std::string word = text.substr(pos, word_len(text, pos));
+		size_t		end_pos;
+		std::string dir_content;
+		if (std::find(context.begin(), context.end(), word) == context.end())
+			show_error(text, pos);
+		pos += word_len(text, pos);
+		end_pos = end_directive(text, pos);
+		dir_content = text.substr(pos, end_pos - pos);
+		if (word == "route")
+		{
+			_Route new_route;
+			new_route.parse(dir_content);
+			_routes.push_back(new_route);
+		}
+		else
+			select_directive(word, dir_content);
+		pos = end_pos + 1;
+	}
+}
+
+void	Config::_Server::parse(std::string text)
+{
+	size_t pos = 0;
+	
+	std::vector<std::string>	context;
+	context.push_back("index");
+	context.push_back("max_body_size");
+	context.push_back("root");
+	context.push_back("autoindex");
+	context.push_back("ip");
+	context.push_back("port");
+	context.push_back("server_name");
+	context.push_back("route");
+
+	while (next_word_pos(text, pos))
+	{
+		std::string word = text.substr(pos, word_len(text, pos));
+		size_t		end_pos;
+		std::string dir_content;
+		if (std::find(context.begin(), context.end(), word) == context.end())
+			show_error(text, pos);
+		pos += word_len(text, pos);
+		end_pos = end_directive(text, pos);
+		dir_content = text.substr(pos, end_pos - pos);
+		if (word == "route")
+		{
+			_Route new_route;
+			new_route.parse(dir_content);
+			_routes.push_back(new_route);
+		}
 		select_directive(word, dir_content);
 		pos = end_pos + 1;
 	}
@@ -78,24 +159,15 @@ void	Config::		parse_block(std::vector<std::string> context, std::string text)
 Config::				Config(const std::string& path_to_config)
 {
 	std::string text	= get_page_text(path_to_config);
-
-	std::vector<std::string> main_context;
-	main_context.push_back("index");
-	main_context.push_back("max_body_size");
-	main_context.push_back("root");
-	main_context.push_back("autoindex");
-	main_context.push_back("server");
-	main_context.push_back("error_page");
-
-	parse_block(main_context, text);
+	parse(text);
 }
 
 Config::_Everywhere::	_Everywhere()
 {
-	root = "";
-	index = "";
-	max_body_size = 0;
-	autoindex = false;
+	_root = "";
+	_index = "";
+	_max_body_size = 0;
+	_autoindex = false;
 }
 
 Config::_Route::		_Route()
@@ -104,7 +176,14 @@ Config::_Route::		_Route()
 
 Config::_Server::		_Server()
 {
-	port = 0;
-	ip = "";
-	server_name = "";
+	_port = 0;
+	_ip = "";
+	_server_name = "";
 }
+
+/*
+
+	Продумаю парсер заново.
+	Отдельный класс, который парсит сервер и отдельный класс который парсит роут.
+
+*/
