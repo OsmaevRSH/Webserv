@@ -6,7 +6,7 @@
 /*   By: jeldora <jeldora@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 19:18:58 by jeldora           #+#    #+#             */
-/*   Updated: 2020/12/21 19:43:25 by jeldora          ###   ########.fr       */
+/*   Updated: 2020/12/21 19:52:37 by jeldora          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@
 3) Бросаем в соответствующую функцию начало и коней строки с аргументами директивы. Обрабатываем.
 */
 
-
 void	Config::		parse(std::string text)
 {
 	size_t pos = 0;
@@ -81,6 +80,42 @@ void	Config::		parse(std::string text)
 		}
 		else
 			select_directive(word, dir_content, _ew);
+		pos = end_pos + 1;
+	}
+}
+
+void	Config::_Server::parse(std::string text)
+{
+	size_t pos = 0;
+	
+	std::vector<std::string>	context;
+	context.push_back("index");
+	context.push_back("max_body_size");
+	context.push_back("root");
+	context.push_back("autoindex");
+	context.push_back("ip");
+	context.push_back("port");
+	context.push_back("server_name");
+	context.push_back("route");
+
+	while (next_word_pos(text, pos))
+	{
+		std::string word = text.substr(pos, word_len(text, pos));
+		size_t		end_pos;
+		std::string dir_content;
+		if (std::find(context.begin(), context.end(), word) == context.end())
+			show_error(text, pos);
+		pos += word_len(text, pos);
+		end_pos = end_directive(text, pos);
+		dir_content = text.substr(pos, end_pos - pos);
+		if (word == "route")
+		{
+			_Route new_route;
+			new_route.parse(dir_content);
+			_routes.push_back(new_route);
+		}
+		else
+			select_directive(word, dir_content, _ew, *this);
 		pos = end_pos + 1;
 	}
 }
@@ -116,45 +151,12 @@ void	Config::_Route::parse(std::string text)
 			_routes.push_back(new_route);
 		}
 		else
-			select_directive(word, dir_content);
+			select_directive(word, dir_content, _ew, *this);
 		pos = end_pos + 1;
 	}
 }
 
-void	Config::_Server::parse(std::string text)
-{
-	size_t pos = 0;
-	
-	std::vector<std::string>	context;
-	context.push_back("index");
-	context.push_back("max_body_size");
-	context.push_back("root");
-	context.push_back("autoindex");
-	context.push_back("ip");
-	context.push_back("port");
-	context.push_back("server_name");
-	context.push_back("route");
 
-	while (next_word_pos(text, pos))
-	{
-		std::string word = text.substr(pos, word_len(text, pos));
-		size_t		end_pos;
-		std::string dir_content;
-		if (std::find(context.begin(), context.end(), word) == context.end())
-			show_error(text, pos);
-		pos += word_len(text, pos);
-		end_pos = end_directive(text, pos);
-		dir_content = text.substr(pos, end_pos - pos);
-		if (word == "route")
-		{
-			_Route new_route;
-			new_route.parse(dir_content);
-			_routes.push_back(new_route);
-		}
-		select_directive(word, dir_content);
-		pos = end_pos + 1;
-	}
-}
 
 Config::				Config(const std::string& path_to_config)
 {
