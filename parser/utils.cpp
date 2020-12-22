@@ -6,7 +6,7 @@
 /*   By: jeldora <jeldora@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 17:53:16 by jeldora           #+#    #+#             */
-/*   Updated: 2020/12/21 21:09:14 by jeldora          ###   ########.fr       */
+/*   Updated: 2020/12/22 15:28:07 by jeldora          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,18 @@ size_t				word_len(const std::string& str, const size_t &pos)
 	while (pos + length < str.length() && (	str[pos + length] != ' ' || 
 											str[pos + length] != '{'|| 
 											str[pos + length] != '\n'))
+		length++;
+	return length;
+}
+
+size_t				word_len_simple_dir(const std::string& str, const size_t &pos)
+{
+	size_t length = 0;
+
+	while (pos + length < str.length() && (	str[pos + length] != ' ' || 
+											str[pos + length] != '{'|| 
+											str[pos + length] != '\n' ||
+											str[pos + length] != ';'))
 		length++;
 	return length;
 }
