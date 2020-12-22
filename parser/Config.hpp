@@ -6,11 +6,10 @@
 /*   By: jeldora <jeldora@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/22 16:02:13 by jeldora           #+#    #+#             */
-/*   Updated: 2020/12/22 17:15:28 by jeldora          ###   ########.fr       */
+/*   Updated: 2020/12/22 19:40:19 by jeldora          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
 
 #include "master.hpp"
 #include <vector>
@@ -66,10 +65,14 @@ class Config
 		std::vector<t_server>				_servers;		
 		std::map<int, std::string>			_error_pages; // Ключ - номер страницы. Значение - путь
 		t_everywhere						_ew;
-
 		void parse_server();
 		void parse_route();
+		void parse(t_agrs args)
+		void select_dir(t_args args, std::string word);
+	public:
 		Config(const std::string& path_to_config);
 };
 
-std::string	get_next_word(std::string text, size_t pos);
+std::string		get_next_word(std::string text, size_t pos);
+void			show_error(const std::string& str, size_t pos);
+std::string		dir_content(const std::string &text, const size_t &pos);

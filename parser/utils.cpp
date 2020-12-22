@@ -6,60 +6,11 @@
 /*   By: jeldora <jeldora@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 17:53:16 by jeldora           #+#    #+#             */
-/*   Updated: 2020/12/22 15:28:07 by jeldora          ###   ########.fr       */
+/*   Updated: 2020/12/22 19:37:39 by jeldora          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Config.hpp"
-
-void				show_error(const std::string& str, size_t pos)
-{
-	size_t	line = 1;
-	size_t	l_pos = 0;
-	size_t	c_pos = 0;
-
-	if (str.rfind('\n', pos) != std::string::npos)
-		c_pos = pos - str.rfind('\n', pos);
-	else
-		c_pos = pos;
-	while ((l_pos = str.rfind('\n', pos)) != std::string::npos)
-		line++;
-	std::cout << "\nParser error: " << l_pos << " line, " << c_pos << " character.\n";
-	exit(1);
-}
-
-bool				next_word_pos(const std::string& str, size_t &pos)
-{
-	while (pos < str.length() && (	str[pos] == ' ' || 
-									str[pos] == '\n'))
-		pos++;
-	if (pos == str.length())
-		return false;
-	return true;
-}
-
-size_t				word_len(const std::string& str, const size_t &pos)
-{
-	size_t length = 0;
-
-	while (pos + length < str.length() && (	str[pos + length] != ' ' || 
-											str[pos + length] != '{'|| 
-											str[pos + length] != '\n'))
-		length++;
-	return length;
-}
-
-size_t				word_len_simple_dir(const std::string& str, const size_t &pos)
-{
-	size_t length = 0;
-
-	while (pos + length < str.length() && (	str[pos + length] != ' ' || 
-											str[pos + length] != '{'|| 
-											str[pos + length] != '\n' ||
-											str[pos + length] != ';'))
-		length++;
-	return length;
-}
 
 static size_t		block_directive(const std::string &text, const size_t &pos)
 {
@@ -85,8 +36,9 @@ static size_t		simple_directive(const std::string &text, const size_t &pos)
 	return pos_end;
 }
 
-size_t				end_of_directive(const std::string &text, const size_t &pos)
+std::string				dir_content(const std::string &text, const size_t &pos)
 {
+	size_t end_pos;
 	size_t simple = 0;
 	size_t block = 0;
 	simple = text.find(';', pos);
@@ -94,7 +46,8 @@ size_t				end_of_directive(const std::string &text, const size_t &pos)
 	if (simple == block)
 		show_error(text, pos);
 	if (block < simple)
-		return block_directive(text, pos);
+		end_pos = block_directive(text, pos);
 	else
-		return simple_directive(text, pos);
+		end_pos = simple_directive(text, pos);
+	return (text.substr(pos, end_pos - pos));
 }
