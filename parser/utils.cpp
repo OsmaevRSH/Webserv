@@ -6,7 +6,7 @@
 /*   By: jeldora <jeldora@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 17:53:16 by jeldora           #+#    #+#             */
-/*   Updated: 2020/12/22 19:37:39 by jeldora          ###   ########.fr       */
+/*   Updated: 2020/12/22 23:55:28 by jeldora          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,18 +36,23 @@ static size_t		simple_directive(const std::string &text, const size_t &pos)
 	return pos_end;
 }
 
-std::string				dir_content(const std::string &text, const size_t &pos)
+std::string				dir_content(t_args args)
 {
 	size_t end_pos;
 	size_t simple = 0;
 	size_t block = 0;
-	simple = text.find(';', pos);
-	block = text.find('{', pos);
+	simple = args.fragment.find(';', args.rel_pos);
+	block = args.fragment.find('{', args.rel_pos);
 	if (simple == block)
-		show_error(text, pos);
+		show_error(args);
 	if (block < simple)
-		end_pos = block_directive(text, pos);
+		end_pos = block_directive(args.fragment, args.rel_pos);
 	else
-		end_pos = simple_directive(text, pos);
-	return (text.substr(pos, end_pos - pos));
+		end_pos = simple_directive(args.fragment, args.rel_pos);
+	return (args.fragment.substr(args.rel_pos, end_pos - args.rel_pos));
+}
+
+void					autoindex_parse(t_args args)
+{
+	
 }
