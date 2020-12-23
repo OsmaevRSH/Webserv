@@ -48,11 +48,7 @@ std::string				dir_content(t_args args)
 	if (block < simple)
 		end_pos = block_directive(args.fragment, args.rel_pos);
 	else
-		end_pos = simple_directive(args.fragment, args.rel_pos);
+		end_pos = args.fragment.find(';', args.rel_pos);
 	return (args.fragment.substr(args.rel_pos, end_pos - args.rel_pos));
 }
 
-void					autoindex_parse(t_args args)
-{
-	
-}

@@ -37,6 +37,7 @@ void Config::parse(t_args args) {
 		if (std::find(context.begin(), context.end(), word) == context.end())
 			show_error(args);
 		select_dir(args, word);
+		args.rel_pos++;
 		word = get_next_word(args.fragment, args.rel_pos);
 	}
 }
@@ -72,11 +73,10 @@ void Config::select_dir(t_args &args, std::string word) {
 		index_parse(new_args);
 	else if (word == "autoindex")
 		autoindex_parse(new_args);
-/*	else if (word == "root")
-	else if (word == "max_body_size")
+	else if (word == "root")
+		root_parse(new_args);
+/*	else if (word == "max_body_size")
 */
-
-	args.rel_pos += new_args.fragment.length();
 }
 
 void Config::server_parse(t_args args) {
@@ -100,9 +100,12 @@ void Config::route_parse(t_args args) {
 
 void Config::index_parse(t_args args) {
 	std::string word;
-	while ((word = get_next_word(args.fragment, args.rel_pos)) != ";" ||
-		   word.empty() != false)
+	while (!(word = get_next_word(args.fragment, args.rel_pos)).empty())
 		args.ew->index.push_back(word);
+	if (args.rel_pos != args.fragment.length())
+		show_error(args);
+	for (int i = 0; i < args.ew->index.size(); i++)
+		std::cout << "Index " << i << ": " << args.ew->index[i] <<"\n";
 }
 
 void Config::max_body_size_parse(t_args args) {
@@ -127,8 +130,9 @@ void Config::autoindex_parse(t_args args) {
 		args.ew->autoindex = false;
 	else
 		show_error(args);
-
-	std::cout << args.ew->autoindex << "\n";
+	if (args.rel_pos != args.fragment.length())
+		show_error(args);
+	std::cout << "Autoindex:" << args.ew->autoindex << "\n";
 }
 
 void Config::root_parse(t_args args) {
@@ -136,21 +140,34 @@ void Config::root_parse(t_args args) {
 	std::ifstream ifs(args.ew->root.c_str());
 	if (!ifs.is_open())
 		show_error(args);
+	if (args.rel_pos != args.fragment.length())
+		show_error(args);
+	std::cout << "Root:" << args.ew->root << "\n";
 }
 
 void show_error(const t_args &args) {
 	size_t pos = args.base_pos + args.rel_pos;
 	std::string str = args.text;
 	size_t line = 1;
-	size_t l_pos = 0;
+	size_t l_pos = pos;
 	size_t c_pos = 0;
 
-	if (str.rfind('\n', pos) != std::string::npos)
-		c_pos = pos - str.rfind('\n', pos);
+	size_t s1 = str.length();
+	size_t s2 = str.rfind('\n', pos);
+	if (pos == str.rfind('\n', pos))
+		c_pos = 0;
+	else if (str.rfind('\n', pos) < str.length())
+	{
+		c_pos = pos - str.rfind('\n', pos) - 1;
+		if (c_pos == std::string::npos)
+			c_pos = 1;
+	}
 	else
 		c_pos = pos;
-	while ((l_pos = str.rfind('\n', pos)) != std::string::npos)
+	while ((l_pos = str.rfind('\n', l_pos)) < str.length()) {
 		line++;
+		l_pos--;
+	}
 	std::cout << "\nParser error: " << line << " line, " << c_pos << " character.\n";
 	exit(1);
 }
