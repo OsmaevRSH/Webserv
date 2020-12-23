@@ -32,7 +32,8 @@ void Config::parse(t_args args) {
 	else
 		context = args.main_context;
 	word = get_next_word(args.fragment, args.rel_pos);
-	while (word.empty() == false) {
+	while (word.empty() == false)
+	{
 		if (std::find(context.begin(), context.end(), word) == context.end())
 			show_error(args);
 		select_dir(args, word);
@@ -45,13 +46,13 @@ std::string get_next_word(std::string text, size_t &pos) {
 	size_t word_len;
 
 	word_len = 0;
-	while (pos < text.length() && text.at(pos) == ' ')
+	while (pos < text.length() && strchr(" \n\t\v\r", text[pos]))
 		pos++;
-	while (pos + word_len < strlen(text.c_str()) && text[pos + word_len] != ' ') {
-		std::cout << text[pos + word_len];
+	while (pos + word_len < text.length() && !strchr(" \n\t\v\r", text[pos + word_len])) {
 		word_len++;
 	}
-	ret_word = text.substr(pos, word_len);
+	if (word_len != 0)
+		ret_word = text.substr(pos, word_len);
 	pos += word_len;
 	return (ret_word);
 }
@@ -62,15 +63,16 @@ void Config::select_dir(t_args &args, std::string word) {
 	new_args.ew = args.ew;
 	new_args.fragment = dir_content(args);
 	new_args.base_pos = args.base_pos + args.rel_pos;
-	args.rel_pos += new_args.fragment.length() + 2;
+	args.rel_pos += new_args.fragment.length();
 	if (word == "server")
 		server_parse(new_args);
 	else if (word == "route")
 		route_parse(new_args);
 	else if (word == "index")
 		index_parse(new_args);
-/*	else if (word == "autoindex")
-	else if (word == "root")
+	else if (word == "autoindex")
+		autoindex_parse(new_args);
+/*	else if (word == "root")
 	else if (word == "max_body_size")
 */
 
