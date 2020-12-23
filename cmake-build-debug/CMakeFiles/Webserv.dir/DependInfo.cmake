@@ -4,11 +4,11 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/Users/ruslanosmaev/Desktop/Webserv/Server.cpp" "/Users/ruslanosmaev/Desktop/Webserv/cmake-build-debug/CMakeFiles/Webserv.dir/Server.cpp.o"
-  "/Users/ruslanosmaev/Desktop/Webserv/get_page_text.cpp" "/Users/ruslanosmaev/Desktop/Webserv/cmake-build-debug/CMakeFiles/Webserv.dir/get_page_text.cpp.o"
-  "/Users/ruslanosmaev/Desktop/Webserv/main.cpp" "/Users/ruslanosmaev/Desktop/Webserv/cmake-build-debug/CMakeFiles/Webserv.dir/main.cpp.o"
+  "/home/rinne/School42/5lvl/Webserv/Server.cpp" "/home/rinne/School42/5lvl/Webserv/cmake-build-debug/CMakeFiles/Webserv.dir/Server.cpp.o"
+  "/home/rinne/School42/5lvl/Webserv/get_page_text.cpp" "/home/rinne/School42/5lvl/Webserv/cmake-build-debug/CMakeFiles/Webserv.dir/get_page_text.cpp.o"
+  "/home/rinne/School42/5lvl/Webserv/main.cpp" "/home/rinne/School42/5lvl/Webserv/cmake-build-debug/CMakeFiles/Webserv.dir/main.cpp.o"
   )
-set(CMAKE_CXX_COMPILER_ID "AppleClang")
+set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH

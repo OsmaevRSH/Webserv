@@ -6,19 +6,23 @@
 
 #IncludeRegexTransform: 
 
-/Users/ruslanosmaev/Desktop/Webserv/Server.cpp
+/home/rinne/School42/5lvl/Webserv/Server.cpp
 Server.hpp
-/Users/ruslanosmaev/Desktop/Webserv/Server.hpp
+/home/rinne/School42/5lvl/Webserv/Server.hpp
 
-/Users/ruslanosmaev/Desktop/Webserv/Server.hpp
+/home/rinne/School42/5lvl/Webserv/Server.hpp
 master.hpp
-/Users/ruslanosmaev/Desktop/Webserv/master.hpp
+/home/rinne/School42/5lvl/Webserv/master.hpp
 
-/Users/ruslanosmaev/Desktop/Webserv/main.cpp
+/home/rinne/School42/5lvl/Webserv/get_page_text.cpp
+master.hpp
+/home/rinne/School42/5lvl/Webserv/master.hpp
+
+/home/rinne/School42/5lvl/Webserv/main.cpp
 Server.hpp
-/Users/ruslanosmaev/Desktop/Webserv/Server.hpp
+/home/rinne/School42/5lvl/Webserv/Server.hpp
 
-/Users/ruslanosmaev/Desktop/Webserv/master.hpp
+/home/rinne/School42/5lvl/Webserv/master.hpp
 fstream
 -
 iostream

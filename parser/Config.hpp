@@ -6,7 +6,7 @@
 /*   By: jeldora <jeldora@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/22 16:02:13 by jeldora           #+#    #+#             */
-/*   Updated: 2020/12/23 05:00:08 by jeldora          ###   ########.fr       */
+/*   Updated: 2020/12/23 18:07:48 by jeldora          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ typedef struct					s_everywhere
 	bool						autoindex;
 
 	s_everywhere();
-}								t_everywhere;
+	//s_everywhere(const s_everywhere &copy);
+}							t_everywhere;
 typedef struct					s_route
 {
 	std::vector<std::string>	allow_methods;
@@ -37,6 +38,7 @@ typedef struct					s_route
 	t_everywhere				ew;
 
 	s_route();
+	//s_route(const s_route &copy);
 }								t_route;
 typedef struct					s_server
 {
@@ -46,6 +48,7 @@ typedef struct					s_server
 	std::vector<t_route>		routes;
 	t_everywhere				ew;
 	s_server();
+	//s_server(const s_server &copy);
 }								t_server;
 typedef struct					s_args
 {
@@ -61,6 +64,7 @@ typedef struct					s_args
 	std::vector<std::string>	server_context;
 
 	s_args();
+	//s_args(const s_args &copy);
 }								t_args;
 
 class Config
@@ -69,7 +73,9 @@ class Config
 		std::vector<t_server>				_servers;		
 		std::map<int, std::string>			_error_pages; // Ключ - номер страницы. Значение - путь
 		t_everywhere						_ew;
-		void parse_server();
+
+private:
+	void parse_server();
 		void parse_route();
 		void parse(t_args args);
 		void select_dir(t_args &args, std::string word);
