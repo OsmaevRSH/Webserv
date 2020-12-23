@@ -6,7 +6,7 @@
 /*   By: jeldora <jeldora@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/22 16:31:55 by jeldora           #+#    #+#             */
-/*   Updated: 2020/12/23 00:41:36 by jeldora          ###   ########.fr       */
+/*   Updated: 2020/12/23 04:59:53 by jeldora          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ Config::Config(const std::string& path_to_config)
 	t_args args;
 	args.text			= get_page_text(path_to_config);
 	args.ew 			= &_ew;
-	args.fragment = args.text;
+	args.fragment 		= args.text;
 	parse(args);
 }
 
@@ -33,11 +33,13 @@ void	Config::parse(t_args args)
 		context = args.server_context;
 	else
 		context = args.main_context;
-	while ((word = get_next_word(args.fragment, args.rel_pos)).empty() == false)
+	word = get_next_word(args.fragment, args.rel_pos);
+	while (word.empty() == false)
 	{
 		if (std::find(context.begin(), context.end(), word) == context.end())
 			show_error(args);
 		select_dir(args, word);
+		word = get_next_word(args.fragment, args.rel_pos);
 	}
 
 }
@@ -47,13 +49,18 @@ std::string	get_next_word(std::string text, size_t &pos)
 	std::string ret_word;
 	size_t		word_len;
 
-	while (pos < text.length() && (	text[pos] == ' ' || 
-									text[pos] == '\n'))
+	word_len = 0;
+	while (pos < text.length() && text.at(pos) == ' ')
+	{
+		std::cout << pos << "\n";
 		pos++;
-	while (pos + word_len < text.length() && (text[pos + word_len] != ' ' || 
-											text[pos + word_len] != '{'|| 
-											text[pos + word_len] != '\n'))
+	}
+	while (pos + word_len < text.length() && text.at(pos + word_len) != ' ')
+	{
+		std::cout << text[pos + word_len];
 		word_len++;
+	}
+	std::cout << word_len;
 	ret_word = text.substr(pos, word_len);
 	pos += word_len;
 	return (ret_word);
@@ -130,12 +137,17 @@ void	Config::autoindex_parse(t_args args)
 		args.ew->autoindex = false;
 	else
 		show_error(args);
+	
+	std::cout << args.ew->autoindex << "\n";
 }
 void	Config::root_parse(t_args args)
 {
 	args.ew->root = get_next_word(args.fragment, args.rel_pos);
+	std::ifstream ifs(args.ew->root);
+	if (ifs.is_open() == false)
+		show_error(args);
 }
-void				show_error(t_args args)
+void				show_error(const t_args &args)
 {
 	size_t pos = args.base_pos + args.rel_pos;
 	std::string str = args.text;
@@ -149,7 +161,7 @@ void				show_error(t_args args)
 		c_pos = pos;
 	while ((l_pos = str.rfind('\n', pos)) != std::string::npos)
 		line++;
-	std::cout << "\nParser error: " << l_pos << " line, " << c_pos << " character.\n";
+	std::cout << "\nParser error: " << line << " line, " << c_pos << " character.\n";
 	exit(1);
 }
 
@@ -191,11 +203,3 @@ t_args::s_args()
 	route_context.push_back("server_name");
 	route_context.push_back("route");
 }
-
-
-
-
-
-
-
-

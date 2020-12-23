@@ -6,16 +6,20 @@
 /*   By: jeldora <jeldora@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/22 16:02:13 by jeldora           #+#    #+#             */
-/*   Updated: 2020/12/23 00:33:24 by jeldora          ###   ########.fr       */
+/*   Updated: 2020/12/23 05:00:08 by jeldora          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
-#include "master.hpp"
+//#include "master.hpp"
 #include <vector>
 #include <map>
 #include <algorithm>
 #include <string>
+#include <iostream>
+#include <fstream>
+#include <cstdlib>
+#include <cstring>
 
 typedef struct					s_everywhere
 {
@@ -80,5 +84,6 @@ class Config
 };
 
 std::string		get_next_word(std::string text, size_t &pos);
-void			show_error(t_args args);
+void			show_error(const t_args &args);
 std::string		dir_content(t_args args);
+std::string		get_page_text(const std::string &path_to_file);
