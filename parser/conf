@@ -7,7 +7,7 @@ server {
 		route {
         		autoindex on;
         		root ./conf;
-        		max_body_size 55;
+        		max_body_size 100;
         		index ./conf;
         	}
 	}

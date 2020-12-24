@@ -107,10 +107,10 @@ void Config::route_parse(t_args args) {
 	args.ew = &(route->ew);
 	std::cout << "route {\n";
 	parse(args);
-	if (args.server)
+	if (parent_route)
+		parent_route->routes.push_back(*route);
+	else if (args.server)
 		args.server->routes.push_back(*route);
-	else if (parent_route)
-		args.route->routes.push_back(*route);
 	else
 		show_error(args, "Nested directive error\n");
 	std::cout << "}\n";
