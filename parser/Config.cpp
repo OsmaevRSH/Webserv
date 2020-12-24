@@ -68,10 +68,10 @@ void Config::select_dir(t_args &args, std::string word) {
 	t_args new_args;
 	new_args.text = args.text;
 	new_args.ew = args.ew;
-	new_args.fragment = dir_content(args);
 	new_args.base_pos = args.base_pos + args.rel_pos;
-	if (word != "server" || word != "route")
-	args.rel_pos += new_args.fragment.length() + 2;
+	new_args.fragment = dir_content(args);
+	if (word != "server" && word != "route")
+		args.rel_pos += new_args.fragment.length();
 	if (word == "server")
 		server_parse(new_args);
 	else if (word == "route")
