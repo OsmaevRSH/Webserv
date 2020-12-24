@@ -12,7 +12,7 @@
 
 #include "Config.hpp"
 
-static std::string		block_directive(const std::string &text, const size_t &pos)
+static std::string		block_directive(const std::string &text, size_t &pos)
 {
 	size_t start = text.find('{', pos);
 	size_t end = start;
@@ -24,6 +24,7 @@ static std::string		block_directive(const std::string &text, const size_t &pos)
 		tmp_pos = text.rfind('{', --tmp_pos);
 		if (tmp_pos == start)
 		{
+			pos = end++;
 			start++;
 			end--;
 			return text.substr(start, end - start);
@@ -33,7 +34,7 @@ static std::string		block_directive(const std::string &text, const size_t &pos)
 	return std::string();
 }
 
-static size_t		simple_directive(const std::string &text, const size_t &pos)
+static size_t		simple_directive(const std::string &text, size_t &pos)
 {
 	size_t pos_end;
 
@@ -41,7 +42,7 @@ static size_t		simple_directive(const std::string &text, const size_t &pos)
 	return pos_end;
 }
 
-std::string				dir_content(t_args args)
+std::string				dir_content(t_args &args)
 {
 	size_t end_pos;
 	size_t simple = 0;

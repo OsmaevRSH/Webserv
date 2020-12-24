@@ -1,3 +1,8 @@
 server {
 	autoindex on;
+	autoindex on;
+	autoindex on;
+	autoindex on;
+	autoindex on;
 }
+error_page 404 403 402 ./conf;
