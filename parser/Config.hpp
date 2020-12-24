@@ -79,8 +79,11 @@ private:
 		void parse_route();
 		void parse(t_args args);
 		void select_dir(t_args &args, std::string word);
+		// Main
+		void error_page_parse(t_args args);
 		void server_parse(t_args args);
 		void route_parse(t_args args);
+		// Everywhere
 		void index_parse(t_args args);
 		void max_body_size_parse(t_args args);
 		void autoindex_parse(t_args args);

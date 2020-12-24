@@ -1,13 +1,5 @@
-autoindex on;
-autoindex on;
-autoindex on;
-autoindex on;
-root ./conf;
-autoindex on;
-root ./conf;
-index file1 file2 file3;
-autoindex on;
-root ./conf;
-autoindex on;
-root ./conf;
-autoindex on;
+    index .conf;
+    index .conf;
+    index .conf;
+    index .conf;
+ root ./conf;
