@@ -1,15 +1,3 @@
-
-    index .conf;
-    index .conf;
-    index .conf;
-    index .conf;
- root ./conf;
-
-
-
- root ./conf;
- root ./conf;
- root ./conf;
- root ./conf;
- root ./conf;
- root ./conf;
+server {
+	autoindex on;
+}

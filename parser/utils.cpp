@@ -14,19 +14,19 @@
 
 static std::string		block_directive(const std::string &text, const size_t &pos)
 {
-	size_t pos_1 = text.find('{', pos);
-	size_t pos_2 = pos_1;
+	size_t start = text.find('{', pos);
+	size_t end = start;
 	size_t tmp_pos;
 
-	tmp_pos = pos_2;
-	while ((pos_2 = text.find('}', pos_2)) != std::string::npos)
+	tmp_pos = end;
+	while ((end = text.find('}', end)) != std::string::npos)
 	{
 		tmp_pos = text.rfind('{', --tmp_pos);
-		if (tmp_pos == pos_1)
+		if (tmp_pos == start)
 		{
-			pos_1++;
-			pos_2--;
-			return text.substr(pos_1, pos_2 - pos_1);
+			start++;
+			end--;
+			return text.substr(start, end - start);
 		}
 	}
 
@@ -53,6 +53,7 @@ std::string				dir_content(t_args args)
 	if (block < simple)
 	{
 		std::string ret = block_directive(args.fragment, args.rel_pos);
+		return (ret);
 	}
 	else
 		end_pos = args.fragment.find(';', args.rel_pos);
