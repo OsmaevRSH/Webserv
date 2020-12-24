@@ -15,5 +15,6 @@
 int		main(void)
 {
 	Config conf("./conf");
+	std::cout << "\n";
 	return (0);
 }

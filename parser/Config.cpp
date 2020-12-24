@@ -32,7 +32,7 @@ void Config::parse(t_args args) {
 	std::vector<std::string> context;
 
 	if (args.route)
-		context = args.route_context;
+		context = args.route_context;//
 	else if (args.server)
 		context = args.server_context;
 	else
@@ -41,7 +41,7 @@ void Config::parse(t_args args) {
 	while (word.empty() == false)
 	{
 		if (std::find(context.begin(), context.end(), word) == context.end())
-			show_error(args);
+			show_error(args, "Invalid directive name or invalid context\n");
 		select_dir(args, word);
 		args.rel_pos++;
 		word = get_next_word(args.fragment, args.rel_pos);
@@ -69,6 +69,8 @@ void Config::select_dir(t_args &args, std::string word) {
 	new_args.text = args.text;
 	new_args.ew = args.ew;
 	new_args.base_pos = args.base_pos + args.rel_pos;
+	new_args.server = args.server;
+	new_args.route = args.route;
 	new_args.fragment = dir_content(args);
 	if (word != "server" && word != "route")
 		args.rel_pos += new_args.fragment.length();
@@ -100,13 +102,18 @@ void Config::server_parse(t_args args) {
 }
 void Config::route_parse(t_args args) {
 	t_route *route = new t_route;
+	t_route *parent_route = args.route;
 	args.route = route;
 	args.ew = &(route->ew);
+	std::cout << "route {\n";
 	parse(args);
 	if (args.server)
 		args.server->routes.push_back(*route);
-	else
+	else if (parent_route)
 		args.route->routes.push_back(*route);
+	else
+		show_error(args, "Nested directive error\n");
+	std::cout << "}\n";
 }
 void Config::error_page_parse(t_args args)
 {
@@ -122,10 +129,10 @@ void Config::error_page_parse(t_args args)
 		pages.push_back(page);
 	}
 	if (atoi(tmp.c_str()) != 0)
-		show_error(args);
+		show_error(args, "Expected file of error page\n");
 	std::ifstream ifs(tmp.c_str());
 	if (!ifs.is_open())
-		show_error(args);
+		show_error(args, "File is not exist\n");
 	while (!pages.empty())
 	{
 		_error_pages.insert(std::pair<int, std::string>(pages.back(), tmp));
@@ -140,7 +147,7 @@ void Config::index_parse(t_args args) {
 	while (!(word = get_next_word(args.fragment, args.rel_pos)).empty())
 		args.ew->index.push_back(word);
 	if (args.rel_pos != args.fragment.length())
-		show_error(args);
+		show_error(args, "Error in index directive\n");
 	for (int i = 0; i < args.ew->index.size(); i++)
 		std::cout << "Index " << i << ": " << args.ew->index[i] <<"\n";
 }
@@ -156,18 +163,18 @@ void Config::autoindex_parse(t_args args) {
 	else if (value == "off")
 		args.ew->autoindex = false;
 	else
-		show_error(args);
+		show_error(args, "Invalid autoindex mode\n");
 	if (args.rel_pos != args.fragment.length())
-		show_error(args);
+		show_error(args, "Autoindex error\n");
 	std::cout << "Autoindex:" << args.ew->autoindex << "\n";
 }
 void Config::root_parse(t_args args) {
 	args.ew->root = get_next_word(args.fragment, args.rel_pos);
 	std::ifstream ifs(args.ew->root.c_str());
 	if (!ifs.is_open())
-		show_error(args);
+		show_error(args, "Root folder is not exist\n");
 	if (args.rel_pos != args.fragment.length())
-		show_error(args);
+		show_error(args, "Root error\n");
 	std::cout << "Root:" << args.ew->root << "\n";
 }
 void Config::max_body_size_parse(t_args args) {
@@ -219,7 +226,7 @@ t_args::s_args() {
 	route_context.push_back("route");
 }
 // Other
-void show_error(const t_args &args) {
+void show_error(const t_args &args, const std::string &message) {
 	size_t pos = args.base_pos + args.rel_pos;
 	std::string str = args.text;
 	size_t line = 1;
@@ -243,5 +250,6 @@ void show_error(const t_args &args) {
 		l_pos--;
 	}
 	std::cout << "\nParser error: " << line << " line, " << c_pos << " character.\n";
+	std::cout << message;
 	exit(1);
 }

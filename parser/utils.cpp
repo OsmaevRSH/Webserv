@@ -15,22 +15,22 @@
 static std::string		block_directive(const std::string &text, size_t &pos)
 {
 	size_t start = text.find('{', pos);
-	size_t end = start;
-	size_t tmp_pos;
+	start++;
 
-	tmp_pos = end;
-	while ((end = text.find('}', end)) != std::string::npos)
-	{
-		tmp_pos = text.rfind('{', --tmp_pos);
-		if (tmp_pos == start)
+	int count = 1;
+	for (int i = 0; i < text.length(); ++i) {
+		if (text[start + i] == '{')
+			count++;
+		else if (text[start + i] == '}')
+			count--;
+		if (count == 0)
 		{
-			pos = end++;
-			start++;
-			end--;
-			return text.substr(start, end - start);
+			pos = start + i;
+			return text.substr(start, i);
 		}
-	}
 
+
+	}
 	return std::string();
 }
 
@@ -50,7 +50,7 @@ std::string				dir_content(t_args &args)
 	simple = args.fragment.find(';', args.rel_pos);
 	block = args.fragment.find('{', args.rel_pos);
 	if (simple == block)
-		show_error(args);
+		show_error(args, "Expected \'{\' or \';\'\n");
 	if (block < simple)
 	{
 		std::string ret = block_directive(args.fragment, args.rel_pos);

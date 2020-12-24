@@ -1,8 +1,15 @@
 server {
-	autoindex on;
+	route {
+		autoindex on;
+		root ./conf;
+		max_body_size 55;
+		index ./conf;
+		route {
+        		autoindex on;
+        		root ./conf;
+        		max_body_size 55;
+        		index ./conf;
+        	}
+	}
 }
 
-	autoindex off;
-error_page 404 403 402 ./conf;
-error_page 504 503 502 ./conf;
-index ./conf;
