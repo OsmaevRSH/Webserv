@@ -88,6 +88,21 @@ void Config::select_dir(t_args &args, std::string word) {
 		max_body_size_parse(new_args);
 	else if (word == "error_page")
 		error_page_parse(new_args);
+	else if (word == "ip") {
+		new_args.server->ip = string_parse(new_args);
+		std::cout << "Ip: " << new_args.server->ip << "\n";
+	}
+	else if (word == "server_name") {
+		new_args.server->server_name = string_parse(new_args);
+		std::cout << "Server_name: " << new_args.server->server_name << "\n";
+	}
+	else if (word == "port") {
+		new_args.server->port = atoi(string_parse(new_args).c_str());
+		std::cout << "Port: " << new_args.server->port << "\n";
+	}
+	else if (word == "allow")
+		allow_methods(new_args);
+
 }
 
 // Main
@@ -100,25 +115,6 @@ void Config::server_parse(t_args args) {
 	std::cout << "server {\n";
 	parse(args);
 	_servers.push_back(*server);
-	std::cout << "}\n";
-}
-void Config::route_parse(t_args args) {
-	t_route *route = new t_route;
-	t_route *parent_route = args.route;
-	route->block_args = args.block_args;
-	args.route = route;
-	args.ew = &(route->ew);
-	std::cout << "route ";
-	for (std::vector<std::string>::iterator i = route->block_args.begin(); i < route->block_args.end(); ++i)
-		std::cout << *i << " ";
-	std::cout << "{\n";
-	parse(args);
-	if (parent_route)
-		parent_route->routes.push_back(*route);
-	else if (args.server)
-		args.server->routes.push_back(*route);
-	else
-		show_error(args, "Nested directive error\n");
 	std::cout << "}\n";
 }
 void Config::error_page_parse(t_args args)
@@ -146,6 +142,39 @@ void Config::error_page_parse(t_args args)
 	}
 	for (std::map<int, std::string>::iterator i = _error_pages.begin(); i != _error_pages.end(); ++i)
 		std::cout << (*i).first << ":" << (*i).second << "\n";
+}
+
+// Route
+void Config::allow_methods(t_args args)
+{
+	std::string word;
+	while (!(word = get_next_word(args.fragment, args.rel_pos)).empty())
+		args.route->allow_methods.push_back(word);
+	if (args.rel_pos != args.fragment.length())
+		show_error(args, "Error in allow_methods directive\n");
+	for (int i = 0; i < args.route->allow_methods.size(); i++)
+		std::cout << "Allow methods: " << args.route->allow_methods[i] <<"\n";
+}
+
+// Server
+void Config::route_parse(t_args args) {
+	t_route *route = new t_route;
+	t_route *parent_route = args.route;
+	route->block_args = args.block_args;
+	args.route = route;
+	args.ew = &(route->ew);
+	std::cout << "route ";
+	for (std::vector<std::string>::iterator i = route->block_args.begin(); i < route->block_args.end(); ++i)
+		std::cout << *i << " ";
+	std::cout << "{\n";
+	parse(args);
+	if (parent_route)
+		parent_route->routes.push_back(*route);
+	else if (args.server)
+		args.server->routes.push_back(*route);
+	else
+		show_error(args, "Nested directive error\n");
+	std::cout << "}\n";
 }
 
 // Everywhere
@@ -228,10 +257,8 @@ t_args::s_args() {
 	route_context.push_back("max_body_size");
 	route_context.push_back("root");
 	route_context.push_back("autoindex");
-	route_context.push_back("ip");
-	route_context.push_back("port");
-	route_context.push_back("server_name");
 	route_context.push_back("route");
+	route_context.push_back("allow");
 }
 
 // Other
@@ -261,4 +288,13 @@ void show_error(const t_args &args, const std::string &message) {
 	std::cout << "\nParser error: " << line << " line, " << c_pos << " character.\n";
 	std::cout << message;
 	exit(1);
+}
+std::string string_parse(t_args args)
+{
+	std::string str = get_next_word(args.fragment, args.rel_pos);
+	if (str == "")
+		show_error(args, "Empty argument");
+	if (args.rel_pos != args.fragment.length())
+		show_error(args, "Excessive argument");
+	return str;
 }

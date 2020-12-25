@@ -90,6 +90,7 @@ private:
 		void max_body_size_parse(t_args args);
 		void autoindex_parse(t_args args);
 		void root_parse(t_args args);
+		void allow_methods(t_args args);
 	public:
 		Config(const std::string& path_to_config);
 };
@@ -99,3 +100,4 @@ void						show_error(const t_args &args, const std::string &message);
 std::string					dir_content(t_args &args);
 std::string					get_page_text(const std::string &path_to_file);
 std::vector<std::string>	pre_block_arg(const t_args &args);
+std::string 				string_parse(t_args args);
