@@ -1,5 +1,4 @@
-#ifndef WEBSERV_MASTER_HPP
-#define WEBSERV_MASTER_HPP
+#pragma once
 
 #include <fstream>
 #include <iostream>
@@ -13,6 +12,11 @@
 #include <fcntl.h>
 #include <map>
 
+// For parser
+#include <cstdlib>
+#include <cstring>
+#include <string>
+#include <algorithm>
+
 std::string			get_page_text(const std::string& path_to_file);
 
-#endif

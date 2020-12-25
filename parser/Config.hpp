@@ -10,16 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
-//#include "master.hpp"
-#include <vector>
-#include <map>
-#include <algorithm>
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <cstdlib>
-#include <cstring>
+#pragma once
+#include "../master.hpp"
 
 typedef struct					s_everywhere
 {
@@ -76,17 +68,15 @@ class Config
 		std::map<int, std::string>			_error_pages; // Ключ - номер страницы. Значение - путь
 		t_everywhere						_ew;
 
-private:
-	void parse_server();
+		void parse_server();
 		void parse_route();
 		void parse(t_args args);
 		void select_dir(t_args &args, std::string word);
-		// Main
-		void error_page_parse(t_args args);
 		void server_parse(t_args args);
 		void route_parse(t_args args);
+		void error_page_parse(t_args args);
+
 	public:
 		Config(const std::string& path_to_config);
 };
 
-std::string					get_page_text(const std::string &path_to_file);
