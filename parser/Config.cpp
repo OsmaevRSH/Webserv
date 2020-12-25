@@ -63,7 +63,6 @@ std::string get_next_word(std::string text, size_t &pos) {
 	pos += word_len;
 	return (ret_word);
 }
-
 void Config::select_dir(t_args &args, std::string word) {
 	t_args new_args;
 	new_args.text = args.text;
@@ -71,6 +70,7 @@ void Config::select_dir(t_args &args, std::string word) {
 	new_args.base_pos = args.base_pos + args.rel_pos;
 	new_args.server = args.server;
 	new_args.route = args.route;
+	new_args.block_args = pre_block_arg(args);
 	new_args.fragment = dir_content(args);
 	if (word != "server" && word != "route")
 		args.rel_pos += new_args.fragment.length();
@@ -92,6 +92,8 @@ void Config::select_dir(t_args &args, std::string word) {
 
 // Main
 void Config::server_parse(t_args args) {
+	if (!args.block_args.empty())
+		show_error(args, "Server directive must not have block-directive arguments\n");
 	t_server *server = new t_server;
 	args.server = server;
 	args.ew = &(server->ew);
@@ -103,9 +105,13 @@ void Config::server_parse(t_args args) {
 void Config::route_parse(t_args args) {
 	t_route *route = new t_route;
 	t_route *parent_route = args.route;
+	route->block_args = args.block_args;
 	args.route = route;
 	args.ew = &(route->ew);
-	std::cout << "route {\n";
+	std::cout << "route ";
+	for (std::vector<std::string>::iterator i = route->block_args.begin(); i < route->block_args.end(); ++i)
+		std::cout << *i << " ";
+	std::cout << "{\n";
 	parse(args);
 	if (parent_route)
 		parent_route->routes.push_back(*route);
@@ -141,6 +147,7 @@ void Config::error_page_parse(t_args args)
 	for (std::map<int, std::string>::iterator i = _error_pages.begin(); i != _error_pages.end(); ++i)
 		std::cout << (*i).first << ":" << (*i).second << "\n";
 }
+
 // Everywhere
 void Config::index_parse(t_args args) {
 	std::string word;
@@ -186,6 +193,7 @@ void Config::max_body_size_parse(t_args args) {
 	args.ew->max_body_size = value;
 	std::cout << "Max_body_size: " << value << "\n";
 }
+
 // Constructors
 t_server::s_server() { port = 0; }
 t_everywhere::s_everywhere() {
@@ -225,6 +233,7 @@ t_args::s_args() {
 	route_context.push_back("server_name");
 	route_context.push_back("route");
 }
+
 // Other
 void show_error(const t_args &args, const std::string &message) {
 	size_t pos = args.base_pos + args.rel_pos;

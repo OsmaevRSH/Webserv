@@ -12,6 +12,17 @@
 
 #include "Config.hpp"
 
+std::vector<std::string> 			pre_block_arg(const t_args &args)
+{
+	std::string text = args.fragment.substr(args.rel_pos + 1, args.fragment.find('{', args.rel_pos) - args.rel_pos - 1);
+	size_t pos = 0;
+	std::string word;
+	std::vector<std::string> ret;
+	while (!(word = get_next_word(text, pos)).empty())
+		ret.push_back(word);
+	return ret;
+}
+
 static std::string		block_directive(const std::string &text, size_t &pos)
 {
 	size_t start = text.find('{', pos);
@@ -28,18 +39,8 @@ static std::string		block_directive(const std::string &text, size_t &pos)
 			pos = start + i;
 			return text.substr(start, i);
 		}
-
-
 	}
 	return std::string();
-}
-
-static size_t		simple_directive(const std::string &text, size_t &pos)
-{
-	size_t pos_end;
-
-	pos_end = text.find(';', pos);
-	return pos_end;
 }
 
 std::string				dir_content(t_args &args)

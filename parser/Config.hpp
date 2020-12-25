@@ -33,6 +33,7 @@ typedef struct					s_everywhere
 }							t_everywhere;
 typedef struct					s_route
 {
+	std::vector<std::string>	block_args;
 	std::vector<std::string>	allow_methods;
 	std::vector<struct s_route>	routes;
 	t_everywhere				ew;
@@ -56,6 +57,7 @@ typedef struct					s_args
 	std::string					fragment;
 	size_t						base_pos;
 	size_t						rel_pos;
+	std::vector<std::string>	block_args;
 	t_everywhere				*ew;
 	t_route						*route;
 	t_server					*server;
@@ -92,7 +94,8 @@ private:
 		Config(const std::string& path_to_config);
 };
 
-std::string		get_next_word(std::string text, size_t &pos);
-void			show_error(const t_args &args, const std::string &message);
-std::string		dir_content(t_args &args);
-std::string		get_page_text(const std::string &path_to_file);
+std::string					get_next_word(std::string text, size_t &pos);
+void						show_error(const t_args &args, const std::string &message);
+std::string					dir_content(t_args &args);
+std::string					get_page_text(const std::string &path_to_file);
+std::vector<std::string>	pre_block_arg(const t_args &args);
