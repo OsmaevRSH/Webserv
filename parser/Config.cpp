@@ -48,21 +48,6 @@ void Config::parse(t_args args) {
 	}
 }
 
-std::string get_next_word(std::string text, size_t &pos) {
-	std::string ret_word;
-	size_t word_len;
-
-	word_len = 0;
-	while (pos < text.length() && strchr(" \n\t\v\r", text[pos]))
-		pos++;
-	while (pos + word_len < text.length() && !strchr(" \n\t\v\r", text[pos + word_len])) {
-		word_len++;
-	}
-	if (word_len != 0)
-		ret_word = text.substr(pos, word_len);
-	pos += word_len;
-	return (ret_word);
-}
 void Config::select_dir(t_args &args, std::string word) {
 	t_args new_args;
 	new_args.text = args.text;
@@ -104,8 +89,6 @@ void Config::select_dir(t_args &args, std::string word) {
 		allow_methods(new_args);
 
 }
-
-// Main
 void Config::server_parse(t_args args) {
 	if (!args.block_args.empty())
 		show_error(args, "Server directive must not have block-directive arguments\n");
@@ -143,8 +126,6 @@ void Config::error_page_parse(t_args args)
 	for (std::map<int, std::string>::iterator i = _error_pages.begin(); i != _error_pages.end(); ++i)
 		std::cout << (*i).first << ":" << (*i).second << "\n";
 }
-
-// Route
 void Config::allow_methods(t_args args)
 {
 	std::string word;
@@ -155,8 +136,6 @@ void Config::allow_methods(t_args args)
 	for (int i = 0; i < args.route->allow_methods.size(); i++)
 		std::cout << "Allow methods: " << args.route->allow_methods[i] <<"\n";
 }
-
-// Server
 void Config::route_parse(t_args args) {
 	t_route *route = new t_route;
 	t_route *parent_route = args.route;
@@ -176,8 +155,6 @@ void Config::route_parse(t_args args) {
 		show_error(args, "Nested directive error\n");
 	std::cout << "}\n";
 }
-
-// Everywhere
 void Config::index_parse(t_args args) {
 	std::string word;
 	while (!(word = get_next_word(args.fragment, args.rel_pos)).empty())
@@ -297,4 +274,19 @@ std::string string_parse(t_args args)
 	if (args.rel_pos != args.fragment.length())
 		show_error(args, "Excessive argument");
 	return str;
+}
+std::string get_next_word(std::string text, size_t &pos) {
+	std::string ret_word;
+	size_t word_len;
+
+	word_len = 0;
+	while (pos < text.length() && strchr(" \n\t\v\r", text[pos]))
+		pos++;
+	while (pos + word_len < text.length() && !strchr(" \n\t\v\r", text[pos + word_len])) {
+		word_len++;
+	}
+	if (word_len != 0)
+		ret_word = text.substr(pos, word_len);
+	pos += word_len;
+	return (ret_word);
 }
