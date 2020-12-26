@@ -12,6 +12,10 @@
 
 #include "Config.hpp"
 
+typedef ConfigParser::t_args t_args;
+typedef ConfigParser::t_everywhere t_everywhere;
+typedef ConfigParser::t_route t_route;
+
 // Utils:
 static void 					show_error(const t_args &args, const std::string &message) {
 	size_t pos = args.base_pos + args.rel_pos;
@@ -114,8 +118,8 @@ static void 					allow_methods_parse(t_args args)
 	std::string word;
 	while (!(word = get_next_word(args.fragment, args.rel_pos)).empty())
 		args.route->allow_methods.push_back(word);
-	for (int i = 0; i < args.route->allow_methods.size(); i++)
-		std::cout << "Allow methods: " << args.route->allow_methods[i] <<"\n";
+//	for (int i = 0; i < args.route->allow_methods.size(); i++)
+//		std::cout << "Allow methods: " << args.route->allow_methods[i] <<"\n";
 	/*
 	 * Сделать проверку на наличие существование этих методов!
 	 */
@@ -126,8 +130,8 @@ static void 					index_parse(t_args args) {
 		args.ew->index.push_back(word);
 	if (args.rel_pos != args.fragment.length())
 		show_error(args, "Error in index directive\n");
-	for (int i = 0; i < args.ew->index.size(); i++)
-		std::cout << "Index " << i << ": " << args.ew->index[i] <<"\n";
+//	for (int i = 0; i < args.ew->index.size(); i++)
+//		std::cout << "Index " << i << ": " << args.ew->index[i] <<"\n";
 }
 static void 					autoindex_parse(t_args args) {
 	std::string value;
@@ -144,7 +148,7 @@ static void 					autoindex_parse(t_args args) {
 		show_error(args, "Invalid autoindex mode\n");
 	if (args.rel_pos != args.fragment.length())
 		show_error(args, "Autoindex error\n");
-	std::cout << "Autoindex:" << args.ew->autoindex << "\n";
+//	std::cout << "Autoindex:" << args.ew->autoindex << "\n";
 }
 static void 					root_parse(t_args args) {
 	args.ew->root = get_next_word(args.fragment, args.rel_pos);
@@ -153,7 +157,7 @@ static void 					root_parse(t_args args) {
 		show_error(args, "Root folder is not exist\n");
 	if (args.rel_pos != args.fragment.length())
 		show_error(args, "Root error\n");
-	std::cout << "Root:" << args.ew->root << "\n";
+//	std::cout << "Root:" << args.ew->root << "\n";
 }
 static void 					max_body_size_parse(t_args args) {
 	int value;
@@ -162,7 +166,7 @@ static void 					max_body_size_parse(t_args args) {
 	tmp = get_next_word(args.fragment, args.rel_pos);
 	value = atoi(tmp.c_str());
 	args.ew->max_body_size = value;
-	std::cout << "Max_body_size: " << value << "\n";
+//	std::cout << "Max_body_size: " << value << "\n";
 }
 
 // Class parse functions:
@@ -214,15 +218,15 @@ void Config::					select_dir(t_args &args, std::string word) {
 		error_page_parse(new_args);
 	else if (word == "ip") {
 		new_args.server->ip = string_parse(new_args);
-		std::cout << "Ip: " << new_args.server->ip << "\n";
+//		std::cout << "Ip: " << new_args.server->ip << "\n";
 	}
 	else if (word == "server_name") {
 		new_args.server->server_name = string_parse(new_args);
-		std::cout << "Server_name: " << new_args.server->server_name << "\n";
+//		std::cout << "Server_name: " << new_args.server->server_name << "\n";
 	}
 	else if (word == "port") {
 		new_args.server->port = atoi(string_parse(new_args).c_str());
-		std::cout << "Port: " << new_args.server->port << "\n";
+//		std::cout << "Port: " << new_args.server->port << "\n";
 	}
 	else if (word == "allow")
 		allow_methods_parse(new_args);
@@ -233,10 +237,10 @@ void Config::					server_parse(t_args args) {
 	t_server *server = new t_server;
 	args.server = server;
 	args.ew = &(server->ew);
-	std::cout << "server {\n";
+//	std::cout << "server {\n";
 	parse(args);
 	_servers.push_back(*server);
-	std::cout << "}\n";
+//	std::cout << "}\n";
 }
 void Config::					error_page_parse(t_args args)
 {
@@ -261,8 +265,8 @@ void Config::					error_page_parse(t_args args)
 		_error_pages.insert(std::pair<int, std::string>(pages.back(), tmp));
 		pages.pop_back();
 	}
-	for (std::map<int, std::string>::iterator i = _error_pages.begin(); i != _error_pages.end(); ++i)
-		std::cout << (*i).first << ":" << (*i).second << "\n";
+//	for (std::map<int, std::string>::iterator i = _error_pages.begin(); i != _error_pages.end(); ++i)
+//		std::cout << (*i).first << ":" << (*i).second << "\n";
 }
 void Config::					route_parse(t_args args) {
 	t_route *route = new t_route;
@@ -270,10 +274,10 @@ void Config::					route_parse(t_args args) {
 	route->block_args = args.block_args;
 	args.route = route;
 	args.ew = &(route->ew);
-	std::cout << "route ";
-	for (std::vector<std::string>::iterator i = route->block_args.begin(); i < route->block_args.end(); ++i)
-		std::cout << *i << " ";
-	std::cout << "{\n";
+//	std::cout << "route ";
+//	for (std::vector<std::string>::iterator i = route->block_args.begin(); i < route->block_args.end(); ++i)
+//		std::cout << *i << " ";
+//	std::cout << "{\n";
 	parse(args);
 	if (parent_route)
 		parent_route->routes.push_back(*route);
@@ -281,7 +285,7 @@ void Config::					route_parse(t_args args) {
 		args.server->routes.push_back(*route);
 	else
 		show_error(args, "Nested directive error\n");
-	std::cout << "}\n";
+//	std::cout << "}\n";
 }
 
 // Constructors
