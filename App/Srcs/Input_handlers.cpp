@@ -99,3 +99,8 @@ void Input_handlers::Map_init()
 	_config_list.insert(std::pair<std::string, std::string &>("User-Agent", _handlers.User_Agent));
 	_config_list.insert(std::pair<std::string, std::string &>("WWW-Authenticate", _handlers.WWW_Authenticate));
 }
+
+const t_headers &Input_handlers::getHandlers() const
+{
+	return _handlers;
+}
