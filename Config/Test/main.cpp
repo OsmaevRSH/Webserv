@@ -14,7 +14,7 @@
 
 int		main(void)
 {
-	Config conf("./conf");
+	Config conf("./Test/conf");
 	std::cout << "\n";
 	return (0);
 }

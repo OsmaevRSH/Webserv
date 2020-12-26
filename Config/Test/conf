@@ -5,19 +5,19 @@ server   {
 
 	route / {
 		autoindex on;
-		root ./conf;
+		root ./Test/conf;
 		max_body_size 55;
-		index ./conf;
+		index ./Test/conf;
 		route /html/page {
         		autoindex on;
-        		root ./dir;
+        		root ./Test/dir;
         		max_body_size 100;
-        		index ./conf;
+        		index ./Test/conf;
         		route /html/page/var/ {
                         		autoindex on;
-                        		root ./dir;
+                        		root ./Test/dir;
                         		max_body_size 666;
-                        		index ./conf;
+                        		index ./Test/conf;
         allow method1 method3 method2 asdf asdfasdf asdfasdf    asdf ;
                         	}
         	}
@@ -25,6 +25,6 @@ server   {
 }
 
         		autoindex on;
-        		root ./dir;
+        		root ./Test/dir;
         		max_body_size 100;
-        		index ./conf;
+        		index ./Test/conf;
