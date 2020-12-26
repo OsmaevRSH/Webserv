@@ -61,6 +61,17 @@ typedef struct					s_args
 	//s_args(const s_args &copy);
 }								t_args;
 
+namespace ConfigHandler
+{
+	typedef struct					s_params
+	{
+
+	}								t_params;
+}
+
+
+
+
 class Config
 {
 	private:
@@ -82,6 +93,7 @@ class Config
 		const std::map<int, std::string> &getErrorPages() const;
 		const t_everywhere &getEw() const;
 
+		Handler(t_);
 	// Вернуть вектор с серверами
 };
 

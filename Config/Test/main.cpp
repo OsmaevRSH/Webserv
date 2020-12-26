@@ -15,6 +15,7 @@
 int		main(void)
 {
 	Config conf("./Test/conf");
+	std::cout <<  "\n" << conf.getServers().front().ip << "\n";
 	std::cout << "\n";
 	return (0);
 }
