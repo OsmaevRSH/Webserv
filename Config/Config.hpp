@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #pragma once
-#include "../master.hpp"
+#include "master.hpp"
 
 typedef struct					s_everywhere
 {
