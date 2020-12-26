@@ -81,7 +81,7 @@ namespace ConfigHandler
 class Config
 {
 	private:
-		std::vector<t_server>				_servers;
+		std::vector<ConfigParser::t_server>				_servers;
 		std::map<int, std::string>			_error_pages; // Ключ - номер страницы. Значение - путь
 		ConfigParser::t_everywhere			_ew;
 
@@ -95,7 +95,7 @@ class Config
 
 	public:
 		Config(const std::string& path_to_config);
-		const std::vector<t_server> &getServers() const;
+		const std::vector<ConfigParser::t_server> &getServers() const;
 		const std::map<int, std::string> &getErrorPages() const;
 		const ConfigParser::t_everywhere &getEw() const;
 

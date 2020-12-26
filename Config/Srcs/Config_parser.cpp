@@ -12,9 +12,10 @@
 
 #include "Config.hpp"
 
-typedef ConfigParser::t_args t_args;
-typedef ConfigParser::t_everywhere t_everywhere;
-typedef ConfigParser::t_route t_route;
+typedef ConfigParser::t_args 			t_args;
+typedef ConfigParser::t_everywhere 		t_everywhere;
+typedef ConfigParser::t_route 			t_route;
+typedef ConfigParser::t_server 			t_server;
 
 // Utils:
 static void 					show_error(const t_args &args, const std::string &message) {
