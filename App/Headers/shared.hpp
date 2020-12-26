@@ -19,7 +19,7 @@
 #include <string>
 #include <algorithm>
 
-typedef struct	s_handlers
+typedef struct	s_headers
 {
 	std::string Accept_Charsets;
 	std::string Accept_Language;
@@ -39,7 +39,7 @@ typedef struct	s_handlers
 	std::string Transfer_Encoding;
 	std::string User_Agent;
 	std::string WWW_Authenticate;
-}				t_handlers;
+}				t_headers;
 
 std::string			get_page_text(const std::string& path_to_file);
 
