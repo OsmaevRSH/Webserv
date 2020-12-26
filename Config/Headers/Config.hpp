@@ -36,21 +36,16 @@ namespace ConfigParser
 		s_route();
 		//s_route(const s_route &copy);
 	}								t_route;
-}
-
-typedef struct					s_server
-{
-	std::string 				ip;
-	int							port;
-	std::string					server_name;
-	std::vector<ConfigParser::t_route>		routes;
-	ConfigParser::t_everywhere				ew;
-	s_server();
-	//s_server(const s_server &copy);
-}								t_server;
-
-namespace ConfigParser
-{
+	typedef struct					s_server
+	{
+		std::string 				ip;
+		int							port;
+		std::string					server_name;
+		std::vector<ConfigParser::t_route>		routes;
+		ConfigParser::t_everywhere				ew;
+		s_server();
+		//s_server(const s_server &copy);
+	}								t_server;
 	typedef struct					s_args
 	{
 		std::string					text;
