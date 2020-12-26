@@ -1,3 +1,0 @@
-/home/rinne/School42/5lvl/Webserv/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/rinne/School42/5lvl/Webserv/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/rinne/School42/5lvl/Webserv/cmake-build-debug/CMakeFiles/Webserv.dir
