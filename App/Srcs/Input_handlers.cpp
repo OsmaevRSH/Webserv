@@ -1,4 +1,4 @@
-#include "../Headers/Input_handlers.hpp"
+#include "Input_handlers.hpp"
 
 const std::string &Input_handlers::getType() const
 {

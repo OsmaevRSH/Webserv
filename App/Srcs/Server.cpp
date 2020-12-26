@@ -1,7 +1,7 @@
-#include "../Headers/Server.hpp"
+#include "Server.hpp"
 
 //Конструктор
-Server::Server(const std::vector<std::map<std::string, std::string> > &servers_config, int family, int type, int protocol)
+Server::Server(const std::vector<t_server> &servers_config, int family, int type, int protocol)
 		: _family(family), _type(type), _protocol(protocol),
 		_master_socket_fd(0), _servers_config(servers_config),
 		_count_servers(servers_config.size())
@@ -62,8 +62,8 @@ void Server::Bind()
 	{
 		bzero(&addr, sizeof(addr));
 		addr.sin_family = _family;
-		addr.sin_port = htons(std::stoi(_servers_config[i]["port"])); //порт сервера
-		addr.sin_addr.s_addr = inet_addr((_servers_config[i]["address"]).c_str()); //IP адрес сервера
+		addr.sin_port = htons(_servers_config[i].port); //порт сервера
+		addr.sin_addr.s_addr = inet_addr((_servers_config[i].ip).c_str()); //IP адрес сервера
 
 		int opt = 1;
 		setsockopt(_master_socket_fd[i], SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)); //Разрешение повторного использования порт+IP для сервера
@@ -237,7 +237,6 @@ void Server::Act_if_client_fd_changed(std::vector<int>::iterator &Iter)
 	}
 	else
 	{
-		std::cout << buf;
 		Input_handlers inputHandlers(buf);
 		inputHandlers.output();
 		shutdown(*Iter, SHUT_RD); //разрый соединенеия на чтение

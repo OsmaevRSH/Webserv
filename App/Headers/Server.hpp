@@ -2,6 +2,7 @@
 
 #include "Input_handlers.hpp"
 #include "master.hpp"
+#include "Config.hpp"
 
 class Server
 {
@@ -12,7 +13,7 @@ class Server
 		int _count_servers;
 		std::vector<int> _master_socket_fd;
 		std::vector<int> _client_socket_fd;
-		std::vector<std::map<std::string, std::string> > _servers_config;
+		std::vector<t_server> _servers_config;
 
 		void Socket();
 		void Bind();
@@ -27,7 +28,7 @@ class Server
 		void Accept_if_serv_fd_changed(fd_set &);
 		void Act_if_client_fd_changed(std::vector<int>::iterator &);
 	public:
-		explicit Server(const std::vector<std::map<std::string, std::string> > &servers_config, int family = AF_INET, int type = SOCK_STREAM, int protocol = 0);
+		explicit Server(const std::vector<t_server> &servers_config, int family = AF_INET, int type = SOCK_STREAM, int protocol = 0);
 		Server(const Server &);
 		~Server();
 		Server &operator=(const Server &);

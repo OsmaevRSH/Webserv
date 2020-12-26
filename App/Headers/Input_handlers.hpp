@@ -21,7 +21,7 @@ class Input_handlers
 		const std::string &getProtocolType() const;
 		void output() const
 		{
-			std::cout << "Type: " << _type << "\nUrl: " << _url
+			std::cout << "\nType: " << _type << "\nUrl: " << _url
 			   << "\nProtocol_type: " << _protocol_type << std::endl;
 			for (std::map<std::string, std::string>::const_iterator it = _variable_handlers.cbegin(); it != _variable_handlers.cend(); ++it)
 			{
