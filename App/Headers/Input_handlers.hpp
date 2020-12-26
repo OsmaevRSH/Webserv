@@ -8,11 +8,10 @@ class Input_handlers
 		std::string _type;
 		std::string _url;
 		std::string _protocol_type;
+		void Map_init();
 		std::map<std::string, std::string> _variable_handlers;
-		t_handlers _handlers;
-		const std::map<std::string, std::string &> _config_list = {
-				{"Accept-Charsets", _handlers};
-		};
+		t_headers _handlers;
+		std::map<std::string, std::string &> _config_list;
 	public:
 		explicit Input_handlers(const char *);
 		Input_handlers(const Input_handlers &);
