@@ -63,7 +63,7 @@ Input_handlers::Input_handlers(const char *input)
 		if ((save_it1 = _variable_handlers.find(it1->first)) != _variable_handlers.end())
 		{
 			it1->second = save_it1->second;
-#ifdef DEBUG
+#ifdef SERVER_DEBUG
 			std::cout << save_it1->first << ": " << save_it1->second << std::endl;
 #endif
 		}

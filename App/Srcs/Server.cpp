@@ -232,7 +232,7 @@ void Server::Act_if_client_fd_changed(std::vector<int>::iterator &Iter)
 	else
 	{
 		Input_handlers inputHandlers(buf);
-#ifdef DEBUG
+#ifdef SERVER_DEBUG
 		inputHandlers.output();
 #endif
 		shutdown(*Iter, SHUT_RD); //разрый соединенеия на чтение
