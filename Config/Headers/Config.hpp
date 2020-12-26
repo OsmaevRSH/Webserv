@@ -13,7 +13,6 @@
 #pragma once
 #include "shared.hpp"
 
-
 namespace ConfigParser
 {
 	typedef struct					s_everywhere

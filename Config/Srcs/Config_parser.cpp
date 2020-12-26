@@ -168,7 +168,6 @@ static void 					root_parse(t_args args) {
 	std::cout << "Root:" << args.ew->root << "\n";
 #endif
 }
-
 static void 					max_body_size_parse(t_args args) {
 	int value;
 	std::string tmp;
