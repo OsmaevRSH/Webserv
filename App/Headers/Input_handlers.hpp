@@ -1,6 +1,6 @@
 #pragma once
 
-#include "master.hpp"
+#include "shared.hpp"
 
 class Input_handlers
 {
@@ -9,6 +9,10 @@ class Input_handlers
 		std::string _url;
 		std::string _protocol_type;
 		std::map<std::string, std::string> _variable_handlers;
+		t_handlers _handlers;
+		const std::map<std::string, std::string &> _config_list = {
+				{"Accept-Charsets", _handlers};
+		};
 	public:
 		explicit Input_handlers(const char *);
 		Input_handlers(const Input_handlers &);

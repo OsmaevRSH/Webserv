@@ -24,12 +24,13 @@ Input_handlers &Input_handlers::operator=(const Input_handlers &copy)
 	_protocol_type = copy._protocol_type;
 	_type = copy._type;
 	_url = copy._url;
+	_handlers = copy._handlers;
 	return *this;
 }
 
 Input_handlers::Input_handlers(const Input_handlers &copy)
 		: _url(copy._url), _type(copy._type),
-		_protocol_type(copy._protocol_type) {}
+		_protocol_type(copy._protocol_type), _handlers(copy._handlers) {}
 
 Input_handlers::Input_handlers(const char *input)
 {

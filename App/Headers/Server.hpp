@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Input_handlers.hpp"
-#include "master.hpp"
+#include "shared.hpp"
 #include "Config.hpp"
 
 class Server
