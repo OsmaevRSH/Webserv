@@ -173,23 +173,17 @@ void Server::Add_new_fd_to_set(fd_set &readfds, std::vector<int>::iterator Iter)
 	}
 	for (Iter = _client_socket_fd.begin();
 		 Iter != _client_socket_fd.end(); ++Iter)
-	{
 		FD_SET(*Iter, &readfds); //добавляем клиентсикие дескрипторы в сет
-	}
 }
 
 void Server::Search_max_fd(int &max_fd)
 {
 	if (!_client_socket_fd.empty())
-	{
 		max_fd = *(std::max_element(_client_socket_fd.begin(), _client_socket_fd.end())); //находим максимальный дескриптор среди клиентский
-	}
 	for (int i = 0; i < _count_servers; ++i)
 	{ //проверяем нет ли среди серверных дескрипотора больше, чем максимальный
 		if (_master_socket_fd[i] > max_fd)
-		{
 			max_fd = _master_socket_fd[i];
-		}
 	}
 }
 
@@ -238,7 +232,9 @@ void Server::Act_if_client_fd_changed(std::vector<int>::iterator &Iter)
 	else
 	{
 		Input_handlers inputHandlers(buf);
+#ifdef DEBUG
 		inputHandlers.output();
+#endif
 		shutdown(*Iter, SHUT_RD); //разрый соединенеия на чтение
 		std::string file = get_page_text("index.html");
 		send(*Iter, ("HTTP/1.1 200 OK\r\nContent-type: text/html\r\n\r\n" +
