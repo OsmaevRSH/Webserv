@@ -78,5 +78,6 @@ class Config
 
 	public:
 		Config(const std::string& path_to_config);
+		// Вернуть вектор с серверами
 };
 

@@ -3,17 +3,17 @@ server   {
 	port 5555;
 	server_name "NameServer.com";
 
-	route dfg fdsg dsfg {
+	route / {
 		autoindex on;
 		root ./conf;
 		max_body_size 55;
 		index ./conf;
-		route {
+		route /html/page {
         		autoindex on;
         		root ./dir;
         		max_body_size 100;
         		index ./conf;
-        		route {
+        		route /html/page/var/ {
                         		autoindex on;
                         		root ./dir;
                         		max_body_size 666;
