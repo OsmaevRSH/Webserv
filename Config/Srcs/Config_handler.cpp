@@ -12,6 +12,7 @@
 
 #include "Config.hpp"
 
+// Рабочяя структура для обработчика
 typedef ConfigHandler::t_params t_params;
 
 /*
