@@ -1,10 +1,11 @@
 #include "Server.hpp"
 
 //Конструктор
-Server::Server(const std::vector<t_server> &servers_config, int family, int type, int protocol)
+Server::Server(const std::vector<ConfigParser::t_server> &servers_config, Config &config,  int family, int type, int protocol)
 		: _family(family), _type(type), _protocol(protocol),
 		_master_socket_fd(0), _servers_config(servers_config),
-		_count_servers(servers_config.size())
+		_count_servers(servers_config.size()),
+		_config(config)
 {
 }
 
@@ -14,7 +15,8 @@ Server::Server(const Server &copy)
 		_master_socket_fd(copy._master_socket_fd),
 		_client_socket_fd(copy._client_socket_fd),
 		_servers_config(copy._servers_config),
-		_count_servers(copy._count_servers)
+		_count_servers(copy._count_servers),
+		_config(copy._config)
 {
 }
 
@@ -33,6 +35,7 @@ Server &Server::operator=(const Server &copy)
 	_client_socket_fd = copy._client_socket_fd;
 	_servers_config = copy._servers_config;
 	_count_servers = copy._count_servers;
+	_config = copy._config;
 	return *this;
 }
 
@@ -74,6 +77,9 @@ void Server::Bind()
 			perror("Create bind error");
 			exit(EXIT_FAILURE);
 		}
+#ifdef SERVER_DEBUG
+		std::cout << "Server[" << i << "]:[" << _servers_config[i].ip << ":" << _servers_config[i].port << "]" << std::endl;
+#endif
 	}
 }
 
@@ -102,7 +108,6 @@ void Server::Accept(int fd)
 		exit(EXIT_FAILURE);
 	}
 	Set_non_blocked(new_client_fd); //Перевод дескриптора в неблокирующий режим
-	// std::cout << "New client connect... " << new_client_fd << std::endl;
 	_client_socket_fd.push_back(new_client_fd); //Добавляем нового клиента в список всех клиентов
 }
 
@@ -226,7 +231,6 @@ void Server::Act_if_client_fd_changed(std::vector<int>::iterator &Iter)
 	{ //читаем и в случае если пришло пустое сообщение заходим в if и инициируем разрый соединения
 		shutdown(*Iter, SHUT_RDWR); //разрыв соединения
 		close(*Iter); //закрытие дескриптора
-		// std::cout << "Close connection... " << *Iter << std::endl;
 		Iter = _client_socket_fd.erase(Iter); //удаление дескриптора из пула клиентских дескрипторов
 	}
 	else
@@ -236,13 +240,12 @@ void Server::Act_if_client_fd_changed(std::vector<int>::iterator &Iter)
 		inputHandlers.output();
 #endif
 		shutdown(*Iter, SHUT_RD); //разрый соединенеия на чтение
-		std::string file = get_page_text("index.html");
+		std::string file = _config.Handler(inputHandlers.getHandlers(), inputHandlers);
 		send(*Iter, ("HTTP/1.1 200 OK\r\nContent-type: text/html\r\n\r\n" +
 					 file).c_str(),
 				44 + file.size(), 0); // передача вообщения клиенту
 		shutdown(*Iter, SHUT_WR); //разрыв соединения на передачу
 		close(*Iter); //закрытие клиентского дескриптора
-		// std::cout << "Send and close connection... " << *Iter << std::endl;
 		Iter = _client_socket_fd.erase(Iter); //удаление дескриптора из пула клиентских дескрипторов
 	}
 }

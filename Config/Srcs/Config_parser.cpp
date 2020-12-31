@@ -334,7 +334,6 @@ const std::map<int, std::string> &Config::getErrorPages() const {
 const t_everywhere &Config::getEw() const {
 	return _ew;
 }
-
 t_server::			s_server() { port = 0; }
 t_everywhere::		s_everywhere() {
 	max_body_size = 0;

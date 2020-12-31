@@ -92,6 +92,7 @@ void Input_handlers::Map_init()
 	_config_list.insert(std::pair<std::string, std::string &>("Date", _handlers.Date));
 	_config_list.insert(std::pair<std::string, std::string &>("Host", _handlers.Host));
 	_config_list.insert(std::pair<std::string, std::string &>("Last-Modified", _handlers.Last_Modified));
+	_config_list.insert(std::pair<std::string, std::string &>("Location", _handlers.Location));
 	_config_list.insert(std::pair<std::string, std::string &>("Referer", _handlers.Referer));
 	_config_list.insert(std::pair<std::string, std::string &>("Retry-After", _handlers.Retry_After));
 	_config_list.insert(std::pair<std::string, std::string &>("Server", _handlers.Server));
@@ -100,7 +101,7 @@ void Input_handlers::Map_init()
 	_config_list.insert(std::pair<std::string, std::string &>("WWW-Authenticate", _handlers.WWW_Authenticate));
 }
 
-const t_headers &Input_handlers::getHandlers() const
+t_headers &Input_handlers::getHandlers()
 {
 	return _handlers;
 }

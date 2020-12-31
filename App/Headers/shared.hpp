@@ -13,7 +13,7 @@
 #include <map>
 #include <ostream>
 
-//#define SERVER_DEBUG
+#define SERVER_DEBUG
 //#define CONFIG_DEBUG
 
 // For parser

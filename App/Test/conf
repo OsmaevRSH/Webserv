@@ -1,11 +1,36 @@
 server   {
-	ip 192.168.1.66;
+	ip 127.0.0.1;
 	port 5555;
 	server_name NameServer.com;
-}
 
-server   {
-	ip 127.0.0.1;
-	port 8000;
-	server_name NameServer.com;
+	route / {
+		autoindex on;
+		root ./App/Html;
+		max_body_size 55;
+		index index1.html;
+		route /html {
+			autoindex on;
+			root ./App/Html;
+			max_body_size 100;
+			index index2.html;
+			route /html/ttt {
+				autoindex on;
+				root ./App/Html;
+				max_body_size 100;
+				index index3.html;
+			}
+		}
+	}
+	route /abs {
+		autoindex on;
+		root ./App/Html;
+		max_body_size 55;
+		index index1.html;
+		route /html {
+			autoindex on;
+			root ./App/Html;
+			max_body_size 100;
+			index index2.html;
+		}
+	}
 }

@@ -3,8 +3,8 @@
 
 int main()
 {
-	Config config("./Test/conf");
-	Server test(config.getServers());
-	test.server_start();
+	Config config("./App/Test/conf");
+	Server server(config.getServers(), config);
+	server.server_start();
 	return 0;
 }

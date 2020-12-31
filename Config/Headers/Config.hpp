@@ -12,6 +12,7 @@
 
 #pragma once
 #include "shared.hpp"
+#include "Input_handlers.hpp"
 
 namespace ConfigParser
 {
@@ -81,8 +82,8 @@ class Config
 {
 	private:
 		std::vector<ConfigParser::t_server>				_servers;
-		std::map<int, std::string>			_error_pages; // Ключ - номер страницы. Значение - путь
-		ConfigParser::t_everywhere			_ew;
+		std::map<int, std::string>						_error_pages; // Ключ - номер страницы. Значение - путь
+		ConfigParser::t_everywhere						_ew;
 
 		void parse_server();
 		void parse_route();
@@ -92,13 +93,18 @@ class Config
 		void route_parse(ConfigParser::t_args args);
 		void error_page_parse(ConfigParser::t_args args);
 
+		//func for config_handlers
+		ConfigParser::t_server get_server(t_headers &);
+		ConfigParser::t_route *simple_route(std::vector<ConfigParser::t_route> &, t_headers &, Input_handlers &);
+		ConfigParser::t_route *full_match_route(std::vector<ConfigParser::t_route> &, t_headers &, Input_handlers &);
+		void route_sort(std::vector<ConfigParser::t_route> &);
+		std::string route_searcher(std::vector<ConfigParser::t_route> &routes, t_headers &headers, Input_handlers &);
 	public:
 		Config(const std::string& path_to_config);
 		const std::vector<ConfigParser::t_server> &getServers() const;
 		const std::map<int, std::string> &getErrorPages() const;
 		const ConfigParser::t_everywhere &getEw() const;
 
-		std::string Handler(t_headers headers);
-	// Вернуть вектор с серверами
+		std::string Handler(t_headers &headers, Input_handlers &handlers);
 };
 

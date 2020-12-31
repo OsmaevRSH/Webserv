@@ -9,22 +9,17 @@ server   {
 		max_body_size 55;
 		index ./Test/conf;
 		route /html/page {
-        		autoindex on;
-        		root ./Test/dir;
-        		max_body_size 100;
-        		index ./Test/conf;
-        		route /html/page/var/ {
-                        		autoindex on;
-                        		root ./Test/dir;
-                        		max_body_size 666;
-                        		index ./Test/conf;
-        allow method1 method3 method2 asdf asdfasdf asdfasdf    asdf ;
-                        	}
-        	}
+            autoindex on;
+            root ./Test/dir;
+            max_body_size 100;
+            index ./Test/conf;
+            route /html/page/var/ {
+                autoindex on;
+                root ./Test/dir;
+                max_body_size 666;
+                index ./Test/conf;
+                allow method1 method3 method2 asdf asdfasdf asdfasdf    asdf ;
+            }
+        }
 	}
 }
-
-        		autoindex on;
-        		root ./Test/dir;
-        		max_body_size 100;
-        		index ./Test/conf;

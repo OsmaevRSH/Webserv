@@ -18,7 +18,7 @@ class Input_handlers
 		Input_handlers &operator=(const Input_handlers &);
 		~Input_handlers();
 
-		const t_headers &getHandlers() const;
+		t_headers &getHandlers();
 		static void parce_first_handler_string(std::string &, std::string &);
 		const std::string &getType() const;
 		const std::string &getUrl() const;
