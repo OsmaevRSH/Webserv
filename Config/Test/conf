@@ -1,7 +1,6 @@
 server   {
-	ip 127.0.0.1;
 	port 5555;
-	server_name NameServer.com;
+	server_name ltheresi.team;
 
 	route / {
 		autoindex on;
@@ -18,7 +17,7 @@ server   {
                 root ./Test/dir;
                 max_body_size 666;
                 index ./Test/conf;
-                allow method1 method3 method2 asdf asdfasdf asdfasdf    asdf ;
+                allow GET;
             }
         }
 	}

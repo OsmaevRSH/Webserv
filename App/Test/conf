@@ -1,13 +1,13 @@
 server   {
 	ip 127.0.0.1;
 	port 5555;
-	server_name NameServer.com;
+	server_name ltheresi.team;
 
 	route / {
 		autoindex on;
 		root ./App/Html;
 		max_body_size 55;
-		index index1.html;
+		index index1.html index2.html;
 		route /html {
 			autoindex on;
 			root ./App/Html;
@@ -25,12 +25,13 @@ server   {
 		autoindex on;
 		root ./App/Html;
 		max_body_size 55;
-		index index1.html;
+		index index2.html;
 		route /html {
 			autoindex on;
 			root ./App/Html;
 			max_body_size 100;
-			index index2.html;
+			index index3.html;
 		}
 	}
 }
+
