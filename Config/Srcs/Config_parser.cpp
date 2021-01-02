@@ -14,7 +14,7 @@
 
 typedef ConfigParser::t_args 			t_args;
 typedef ConfigParser::t_everywhere 		t_everywhere;
-typedef ConfigParser::t_route 			t_route;
+typedef ConfigParser::t_location 			t_location;
 typedef ConfigParser::t_server 			t_server;
 
 // Utils:
@@ -118,10 +118,10 @@ static void 					allow_methods_parse(t_args args)
 {
 	std::string word;
 	while (!(word = get_next_word(args.fragment, args.rel_pos)).empty())
-		args.route->allow_methods.push_back(word);
+		args.location->allow_methods.push_back(word);
 #ifdef CONFIG_DEBUG
-	for (int i = 0; i < args.route->allow_methods.size(); i++)
-		std::cout << "Allow methods: " << args.route->allow_methods[i] <<"\n";
+	for (int i = 0; i < args.location->allow_methods.size(); i++)
+		std::cout << "Allow methods: " << args.location->allow_methods[i] <<"\n";
 #endif
 	/*
 	 * Сделать проверку на наличие существование этих методов!
@@ -186,8 +186,8 @@ void Config::					parse(t_args args) {
 	std::string dir_content;
 	std::vector<std::string> context;
 
-	if (args.route)
-		context = args.route_context;//
+	if (args.location)
+		context = args.location_context;//
 	else if (args.server)
 		context = args.server_context;
 	else
@@ -208,15 +208,15 @@ void Config::					select_dir(t_args &args, std::string word) {
 	new_args.ew = args.ew;
 	new_args.base_pos = args.base_pos + args.rel_pos;
 	new_args.server = args.server;
-	new_args.route = args.route;
+	new_args.location = args.location;
 	new_args.block_args = pre_block_arg(args);
 	new_args.fragment = dir_content(args);
-	if (word != "server" && word != "route")
+	if (word != "server" && word != "location")
 		args.rel_pos += new_args.fragment.length();
 	if (word == "server")
 		server_parse(new_args);
-	else if (word == "route")
-		route_parse(new_args);
+	else if (word == "location")
+		location_parse(new_args);
 	else if (word == "index")
 		index_parse(new_args);
 	else if (word == "autoindex")
@@ -291,23 +291,23 @@ void Config::					error_page_parse(t_args args)
 		std::cout << (*i).first << ":" << (*i).second << "\n";
 #endif
 }
-void Config::					route_parse(t_args args) {
-	t_route *route = new t_route;
-	t_route *parent_route = args.route;
-	route->block_args = args.block_args;
-	args.route = route;
-	args.ew = &(route->ew);
+void Config::					location_parse(t_args args) {
+	t_location *location = new t_location;
+	t_location *parent_location = args.location;
+	location->block_args = args.block_args;
+	args.location = location;
+	args.ew = &(location->ew);
 #ifdef CONFIG_DEBUG
-	std::cout << "route ";
-	for (std::vector<std::string>::iterator i = route->block_args.begin(); i < route->block_args.end(); ++i)
+	std::cout << "location ";
+	for (std::vector<std::string>::iterator i = location->block_args.begin(); i < location->block_args.end(); ++i)
 		std::cout << *i << " ";
 	std::cout << "{\n";
 #endif
 	parse(args);
-	if (parent_route)
-		parent_route->routes.push_back(*route);
+	if (parent_location)
+		parent_location->locations.push_back(*location);
 	else if (args.server)
-		args.server->routes.push_back(*route);
+		args.server->locations.push_back(*location);
 	else
 		show_error(args, "Nested directive error\n");
 #ifdef CONFIG_DEBUG
@@ -339,12 +339,12 @@ t_everywhere::		s_everywhere() {
 	max_body_size = 0;
 	autoindex = false;
 }
-t_route::			s_route() {}
+t_location::			s_location() {}
 t_args::			s_args() {
 	base_pos = 0;
 	rel_pos = 0;
 	ew = NULL;
-	route = NULL;
+	location = NULL;
 	server = NULL;
 
 	main_context.push_back("index");
@@ -361,12 +361,12 @@ t_args::			s_args() {
 	server_context.push_back("ip");
 	server_context.push_back("port");
 	server_context.push_back("server_name");
-	server_context.push_back("route");
+	server_context.push_back("location");
 
-	route_context.push_back("index");
-	route_context.push_back("max_body_size");
-	route_context.push_back("root");
-	route_context.push_back("autoindex");
-	route_context.push_back("route");
-	route_context.push_back("allow");
+	location_context.push_back("index");
+	location_context.push_back("max_body_size");
+	location_context.push_back("root");
+	location_context.push_back("autoindex");
+	location_context.push_back("location");
+	location_context.push_back("allow");
 }

@@ -15,54 +15,54 @@
 std::string Config::Handler(t_headers &headers, Input_handlers &handlers)
 {
 	ConfigParser::t_server curent_server;
-	ConfigParser::t_route curent_route;
+	ConfigParser::t_location curent_location;
 
 	curent_server = get_server(headers);
-//	std::string out = route_searcher(curent_server.routes, headers, handlers);
-	return get_page_text(route_searcher(curent_server.routes, headers, handlers));
+//	std::string out = location_searcher(curent_server.locations, headers, handlers);
+	return get_page_text(location_searcher(curent_server.locations, headers, handlers));
 }
 
-std::string Config::route_searcher(std::vector<ConfigParser::t_route> &routes, t_headers &headers, Input_handlers &handlers)
+std::string Config::location_searcher(std::vector<ConfigParser::t_location> &locations, t_headers &headers, Input_handlers &handlers)
 {
-	ConfigParser::t_route *curent_route;
+	ConfigParser::t_location *curent_location;
 	std::string tmp;
-	if (!(curent_route = full_match_route(routes, headers, handlers)))
+	if (!(curent_location = full_match_location(locations, headers, handlers)))
 	{
-		route_sort(routes);
-		if (!(curent_route = simple_route(routes, headers, handlers)))
+		location_sort(locations);
+		if (!(curent_location = simple_location(locations, headers, handlers)))
 			return "Error";
-		if (curent_route->routes.empty())
-			return (curent_route->ew.root + "/" + curent_route->ew.index[0]);
+		if (curent_location->locations.empty())
+			return (curent_location->ew.root + "/" + curent_location->ew.index[0]);
 		else
 		{
-			if ((tmp = route_searcher(curent_route->routes, headers, handlers)) == "Error")
-				return (curent_route->ew.root + "/" + curent_route->ew.index[0]);
+			if ((tmp = location_searcher(curent_location->locations, headers, handlers)) == "Error")
+				return (curent_location->ew.root + "/" + curent_location->ew.index[0]);
 			else
 				return tmp;
 		}
 	}
-	return (curent_route->ew.root + "/" + curent_route->ew.index[0]);
+	return (curent_location->ew.root + "/" + curent_location->ew.index[0]);
 }
 
-void Config::route_sort(std::vector<ConfigParser::t_route> &routes)
+void Config::location_sort(std::vector<ConfigParser::t_location> &locations)
 {
 	int max;
 	
-	for (int i = 0; i < routes.size() - 1; i++)
+	for (int i = 0; i < locations.size() - 1; i++)
 	{
 		max = i;
-		for (int j = i + 1; j < routes.size(); j++)
+		for (int j = i + 1; j < locations.size(); j++)
 		{
-			if (routes[j].block_args[0] > routes[max].block_args[0])
+			if (locations[j].block_args[0] > locations[max].block_args[0])
 				max = j;
 		}
-		std::swap(routes[i], routes[max]);
+		std::swap(locations[i], locations[max]);
 	}
 }
 
-ConfigParser::t_route *Config::simple_route(std::vector<ConfigParser::t_route> &server, t_headers &headers, Input_handlers &handlers)
+ConfigParser::t_location *Config::simple_location(std::vector<ConfigParser::t_location> &server, t_headers &headers, Input_handlers &handlers)
 {
-	std::vector<ConfigParser::t_route>::iterator it;
+	std::vector<ConfigParser::t_location>::iterator it;
 	it = server.begin();
 	for (; it < server.end(); ++it)
 		if (!std::strncmp(it->block_args[0].c_str(), handlers.getUrl().c_str(), it->block_args[0].size()) && it->block_args[0] != "=")
@@ -70,9 +70,9 @@ ConfigParser::t_route *Config::simple_route(std::vector<ConfigParser::t_route> &
 	return nullptr;
 }
 
-ConfigParser::t_route *Config::full_match_route(std::vector<ConfigParser::t_route> &server, t_headers &headers, Input_handlers &handlers)
+ConfigParser::t_location *Config::full_match_location(std::vector<ConfigParser::t_location> &server, t_headers &headers, Input_handlers &handlers)
 {
-	std::vector<ConfigParser::t_route>::iterator it;
+	std::vector<ConfigParser::t_location>::iterator it;
 	it = server.begin();
 	for (; it < server.end(); ++it)
 	{
@@ -118,7 +118,7 @@ ConfigParser::t_server Config::get_server(t_headers &headers)
  *
  * 2)	Ищем среди серверов совпадение по server_name. Если не находим, выбираем первый.
  *
- * 3)	Ищем совпадение по маршрутам (route), и если маршрут имеет подмаршруты, углубляемся в них.
+ * 3)	Ищем совпадение по маршрутам (location), и если маршрут имеет подмаршруты, углубляемся в них.
  * 		Если маршрут имеет первый аргумент блочной директивы '=' и он совпадает с строкой запроса
  * 		без аргументов, то мы останавливаемся на этом маршруте и дальше не ищем. В иных случаях,
  * 		мы запоминаем максимально совпадающий маршрут (но меньшей или равной длины),

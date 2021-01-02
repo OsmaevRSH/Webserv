@@ -26,22 +26,22 @@ namespace ConfigParser
 		s_everywhere();
 		//s_everywhere(const s_everywhere &copy);
 	}							t_everywhere;
-	typedef struct					s_route
+	typedef struct					s_location
 	{
 		std::vector<std::string>	block_args;
 		std::vector<std::string>	allow_methods;
-		std::vector<struct s_route>	routes;
+		std::vector<struct s_location>	locations;
 		t_everywhere				ew;
 
-		s_route();
-		//s_route(const s_route &copy);
-	}								t_route;
+		s_location();
+		//s_location(const s_location &copy);
+	}								t_location;
 	typedef struct					s_server
 	{
 		std::string 				ip;
 		int							port;
 		std::string					server_name;
-		std::vector<ConfigParser::t_route>		routes;
+		std::vector<ConfigParser::t_location>		locations;
 		ConfigParser::t_everywhere				ew;
 		s_server();
 		//s_server(const s_server &copy);
@@ -54,10 +54,10 @@ namespace ConfigParser
 		size_t						rel_pos;
 		std::vector<std::string>	block_args;
 		t_everywhere				*ew;
-		t_route						*route;
+		t_location						*location;
 		t_server					*server;
 		std::vector<std::string>	main_context;
-		std::vector<std::string>	route_context;
+		std::vector<std::string>	location_context;
 		std::vector<std::string>	server_context;
 		bool 						debug;
 		s_args();
@@ -86,19 +86,19 @@ class Config
 		ConfigParser::t_everywhere						_ew;
 
 		void parse_server();
-		void parse_route();
+		void parse_location();
 		void parse(ConfigParser::t_args args);
 		void select_dir(ConfigParser::t_args &args, std::string word);
 		void server_parse(ConfigParser::t_args args);
-		void route_parse(ConfigParser::t_args args);
+		void location_parse(ConfigParser::t_args args);
 		void error_page_parse(ConfigParser::t_args args);
 
 		//func for config_handlers
 		ConfigParser::t_server get_server(t_headers &);
-		ConfigParser::t_route *simple_route(std::vector<ConfigParser::t_route> &, t_headers &, Input_handlers &);
-		ConfigParser::t_route *full_match_route(std::vector<ConfigParser::t_route> &, t_headers &, Input_handlers &);
-		void route_sort(std::vector<ConfigParser::t_route> &);
-		std::string route_searcher(std::vector<ConfigParser::t_route> &routes, t_headers &headers, Input_handlers &);
+		ConfigParser::t_location *simple_location(std::vector<ConfigParser::t_location> &, t_headers &, Input_handlers &);
+		ConfigParser::t_location *full_match_location(std::vector<ConfigParser::t_location> &, t_headers &, Input_handlers &);
+		void location_sort(std::vector<ConfigParser::t_location> &);
+		std::string location_searcher(std::vector<ConfigParser::t_location> &locations, t_headers &headers, Input_handlers &);
 	public:
 		Config(const std::string& path_to_config);
 		const std::vector<ConfigParser::t_server> &getServers() const;

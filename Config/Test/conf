@@ -2,17 +2,17 @@ server   {
 	port 5555;
 	server_name ltheresi.team;
 
-	route / {
+	location / {
 		autoindex on;
 		root ./Test/conf;
 		max_body_size 55;
 		index ./Test/conf;
-		route /html/page {
+		location /html/page {
             autoindex on;
             root ./Test/dir;
             max_body_size 100;
             index ./Test/conf;
-            route /html/page/var/ {
+            location /html/page/var/ {
                 autoindex on;
                 root ./Test/dir;
                 max_body_size 666;

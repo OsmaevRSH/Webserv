@@ -3,17 +3,17 @@ server   {
 	port 5555;
 	server_name ltheresi.team;
 
-	route / {
+	location / {
 		autoindex on;
 		root ./App/Html;
 		max_body_size 55;
 		index index1.html index2.html;
-		route /html {
+		location /html {
 			autoindex on;
 			root ./App/Html;
 			max_body_size 100;
 			index index2.html;
-			route /html/ttt {
+			location /html/ttt {
 				autoindex on;
 				root ./App/Html;
 				max_body_size 100;
@@ -21,12 +21,12 @@ server   {
 			}
 		}
 	}
-	route /abs {
+	location /abs {
 		autoindex on;
 		root ./App/Html;
 		max_body_size 55;
 		index index2.html;
-		route /html {
+		location /html {
 			autoindex on;
 			root ./App/Html;
 			max_body_size 100;
