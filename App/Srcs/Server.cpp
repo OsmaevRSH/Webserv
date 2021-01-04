@@ -65,8 +65,12 @@ void Server::Bind()
 	{
 		bzero(&addr, sizeof(addr));
 		addr.sin_family = _family;
+		if (_servers_config[i].port == 0)
+			_servers_config[i].port = 8080;
+		if (_servers_config[i].ip.empty())
+			_servers_config[i].ip = "0.0.0.0";
 		addr.sin_port = htons(_servers_config[i].port); //порт сервера
-		addr.sin_addr.s_addr = inet_addr((_servers_config[i].ip).c_str()); //IP адрес сервера
+		addr.sin_addr.s_addr = inet_addr(_servers_config[i].ip.c_str()); //IP адрес сервера
 
 		int opt = 1;
 		setsockopt(_master_socket_fd[i], SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)); //Разрешение повторного использования порт+IP для сервера
@@ -78,7 +82,7 @@ void Server::Bind()
 			exit(EXIT_FAILURE);
 		}
 #ifdef SERVER_DEBUG
-		std::cout << "Server[" << i << "]:[" << _servers_config[i].ip << ":" << _servers_config[i].port << "]" << std::endl;
+		std::cout << "Server[" << i + 1 << "]:[" << _servers_config[i].ip << ":" << _servers_config[i].port << "]" << std::endl;
 #endif
 	}
 }

@@ -18,7 +18,6 @@ std::string Config::Handler(t_headers &headers, Input_handlers &handlers)
 	ConfigParser::t_location curent_location;
 
 	curent_server = get_server(headers);
-//	std::string out = location_searcher(curent_server.locations, headers, handlers);
 	return get_page_text(location_searcher(curent_server.locations, headers, handlers));
 }
 
@@ -97,10 +96,10 @@ ConfigParser::t_server Config::get_server(t_headers &headers)
 		{
 			if ("127.0.0.1:" + std::to_string(it->port) == headers.Host ||
 				"localhost:" + std::to_string(it->port) == headers.Host)
-			{
 				return *it;
-			}
 		}
+		if (it->ip + std::to_string(it->port) == headers.Host)
+			return *it;
 	}
 	std::cout << "Invalid server!" << std::endl;
 	exit(EXIT_FAILURE); //TODO
