@@ -99,7 +99,7 @@ void Server::Listen() const
 //Обертка для системной функции accept
 void Server::Accept(int fd)
 {
-	struct sockaddr_in addr = {0};
+	struct sockaddr_in addr = {};
 	socklen_t addr_len; //переменая для хранения длины структуры
 	int new_client_fd; //тут будет созранени дескрипотор нового клиента
 

@@ -86,7 +86,7 @@ static std::string				block_directive(const std::string &text, size_t &pos)
 	size_t	start = text.find('{', pos);
 
 	start++;
-	for (int i(0), count(1); i < text.length(); ++i)
+	for (int i(0), count(1); i < static_cast<int>(text.length()); ++i)
 	{
 		if (text[start + i] == '{')
 			count++;

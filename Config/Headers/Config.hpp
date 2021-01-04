@@ -69,6 +69,7 @@ namespace ConfigHandler
 {
 	typedef struct					s_params
 	{
+		ConfigParser::t_server		root_location;
 		std::string 				path_to_page;
 		std::vector<std::string>	allow_methods;
 		std::vector<std::string>	index;
@@ -97,7 +98,7 @@ class Config
 		ConfigParser::t_server get_server(t_headers &);
 		template<class T>
 		std::string get_path(T &, Input_handlers &, ConfigHandler::t_params &);
-		void setup_global_params(ConfigHandler::t_params &global_params) const;
+		void setup_global_params(ConfigHandler::t_params &global_params, ConfigParser::t_server &, bool);
 	public:
 		Config(const std::string& path_to_config);
 		const std::vector<ConfigParser::t_server> &getServers() const;
