@@ -243,7 +243,6 @@ std::string Config::get_path(T &param, Input_handlers &handlers, ConfigHandler::
 		else
 			return _error_pages[404];
 	}
-	return "Hello";
 }
 
 ConfigParser::t_server Config::get_server(t_headers &headers)
@@ -312,5 +311,4 @@ ConfigParser::t_server Config::get_server(t_headers &headers)
  *		Смотрим, не больше ли content-length чем max_body_size.
  *		В случае ошибки, ищем соответствующую страницу ошибки среди error_pages.
  *		Либо возвращаем стандартную.
- *
  */

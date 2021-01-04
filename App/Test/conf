@@ -34,3 +34,5 @@ server   {
 		}
 	}
 }
+
+error_page 404 ./App/Html/404.html;
