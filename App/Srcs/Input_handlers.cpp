@@ -105,3 +105,8 @@ t_headers &Input_handlers::getHandlers()
 {
 	return _handlers;
 }
+
+void Input_handlers::setUrl(const std::string &url)
+{
+	_url = url;
+}

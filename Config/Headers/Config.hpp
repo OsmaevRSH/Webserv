@@ -54,7 +54,7 @@ namespace ConfigParser
 		size_t						rel_pos;
 		std::vector<std::string>	block_args;
 		t_everywhere				*ew;
-		t_location						*location;
+		t_location					*location;
 		t_server					*server;
 		std::vector<std::string>	main_context;
 		std::vector<std::string>	location_context;
@@ -70,10 +70,10 @@ namespace ConfigHandler
 	typedef struct					s_params
 	{
 		std::string 				path_to_page;
-		std::string					ip;
-		int 						port;
-		std::string 				server_name;
 		std::vector<std::string>	allow_methods;
+		std::vector<std::string>	index;
+		std::string					root;
+		bool						autoindex;
 		int 						max_body_size;
 	}								t_params;
 }
@@ -95,10 +95,9 @@ class Config
 
 		//func for config_handlers
 		ConfigParser::t_server get_server(t_headers &);
-		ConfigParser::t_location *simple_location(std::vector<ConfigParser::t_location> &, t_headers &, Input_handlers &);
-		ConfigParser::t_location *full_match_location(std::vector<ConfigParser::t_location> &, t_headers &, Input_handlers &);
-		void location_sort(std::vector<ConfigParser::t_location> &);
-		std::string location_searcher(std::vector<ConfigParser::t_location> &locations, t_headers &headers, Input_handlers &);
+		template<class T>
+		std::string get_path(T &, Input_handlers &, ConfigHandler::t_params &);
+		void setup_global_params(ConfigHandler::t_params &global_params) const;
 	public:
 		Config(const std::string& path_to_config);
 		const std::vector<ConfigParser::t_server> &getServers() const;

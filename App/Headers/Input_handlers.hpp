@@ -23,6 +23,8 @@ class Input_handlers
 		const std::string &getType() const;
 		const std::string &getUrl() const;
 		const std::string &getProtocolType() const;
+		void setUrl(const std::string &url);
+
 		void output() const
 		{
 			std::cout << "\nType: " << _type << "\nUrl: " << _url
