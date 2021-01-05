@@ -28,26 +28,13 @@ static void location_sort(std::vector<ConfigParser::t_location> &locations)
 	}
 }
 
-
-void Config::setup_global_params(ConfigHandler::t_params &global_params, ConfigParser::t_server &server, bool i)
+static void update_global_params(ConfigHandler::t_params &global_params, ConfigParser::t_location &location)
 {
-	if (i)
-		global_params.root_location = server;
-	global_params.index = _ew.index;
-	global_params.root = _ew.root;
-	//	global_params.allow_methods = _ //TODO
-	global_params.autoindex = _ew.autoindex;
-	global_params.max_body_size = _ew.max_body_size;
-}
-
-template<class T>
-static void update_global_params(ConfigHandler::t_params &global_params, T &param)
-{
-	global_params.index = param.ew.index;
-	global_params.root = param.ew.root;
-	//	global_params.allow_methods = _ //TODO
-	global_params.autoindex = param.ew.autoindex;
-	global_params.max_body_size = param.ew.max_body_size;
+	global_params.index = location.ew.index;
+	global_params.root = location.ew.root;
+	global_params.allow_methods = location.allow_methods;
+	global_params.autoindex = location.ew.autoindex;
+	global_params.max_body_size = location.ew.max_body_size;
 }
 
 static bool check_slash(Input_handlers &handlers)
@@ -122,18 +109,6 @@ static bool search_folder(ConfigHandler::t_params &params, Input_handlers &handl
 	return false;
 }
 
-std::string Config::Handler(t_headers &headers, Input_handlers &handlers)
-{
-	ConfigHandler::t_params global_params;
-	ConfigParser::t_server curent_server;
-
-	setup_global_params(global_params, curent_server, false);
-	curent_server = get_server(headers);
-	setup_global_params(global_params, curent_server, true);
-	global_params.path_to_page = get_path(curent_server, handlers, global_params);
-	return get_page_text(global_params.path_to_page);
-}
-
 static bool search_index(ConfigHandler::t_params &global_params, Input_handlers &handlers)
 {
 	struct stat check = {};
@@ -154,6 +129,52 @@ static bool search_index(ConfigHandler::t_params &global_params, Input_handlers 
 	return false;
 }
 
+std::string Config::Handler(t_headers &headers, Input_handlers &handlers)
+{
+	ConfigHandler::t_params global_params;
+	ConfigParser::t_server curent_server;
+
+	setup_global_params(global_params, curent_server, false);
+	curent_server = get_server(headers);
+	setup_global_params(global_params, curent_server, true);
+	global_params.path_to_page = get_path(curent_server, handlers, global_params);
+	return get_page_text(global_params.path_to_page);
+}
+
+void Config::setup_global_params(ConfigHandler::t_params &global_params, ConfigParser::t_server &server, bool save_server)
+{
+	if (save_server)
+		global_params.root_location = server;
+	global_params.index = _ew.index;
+	global_params.root = _ew.root;
+	global_params.autoindex = _ew.autoindex;
+	global_params.max_body_size = _ew.max_body_size;
+}
+
+std::string Config::recursive_call_with_slash(Input_handlers &handlers, ConfigHandler::t_params &global_params)
+{
+	if (search_folder(global_params, handlers))
+	{
+		if (search_index(global_params, handlers))
+			return Config::get_path(global_params.root_location, handlers, global_params);
+		return _error_pages[404];
+	}
+	else
+		return _error_pages[404];
+}
+
+std::string Config::recursive_call_without_slash(Input_handlers &handlers, ConfigHandler::t_params &global_params)
+{
+	if (search_file(global_params, handlers))
+	{
+		if (check_slash(handlers))
+			return Config::get_path(global_params.root_location, handlers, global_params);
+		return global_params.root + handlers.getUrl();
+	}
+	else
+		return _error_pages[404];
+}
+
 template<class T>
 std::string Config::get_path(T &param, Input_handlers &handlers, ConfigHandler::t_params &global_params)
 {
@@ -165,40 +186,15 @@ std::string Config::get_path(T &param, Input_handlers &handlers, ConfigHandler::
 		if ((location = check_path_with_complete_coincidence(param, handlers)))
 		{
 			update_global_params(global_params, *location);
-			if (search_folder(global_params, handlers))
-			{
-				if (search_index(global_params, handlers))
-					return Config::get_path(global_params.root_location, handlers, global_params);
-				return _error_pages[404];
-			}
-			else
-				return _error_pages[404];
+			return Config::recursive_call_with_slash(handlers, global_params);
 		}
 		if ((location = check_simple_location(param, handlers)))
 		{
 			update_global_params(global_params, *location);
 			if (location->locations.empty())
-			{
-				if (search_folder(global_params, handlers))
-				{
-					if (search_index(global_params, handlers))
-						return Config::get_path(global_params.root_location, handlers, global_params);
-					return _error_pages[404];
-				}
-				else
-					return _error_pages[404];
-			}
+				return Config::recursive_call_with_slash(handlers, global_params);
 			if ((tmp = Config::get_path(*location, handlers, global_params)) == _error_pages[404])
-			{
-				if (search_folder(global_params, handlers))
-				{
-					if (search_index(global_params, handlers))
-						return Config::get_path(global_params.root_location, handlers, global_params);
-					return _error_pages[404];
-				}
-				else
-					return _error_pages[404];
-			}
+				return Config::recursive_call_with_slash(handlers, global_params);
 			return tmp;
 		}
 		else
@@ -209,35 +205,15 @@ std::string Config::get_path(T &param, Input_handlers &handlers, ConfigHandler::
 		if ((location = check_path_with_complete_coincidence(param, handlers)))
 		{
 			update_global_params(global_params, *location);
-			if (search_file(global_params, handlers))
-			{
-				if (check_slash(handlers))
-					return Config::get_path(global_params.root_location, handlers, global_params);
-				return global_params.root + handlers.getUrl();
-			}
-			else
-				return _error_pages[404];
+			return Config::recursive_call_without_slash(handlers, global_params);
 		}
 		if ((location = check_simple_location(param, handlers)))
 		{
 			update_global_params(global_params, *location);
 			if (location->locations.empty())
-				return global_params.root + handlers.getUrl();
+				return Config::recursive_call_with_slash(handlers, global_params);
 			if ((tmp = Config::get_path(*location, handlers, global_params)) == _error_pages[404])
-			{
-				if (search_file(global_params, handlers))
-				{
-					if (check_slash(handlers))
-					{
-						return Config::get_path(global_params.root_location, handlers, global_params);
-					}
-					return global_params.root + handlers.getUrl();
-				}
-				else
-				{
-					return _error_pages[404];
-				}
-			}
+				return Config::recursive_call_without_slash(handlers, global_params);
 			return tmp;
 		}
 		else

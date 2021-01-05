@@ -99,6 +99,8 @@ class Config
 		template<class T>
 		std::string get_path(T &, Input_handlers &, ConfigHandler::t_params &);
 		void setup_global_params(ConfigHandler::t_params &global_params, ConfigParser::t_server &, bool);
+		std::string recursive_call_with_slash(Input_handlers &handlers, ConfigHandler::t_params &global_params);
+		std::string recursive_call_without_slash(Input_handlers &handlers, ConfigHandler::t_params &global_params);
 	public:
 		Config(const std::string& path_to_config);
 		const std::vector<ConfigParser::t_server> &getServers() const;

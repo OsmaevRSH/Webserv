@@ -14,7 +14,7 @@
 #include <ostream>
 #include <sys/stat.h>
 
-#define SERVER_DEBUG
+//#define SERVER_DEBUG
 //#define CONFIG_DEBUG
 
 // For parser
