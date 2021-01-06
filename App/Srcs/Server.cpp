@@ -1,11 +1,10 @@
 #include "Server.hpp"
 
 //Конструктор
-Server::Server(const std::vector<ConfigParser::t_server> &servers_config, Config &config,  int family, int type, int protocol)
+Server::Server(const std::vector<ConfigParser::t_server> &servers_config, Config &config, int family, int type, int protocol)
 		: _family(family), _type(type), _protocol(protocol),
 		_master_socket_fd(0), _servers_config(servers_config),
-		_count_servers(servers_config.size()),
-		_config(config)
+		_count_servers(servers_config.size()), _config(config)
 {
 }
 
@@ -15,8 +14,7 @@ Server::Server(const Server &copy)
 		_master_socket_fd(copy._master_socket_fd),
 		_client_socket_fd(copy._client_socket_fd),
 		_servers_config(copy._servers_config),
-		_count_servers(copy._count_servers),
-		_config(copy._config)
+		_count_servers(copy._count_servers), _config(copy._config)
 {
 }
 
@@ -82,7 +80,8 @@ void Server::Bind()
 			exit(EXIT_FAILURE);
 		}
 #ifdef SERVER_DEBUG
-		std::cout << "Server[" << i + 1 << "]:[" << _servers_config[i].ip << ":" << _servers_config[i].port << "]" << std::endl;
+		std::cout << "Server[" << i + 1 << "]:[" << _servers_config[i].ip << ":"
+				  << _servers_config[i].port << "]" << std::endl;
 #endif
 	}
 }
@@ -149,9 +148,7 @@ _Noreturn void Server::ListenLoop()
 				Act_if_client_fd_changed(Iter);
 			}
 			else
-			{
 				++Iter;
-			}
 		}
 	}
 }
@@ -162,9 +159,7 @@ void Server::Set_non_blocked(int fd)
 {
 	int flags;
 	if (-1 == (flags = fcntl(fd, F_GETFL, 0)))
-	{
 		flags = 0;
-	}
 	fcntl(fd, F_SETFL, flags | O_NONBLOCK);
 }
 
@@ -206,14 +201,10 @@ bool Server::Checkout_call_to_select(const int &res)
 			exit(1);
 		}
 		else
-		{
 			exit(0);
-		}
 	}
 	if (res == 0)
-	{
 		return true;
-	}
 	return false;
 }
 

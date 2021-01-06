@@ -7,7 +7,6 @@ server   {
 		autoindex on;
 		root ./App/Html;
 		max_body_size 55;
-		index index3.html index2.html;
 		location /html {
 			autoindex on;
 			root ./App/Html;

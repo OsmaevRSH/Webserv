@@ -109,7 +109,7 @@ static bool search_folder(ConfigHandler::t_params &params, Input_handlers &handl
 	return false;
 }
 
-static bool search_index(ConfigHandler::t_params &global_params, Input_handlers &handlers)
+bool search_index(ConfigHandler::t_params &global_params, Input_handlers &handlers)
 {
 	struct stat check = {};
 	std::vector<std::string>::iterator it;
@@ -119,13 +119,12 @@ static bool search_index(ConfigHandler::t_params &global_params, Input_handlers 
 	{
 		if (!stat((global_params.root + handlers.getUrl() + *it).c_str(), &check))
 		{
-			if (S_ISREG(check.st_mode))
-			{
-				handlers.setUrl(handlers.getUrl() + *it);
-				return true;
-			}
+			handlers.setUrl(handlers.getUrl() + *it);
+			return true;
 		}
 	}
+	if (global_params.autoindex)
+		global_params.autoindex_page = Config::create_autoindex_page(global_params, handlers);
 	return false;
 }
 
@@ -138,6 +137,8 @@ std::string Config::Handler(t_headers &headers, Input_handlers &handlers)
 	curent_server = get_server(headers);
 	setup_global_params(global_params, curent_server, true);
 	global_params.path_to_page = get_path(curent_server, handlers, global_params);
+	if (!global_params.autoindex_page.empty())
+		return global_params.autoindex_page;
 	return get_page_text(global_params.path_to_page);
 }
 

@@ -76,6 +76,7 @@ namespace ConfigHandler
 		std::string					root;
 		bool						autoindex;
 		int 						max_body_size;
+		std::string					autoindex_page;
 	}								t_params;
 }
 
@@ -101,6 +102,10 @@ class Config
 		void setup_global_params(ConfigHandler::t_params &global_params, ConfigParser::t_server &, bool);
 		std::string recursive_call_with_slash(Input_handlers &handlers, ConfigHandler::t_params &global_params);
 		std::string recursive_call_without_slash(Input_handlers &handlers, ConfigHandler::t_params &global_params);
+		friend bool search_index(ConfigHandler::t_params &global_params, Input_handlers &handlers);
+
+		//autoindex
+		static std::string create_autoindex_page(ConfigHandler::t_params &, Input_handlers &);
 	public:
 		Config(const std::string& path_to_config);
 		const std::vector<ConfigParser::t_server> &getServers() const;
