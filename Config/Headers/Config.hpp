@@ -87,6 +87,8 @@ class Config
 		std::map<int, std::string>						_error_pages; // Ключ - номер страницы. Значение - путь
 		ConfigParser::t_everywhere						_ew;
 
+		std::map<std::string, std::string>				___cache;	//Ключ - url, значение - путь
+
 		void parse_server();
 		void parse_location();
 		void parse(ConfigParser::t_args args);

@@ -130,16 +130,25 @@ bool search_index(ConfigHandler::t_params &global_params, Input_handlers &handle
 
 std::string Config::Handler(t_headers &headers, Input_handlers &handlers)
 {
-	ConfigHandler::t_params global_params;
-	ConfigParser::t_server curent_server;
+	ConfigHandler::t_params	global_params;
+	ConfigParser::t_server	curent_server;
+	std::string				save_url;
 
+	if (___cache.find(handlers.getUrl()) != ___cache.end())
+		return get_page_text(___cache[handlers.getUrl()]);
+	else
+		save_url = handlers.getUrl();
 	setup_global_params(global_params, curent_server, false);
 	curent_server = get_server(headers);
 	setup_global_params(global_params, curent_server, true);
 	global_params.path_to_page = get_path(curent_server, handlers, global_params);
 	if (!global_params.autoindex_page.empty())
 		return global_params.autoindex_page;
-	return get_page_text(global_params.path_to_page);
+	else
+	{
+		___cache.insert(std::pair<std::string, std::string>(save_url, global_params.path_to_page));
+		return get_page_text(global_params.path_to_page);
+	}
 }
 
 void Config::setup_global_params(ConfigHandler::t_params &global_params, ConfigParser::t_server &server, bool save_server)
