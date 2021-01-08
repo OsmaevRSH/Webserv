@@ -24,7 +24,7 @@ class Input_handlers
 		const std::string &getUrl() const;
 		const std::string &getProtocolType() const;
 		void setUrl(const std::string &url);
-
+		const std::map<std::string, std::string> &getVariableHandlers() const;
 		void output() const
 		{
 			std::cout << "\nType: " << _type << "\nUrl: " << _url

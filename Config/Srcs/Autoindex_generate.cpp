@@ -14,7 +14,7 @@ std::string Config::create_autoindex_page(ConfigHandler::t_params &params, Input
 				 "</title></head>\n<body bgcolor=\"white\">\n<h1>Index of " +
 				 handler.getUrl() + "</h1><hr><pre><a href=\"../\">../</a>\n";
 
-#ifdef SERVER_DEBUG
+#ifdef AUTOINDEX_DEBUG
 	std::cout << autoindex.str();
 #endif
 	directory = opendir((params.root + handler.getUrl()).c_str());
@@ -26,7 +26,7 @@ std::string Config::create_autoindex_page(ConfigHandler::t_params &params, Input
 			elem = readdir(directory);
 			continue;
 		}
-#ifdef SERVER_DEBUG
+#ifdef AUTOINDEX_DEBUG
 		std::cout << params.root << handler.getUrl() << elem->d_name
 				  << std::endl;
 #endif

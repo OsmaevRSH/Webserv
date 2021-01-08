@@ -63,7 +63,7 @@ Input_handlers::Input_handlers(const char *input)
 		if ((save_it1 = _variable_handlers.find(it1->first)) != _variable_handlers.end())
 		{
 			it1->second = save_it1->second;
-#ifdef SERVER_DEBUG
+#ifdef HANDLERS_DEBUG
 			std::cout << save_it1->first << ": " << save_it1->second << std::endl;
 #endif
 		}
@@ -109,4 +109,9 @@ t_headers &Input_handlers::getHandlers()
 void Input_handlers::setUrl(const std::string &url)
 {
 	_url = url;
+}
+
+const std::map<std::string, std::string> &Input_handlers::getVariableHandlers() const
+{
+	return _variable_handlers;
 }

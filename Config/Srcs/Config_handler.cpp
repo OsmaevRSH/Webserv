@@ -221,7 +221,7 @@ std::string Config::get_path(T &param, Input_handlers &handlers, ConfigHandler::
 		{
 			update_global_params(global_params, *location);
 			if (location->locations.empty())
-				return Config::recursive_call_with_slash(handlers, global_params);
+				return Config::recursive_call_without_slash(handlers, global_params);
 			if ((tmp = Config::get_path(*location, handlers, global_params)) == _error_pages[404])
 				return Config::recursive_call_without_slash(handlers, global_params);
 			return tmp;
