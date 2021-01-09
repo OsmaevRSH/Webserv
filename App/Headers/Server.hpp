@@ -10,7 +10,6 @@ class Server
 		int _family;
 		int _type;
 		int _protocol;
-		int _count_servers;
 		fd_set _readfds;
 		fd_set _writefds;
 		std::vector<int> _master_socket_fd;
