@@ -133,22 +133,22 @@ _Noreturn void Server::ListenLoop()
 	while (true)
 	{
 		Reset_fd_set();
-		Add_new_fd_to_set(Iter);
+		Add_new_fd_to_set();
 		Search_max_fd(max_fd);
 		int res = select(max_fd +
-						 1, &_readfds, &_writefds, nullptr, nullptr); //отвлеживает состояние дескрипторов и выставляет в 1 бит дескриптора если с него можно читать или писать
+						 1, &_readfds, nullptr, nullptr, nullptr); //отвлеживает состояние дескрипторов и выставляет в 1 бит дескриптора если с него можно читать или писать
 		Checkout_call_to_select(res);
-		Accept_if_serv_fd_changed(_readfds);
-		Iter = _write_socket_fd.begin();
-		while (Iter != _write_socket_fd.end())
-		{
-			if (FD_ISSET(*Iter, &_writefds))
-			{ //проверяем, выставлен ли какой-то бит связанный с клиентский дескрипотором
-				Act_if_writefd_changed(Iter);
-			}
-			else
-				++Iter;
-		}
+		Accept_if_serv_fd_changed();
+		//		Iter = _write_socket_fd.begin();
+		//		while (Iter != _write_socket_fd.end())
+		//		{
+		//			if (FD_ISSET(*Iter, &_writefds))
+		//			{ //проверяем, выставлен ли какой-то бит связанный с клиентский дескрипотором
+		//				Act_if_writefd_changed(Iter);
+		//			}
+		//			else
+		//				++Iter;
+		//		}
 		Iter = _read_socket_fd.begin();
 		while (Iter != _read_socket_fd.end())
 		{
@@ -156,7 +156,8 @@ _Noreturn void Server::ListenLoop()
 			{ //проверяем, выставлен ли какой-то бит связанный с клиентский дескрипотором
 				Act_if_readfd_changed(Iter);
 			}
-			++Iter;
+			else
+				++Iter;
 		}
 	}
 }
@@ -199,15 +200,17 @@ void Server::Reset_fd_set()
 	FD_ZERO(&_writefds); //обнулем все биты в сете
 }
 
-void Server::Add_new_fd_to_set(std::vector<int>::iterator Iter)
+void Server::Add_new_fd_to_set()
 {
+	std::vector<int>::iterator Iter;
+
 	for (int i = 0; i < _count_servers; ++i)
 		FD_SET(_master_socket_fd[i], &_readfds); //добавляем серверные дескрипторы в сет
 	for (Iter = _read_socket_fd.begin(); Iter != _read_socket_fd.end(); ++Iter)
 		FD_SET(*Iter, &_readfds); //добавляем клиентсикие дескрипторы в сет
-	for (Iter = _write_socket_fd.begin();
-		 Iter != _write_socket_fd.end(); ++Iter)
-		FD_SET(*Iter, &_writefds); //добавляем клиентсикие дескрипторы в сет
+	//	for (Iter = _write_socket_fd.begin();
+	//		 Iter != _write_socket_fd.end(); ++Iter)
+	//		FD_SET(*Iter, &_writefds); //добавляем клиентсикие дескрипторы в сет
 }
 
 void Server::Search_max_fd(int &max_fd)
@@ -216,14 +219,14 @@ void Server::Search_max_fd(int &max_fd)
 	{
 		max_fd = *(std::max_element(_read_socket_fd.begin(), _read_socket_fd.end())); //находим максимальный дескриптор среди клиентский
 	}
-	if (!_write_socket_fd.empty())
-	{
-		max_fd =
-				*(std::max_element(_write_socket_fd.begin(), _write_socket_fd.end())) >
-				max_fd
-				? *(std::max_element(_write_socket_fd.begin(), _write_socket_fd.end()))
-				: max_fd;
-	}
+	//	if (!_write_socket_fd.empty())
+	//	{
+	//		max_fd =
+	//				*(std::max_element(_write_socket_fd.begin(), _write_socket_fd.end())) >
+	//				max_fd
+	//				? *(std::max_element(_write_socket_fd.begin(), _write_socket_fd.end()))
+	//				: max_fd;
+	//	}
 	for (int i = 0; i < _count_servers; ++i)
 	{ //проверяем нет ли среди серверных дескрипотора больше, чем максимальный
 		if (_master_socket_fd[i] > max_fd)
@@ -248,11 +251,11 @@ bool Server::Checkout_call_to_select(const int &res)
 	return false;
 }
 
-void Server::Accept_if_serv_fd_changed(fd_set &readfds)
+void Server::Accept_if_serv_fd_changed()
 {
 	for (int i = 0; i < _count_servers; ++i)
 	{
-		if (FD_ISSET(_master_socket_fd[i], &readfds))
+		if (FD_ISSET(_master_socket_fd[i], &_readfds))
 		{ //проверяем был ли выставлен бит серверного дескриптра, если да, то создаем новое подключение
 			Accept(_master_socket_fd[i]);
 		}
@@ -279,16 +282,18 @@ void Server::Act_if_readfd_changed(std::vector<int>::iterator &Iter)
 		Iter = _read_socket_fd.erase(Iter); //удаление дескриптора из пула клиентских дескрипторов
 	}
 	std::string file = _config.Handler(inputHandlers.getHandlers(), inputHandlers);
-	std::vector<std::string> tmp;
-	tmp.push_back(
+//	std::vector<std::string> tmp;
+//	tmp.push_back(
+//			"HTTP/1.1 200 OK\r\nContent-type: text/html\r\nContent-Length: " +
+//			std::to_string(file.size()) + "\r\n\r\n");
+//	tmp.push_back(file);
+//	_request_to_client.insert(std::pair<int, std::vector<std::string> >(*Iter, tmp));
+//	_write_socket_fd.push_back(*Iter);
+	send(*Iter, (
 			"HTTP/1.1 200 OK\r\nContent-type: text/html\r\nContent-Length: " +
-			std::to_string(file.size()) + "\r\n\r\n");
-	tmp.push_back(file);
-	_request_to_client.insert(std::pair<int, std::vector<std::string> >(*Iter, tmp));
-	_write_socket_fd.push_back(*Iter);
-	//		send(*Iter, ("HTTP/1.1 200 OK\r\nContent-type: text/html\r\nContent-Length: " + std::to_string(file.size()) + "\r\n\r\n" + file).c_str(),
-	//				65 + file.size(), 0); // передача вообщения клиенту
-	//		shutdown(*Iter, SHUT_WR); //разрыв соединения на передачу
-	//		close(*Iter); //закрытие клиентского дескриптора
-	//		Iter = _read_socket_fd.erase(Iter); //удаление дескриптора из пула клиентских дескрипторов
+			std::to_string(file.size()) + "\r\n\r\n" + file).c_str(),
+			65 + file.size(), 0); // передача вообщения клиенту
+	shutdown(*Iter, SHUT_WR); //разрыв соединения на передачу
+	close(*Iter); //закрытие клиентского дескриптора
+	Iter = _read_socket_fd.erase(Iter); //удаление дескриптора из пула клиентских дескрипторов
 }

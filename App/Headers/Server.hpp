@@ -27,10 +27,10 @@ class Server
 		static void Set_non_blocked(int);
 		_Noreturn void ListenLoop();
 		void Reset_fd_set();
-		void Add_new_fd_to_set(std::vector<int>::iterator);
+		void Add_new_fd_to_set();
 		void Search_max_fd(int &);
 		static bool Checkout_call_to_select(const int &);
-		void Accept_if_serv_fd_changed(fd_set &);
+		void Accept_if_serv_fd_changed();
 		void Act_if_readfd_changed(std::vector<int>::iterator &);
 		void Act_if_writefd_changed(std::vector<int>::iterator &);
 	public:
