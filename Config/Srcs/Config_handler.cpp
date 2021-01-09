@@ -142,6 +142,8 @@ std::string Config::Handler(t_headers &headers, Input_handlers &handlers)
 	curent_server = get_server(headers);
 	setup_global_params(global_params, curent_server, true);
 	global_params.path_to_page = get_path(curent_server, handlers, global_params);
+	if (check_allow_metods(global_params, handlers))
+		return get_page_text(_error_pages[405]);
 	if (!global_params.autoindex_page.empty())
 		return global_params.autoindex_page;
 	else

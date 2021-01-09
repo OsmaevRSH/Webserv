@@ -1,0 +1,12 @@
+server   {
+	ip 127.0.0.1;
+	port 5555;
+	server_name ltheresi.team;
+
+	location / {
+		allow GET;
+		autoindex off;
+		root ./Tester/YoupiBanane;
+		max_body_size 55;
+	}
+}

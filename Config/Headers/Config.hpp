@@ -106,6 +106,8 @@ class Config
 		std::string recursive_call_without_slash(Input_handlers &handlers, ConfigHandler::t_params &global_params);
 		friend bool search_index(ConfigHandler::t_params &global_params, Input_handlers &handlers);
 
+		bool check_allow_metods(const ConfigHandler::t_params &, Input_handlers &);
+
 		//autoindex
 		static std::string create_autoindex_page(ConfigHandler::t_params &, Input_handlers &);
 	public:

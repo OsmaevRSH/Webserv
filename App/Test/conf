@@ -35,3 +35,4 @@ server   {
 }
 
 error_page 404 ./App/Error_page/404.html;
+error_page 405 ./App/Error_page/405.html;
