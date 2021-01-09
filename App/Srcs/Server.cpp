@@ -38,7 +38,7 @@ Server &Server::operator=(const Server &copy)
 void Server::Socket()
 {
 	_master_socket_fd.reserve(_servers_config.size()); //резервируем необходимое место в векторе в завтисимотсти от кол-ва серверов
-	for (int i = 0; i < _servers_config.size(); ++i)
+	for (int i = 0; i < static_cast<int>(_servers_config.size()); ++i)
 	{
 		_master_socket_fd.push_back(socket(_family, _type, _protocol)); //создем дескрипторы для нашего сервера
 		if (*_master_socket_fd.rbegin() == -1)
@@ -172,10 +172,10 @@ void Server::Act_if_writefd_changed(std::vector<int>::iterator &Iter)
 							   _request_to_client[*Iter][1]).c_str(),
 			_request_to_client[*Iter][0].size() +
 			_request_to_client[*Iter][1].size(), 0);
-	if (send_number < _request_to_client[*Iter][0].size() +
-					  _request_to_client[*Iter][1].size())
+	if (send_number < static_cast<int>(_request_to_client[*Iter][0].size() +
+					  _request_to_client[*Iter][1].size()))
 	{
-		if (send_number <= _request_to_client[*Iter][0].size())
+		if (send_number <= static_cast<int>(_request_to_client[*Iter][0].size()))
 			_request_to_client[*Iter][0].erase(0, send_number);
 		else
 		{
@@ -261,10 +261,13 @@ void Server::Accept_if_serv_fd_changed()
 
 void Server::Act_if_readfd_changed(std::vector<int>::iterator &Iter)
 {
+	std::string buffer;
 	int recv_res;
 	char *buf = (char *) malloc(sizeof(char) * 576); //создаем буфер для чтения
 	recv_res = recv(*Iter, buf, 576, 0);
-	Input_handlers inputHandlers(buf);
+	if ((buffer = check_input_handler_buffer(buf, Iter)) == reinterpret_cast<const char *>(std::string::npos))
+		return ;
+	Input_handlers inputHandlers(buffer.c_str());
 #ifdef SERVER_DEBUG
 	inputHandlers.output();
 #endif

@@ -12,6 +12,7 @@ class Server
 		int _protocol;
 		fd_set _readfds;
 		fd_set _writefds;
+		std::map<int, std::string> _input_handler_buffer;
 		std::vector<int> _master_socket_fd;
 		std::vector<int> _read_socket_fd;
 		std::vector<int> _write_socket_fd;
@@ -38,5 +39,6 @@ class Server
 		~Server();
 		Server &operator=(const Server &);
 		void server_start();
+		std::string check_input_handler_buffer(const char *input_buffer, std::vector<int>::iterator &);
 };
 
