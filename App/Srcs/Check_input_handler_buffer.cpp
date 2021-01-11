@@ -1,13 +1,16 @@
-#include "Server.hpp"
+#include "../Server/Server.hpp"
 
-std::string Server::check_input_handler_buffer(const char *input_buffer, std::vector<int>::iterator &Iter)
+char *Server::check_input_handler_buffer(const char *input_buffer, std::vector<int>::iterator &Iter)
 {
+	char *tmp_return_buffer;
 	std::string check_buffer = input_buffer;
-	if (check_buffer.find("\r\n\r\n"))
+	if (check_buffer.find("\r\n\r\n") != std::string::npos)
 	{
 		if (_input_handler_buffer.find(*Iter) == _input_handler_buffer.end())
-			return check_buffer;
-		return _input_handler_buffer[*Iter] + check_buffer;
+			return strdup(check_buffer.c_str());
+		tmp_return_buffer = strdup((_input_handler_buffer[*Iter] + check_buffer).c_str());
+		_input_handler_buffer.erase(*Iter);
+		return tmp_return_buffer;
 	}
 	else
 	{
@@ -16,6 +19,6 @@ std::string Server::check_input_handler_buffer(const char *input_buffer, std::ve
 		else
 			_input_handler_buffer[*Iter] += check_buffer;
 	}
-	return reinterpret_cast<const char *>(std::string::npos);
+	return nullptr;
 }
 

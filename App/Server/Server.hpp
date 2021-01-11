@@ -39,6 +39,6 @@ class Server
 		~Server();
 		Server &operator=(const Server &);
 		void server_start();
-		std::string check_input_handler_buffer(const char *input_buffer, std::vector<int>::iterator &);
+		char *check_input_handler_buffer(const char *input_buffer, std::vector<int>::iterator &);
 };
 
