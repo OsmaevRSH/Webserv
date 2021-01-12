@@ -1,9 +1,9 @@
 #include "Server.hpp"
 
-Server::Server(const std::vector<ConfigParser::t_server> &servers_config, Config &config, int family, int type, int protocol)
+Server::Server(const std::vector<ConfigParser::t_server> &servers_config, Config &config, MIME & mime, int family, int type, int protocol)
 		: _family(family), _type(type), _protocol(protocol), _readfds(),
 		_writefds(), _master_socket_fd(0), _servers_config(servers_config),
-		_config(config)
+		_config(config), _mime(mime)
 {
 }
 
@@ -212,12 +212,12 @@ void Server::Check_write_set()
 	}
 }
 
-Input_handlers *Server::Reading_a_request(std::vector<int>::iterator &Iter)
+Parce_input_handler *Server::Reading_a_request(std::vector<int>::iterator &Iter)
 {
 	char *buffer_for_request;
 	char *output;
 	int request_size;
-	Input_handlers *inputHandlers;
+	Parce_input_handler *inputHandlers;
 
 	buffer_for_request = new char[576];
 	request_size = recv(*Iter, buffer_for_request, 575, 0);
@@ -239,7 +239,7 @@ Input_handlers *Server::Reading_a_request(std::vector<int>::iterator &Iter)
 		delete[] buffer_for_request;
 		return nullptr;
 	}
-	inputHandlers = new Input_handlers(output);
+	inputHandlers = new Parce_input_handler(output);
 	if ((inputHandlers->getVariableHandlers().find("Connection") !=
 		 inputHandlers->getVariableHandlers().end() &&
 		 inputHandlers->getVariableHandlers().at("Connection") == "close"))

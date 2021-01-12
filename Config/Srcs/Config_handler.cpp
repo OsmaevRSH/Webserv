@@ -37,7 +37,7 @@ static void update_global_params(ConfigHandler::t_params &global_params, ConfigP
 	global_params.max_body_size = location.ew.max_body_size;
 }
 
-static bool check_slash(Input_handlers &handlers)
+static bool check_slash(Parce_input_handler &handlers)
 {
 	if (*handlers.getUrl().rbegin() == '/')
 		return true;
@@ -45,7 +45,7 @@ static bool check_slash(Input_handlers &handlers)
 }
 
 template<class T>
-static ConfigParser::t_location *check_simple_location(T &param, Input_handlers &handlers)
+static ConfigParser::t_location *check_simple_location(T &param, Parce_input_handler &handlers)
 {
 	std::vector<ConfigParser::t_location>::iterator it;
 	location_sort(param.locations);
@@ -63,7 +63,7 @@ static ConfigParser::t_location *check_simple_location(T &param, Input_handlers 
 }
 
 template<class T>
-static ConfigParser::t_location *check_path_with_complete_coincidence(T &param, Input_handlers &handlers)
+static ConfigParser::t_location *check_path_with_complete_coincidence(T &param, Parce_input_handler &handlers)
 {
 	std::vector<ConfigParser::t_location>::iterator it;
 	it = param.locations.begin();
@@ -79,7 +79,7 @@ static ConfigParser::t_location *check_path_with_complete_coincidence(T &param, 
 	return nullptr;
 }
 
-static bool search_file(ConfigHandler::t_params &params, Input_handlers &handlers)
+static bool search_file(ConfigHandler::t_params &params, Parce_input_handler &handlers)
 {
 	struct stat check = {};
 
@@ -97,7 +97,7 @@ static bool search_file(ConfigHandler::t_params &params, Input_handlers &handler
 	return false;
 }
 
-static bool search_folder(ConfigHandler::t_params &params, Input_handlers &handlers)
+static bool search_folder(ConfigHandler::t_params &params, Parce_input_handler &handlers)
 {
 	struct stat check = {};
 
@@ -109,7 +109,7 @@ static bool search_folder(ConfigHandler::t_params &params, Input_handlers &handl
 	return false;
 }
 
-bool search_index(ConfigHandler::t_params &global_params, Input_handlers &handlers)
+bool search_index(ConfigHandler::t_params &global_params, Parce_input_handler &handlers)
 {
 	struct stat check = {};
 	std::vector<std::string>::iterator it;
@@ -128,7 +128,7 @@ bool search_index(ConfigHandler::t_params &global_params, Input_handlers &handle
 	return false;
 }
 
-std::string Config::Handler(t_headers &headers, Input_handlers &handlers)
+std::string Config::Handler(t_headers &headers, Parce_input_handler &handlers)
 {
 	ConfigHandler::t_params	global_params;
 	ConfigParser::t_server	curent_server;
@@ -163,7 +163,7 @@ void Config::setup_global_params(ConfigHandler::t_params &global_params, ConfigP
 	global_params.max_body_size = _ew.max_body_size;
 }
 
-std::string Config::recursive_call_with_slash(Input_handlers &handlers, ConfigHandler::t_params &global_params)
+std::string Config::recursive_call_with_slash(Parce_input_handler &handlers, ConfigHandler::t_params &global_params)
 {
 	if (search_folder(global_params, handlers))
 	{
@@ -175,7 +175,7 @@ std::string Config::recursive_call_with_slash(Input_handlers &handlers, ConfigHa
 		return _error_pages[404];
 }
 
-std::string Config::recursive_call_without_slash(Input_handlers &handlers, ConfigHandler::t_params &global_params)
+std::string Config::recursive_call_without_slash(Parce_input_handler &handlers, ConfigHandler::t_params &global_params)
 {
 	if (search_file(global_params, handlers))
 	{
@@ -188,7 +188,7 @@ std::string Config::recursive_call_without_slash(Input_handlers &handlers, Confi
 }
 
 template<class T>
-std::string Config::get_path(T &param, Input_handlers &handlers, ConfigHandler::t_params &global_params)
+std::string Config::get_path(T &param, Parce_input_handler &handlers, ConfigHandler::t_params &global_params)
 {
 	ConfigParser::t_location *location;
 	std::string tmp;

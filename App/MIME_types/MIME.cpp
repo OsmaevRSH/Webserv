@@ -13,12 +13,12 @@ MIME::MIME()
 	for (std::string line; getline(mime_file, line);)
 	{
 		it = line.find(' ');
-		_mime_types.insert(std::pair<std::string, std::string>(line.substr(0, it), line.substr(it)));
+		_mime_types.insert(std::pair<std::string, std::string>(line.substr(0, it), line.substr(it + 1)));
 	}
 	mime_file.close();
 }
 
-std::string MIME::get_document_types(const std::string &path) const
+std::string MIME::get_document_types(const std::string &path)
 {
 	size_t pos;
 

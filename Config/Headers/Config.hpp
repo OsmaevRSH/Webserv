@@ -12,7 +12,7 @@
 
 #pragma once
 #include "master.hpp"
-#include "Input_handlers.hpp"
+#include "../../App/Parce_input_handlers/Parce_input_handler.hpp"
 
 namespace ConfigParser
 {
@@ -100,22 +100,22 @@ class Config
 		//func for config_handlers
 		ConfigParser::t_server get_server(t_headers &);
 		template<class T>
-		std::string get_path(T &, Input_handlers &, ConfigHandler::t_params &);
+		std::string get_path(T &, Parce_input_handler &, ConfigHandler::t_params &);
 		void setup_global_params(ConfigHandler::t_params &global_params, ConfigParser::t_server &, bool);
-		std::string recursive_call_with_slash(Input_handlers &handlers, ConfigHandler::t_params &global_params);
-		std::string recursive_call_without_slash(Input_handlers &handlers, ConfigHandler::t_params &global_params);
-		friend bool search_index(ConfigHandler::t_params &global_params, Input_handlers &handlers);
+		std::string recursive_call_with_slash(Parce_input_handler &handlers, ConfigHandler::t_params &global_params);
+		std::string recursive_call_without_slash(Parce_input_handler &handlers, ConfigHandler::t_params &global_params);
+		friend bool search_index(ConfigHandler::t_params &global_params, Parce_input_handler &handlers);
 
-		bool check_allow_metods(const ConfigHandler::t_params &, Input_handlers &);
+		bool check_allow_metods(const ConfigHandler::t_params &, Parce_input_handler &);
 
 		//autoindex
-		static std::string create_autoindex_page(ConfigHandler::t_params &, Input_handlers &);
+		static std::string create_autoindex_page(ConfigHandler::t_params &, Parce_input_handler &);
 	public:
 		Config(const std::string& path_to_config);
 		const std::vector<ConfigParser::t_server> &getServers() const;
 		const std::map<int, std::string> &getErrorPages() const;
 		const ConfigParser::t_everywhere &getEw() const;
 
-		std::string Handler(t_headers &headers, Input_handlers &handlers);
+		std::string Handler(t_headers &headers, Parce_input_handler &handlers);
 };
 

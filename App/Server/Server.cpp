@@ -51,7 +51,7 @@ void Server::Act_if_writefd_changed(std::vector<int>::iterator &Iter)
 void Server::Act_if_readfd_changed(std::vector<int>::iterator &Iter)
 {
 	std::vector<std::string> tmp;
-	Input_handlers *inputHandlers;
+	Parce_input_handler *inputHandlers;
 	std::string handler;
 	std::string body;
 

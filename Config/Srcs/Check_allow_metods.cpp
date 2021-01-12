@@ -1,6 +1,6 @@
 #include "Config.hpp"
 
-bool Config::check_allow_metods(const ConfigHandler::t_params &param, Input_handlers &handlers)
+bool Config::check_allow_metods(const ConfigHandler::t_params &param, Parce_input_handler &handlers)
 {
 	if (param.allow_methods.empty())
 		return false;
