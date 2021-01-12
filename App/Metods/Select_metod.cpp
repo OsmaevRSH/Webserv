@@ -1,6 +1,7 @@
-#include "../Parce_input_handlers/Parce_input_handler.hpp"
+#include "Parse_input_handler.hpp"
+#include "Server.hpp"
 
-void Method_selector(Parce_input_handler &inputHandlers, std::string &handler, std::string &body)
+void Server::Method_selector(const Parse_input_handler &inputHandlers, std::string &handler, std::string &body)
 {
 	if (inputHandlers.getType() == "GET")
 	{}

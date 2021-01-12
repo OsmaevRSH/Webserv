@@ -1,15 +1,7 @@
-//
-// Created by Ruslan Osmaew on 1/12/21.
-//
+#pragma once
 
-#ifndef WEBSERV_GET_HPP
-#define WEBSERV_GET_HPP
+#include "../Search_path(BASE)/Path_to_file.hpp"
 
-
-class GET
+class GET : public Path_to_file
 {
-
 };
-
-
-#endif //WEBSERV_GET_HPP

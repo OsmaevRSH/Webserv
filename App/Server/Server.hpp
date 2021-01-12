@@ -1,9 +1,25 @@
 #pragma once
 
-#include "../Parce_input_handlers/Parce_input_handler.hpp"
+#include "Parse_input_handler.hpp"
 #include "master.hpp"
 #include "Config.hpp"
 #include "MIME.hpp"
+
+typedef std::vector<ConfigParser::t_server> serv_vec;
+typedef std::map<int, std::string> errp_map;
+typedef ConfigParser::t_everywhere ew_str;
+typedef std::map<std::string, std::string> cache;
+
+struct Serv_conf
+{
+	serv_vec _servers;
+	errp_map _error_pages;
+	ew_str _ew;
+	cache _cache;
+
+	Serv_conf(const serv_vec &servers, const errp_map &errorPages, const ew_str &ew)
+			: _servers(servers), _error_pages(errorPages), _ew(ew) {}
+};
 
 class Server
 {
@@ -13,15 +29,14 @@ class Server
 		int _protocol;
 		fd_set _readfds;
 		fd_set _writefds;
-		Config _config;
+		Serv_conf _config;
 		MIME _mime;
 		std::vector<int> _read_socket_fd;
 		std::vector<int> _write_socket_fd;
 		std::vector<int> _master_socket_fd;
-		std::vector<ConfigParser::t_server> _servers_config;
 		std::map<int, std::string> _input_handler_buffer;
 		std::map<int, std::vector<std::string> > _request_to_client;
-
+	private:
 		void Socket();
 		void Bind();
 		void Listen() const;
@@ -37,13 +52,12 @@ class Server
 		void Act_if_writefd_changed(std::vector<int>::iterator &);
 		void Check_read_set();
 		void Check_write_set();
-		Parce_input_handler *Reading_a_request(std::vector<int>::iterator &Iter);
-		char *check_input_handler_buffer(const char *input_buffer, std::vector<int>::iterator &);
+		Parse_input_handler *Reading_a_request(std::vector<int>::iterator &Iter);
+		char *check_input_handler_buffer(char *input_buffer, std::vector<int>::iterator &);
+		void Method_selector(const Parse_input_handler &inputHandlers, std::string &handler, std::string &body);
 	public:
-		explicit Server(const std::vector<ConfigParser::t_server> &, Config &, MIME &, int family = AF_INET, int type = SOCK_STREAM, int protocol = 0);
-		Server(const Server &);
+		explicit Server(const serv_vec &, const errp_map &, const ew_str &, MIME &, int family = AF_INET, int type = SOCK_STREAM, int protocol = 0);
 		~Server();
-		Server &operator=(const Server &);
 		void server_start();
 };
 

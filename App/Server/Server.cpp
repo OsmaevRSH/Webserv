@@ -51,7 +51,7 @@ void Server::Act_if_writefd_changed(std::vector<int>::iterator &Iter)
 void Server::Act_if_readfd_changed(std::vector<int>::iterator &Iter)
 {
 	std::vector<std::string> tmp;
-	Parce_input_handler *inputHandlers;
+	Parse_input_handler *inputHandlers;
 	std::string handler;
 	std::string body;
 
@@ -60,14 +60,14 @@ void Server::Act_if_readfd_changed(std::vector<int>::iterator &Iter)
 #ifdef SERVER_DEBUG
 	inputHandlers.output();
 #endif
-//	Method_selector(*inputHandlers, handler, body);
-	std::string file = _config.Handler(inputHandlers->getHandlers(), *inputHandlers);
-//	tmp.push_back(handler);
-//	tmp.push_back(body);
-	tmp.push_back(
-			"HTTP/1.1 200 OK\r\nContent-type: text/html\r\nContent-Length: " +
-			std::to_string(file.size()) + "\r\n\r\n");
-	tmp.push_back(file);
+	Method_selector(*inputHandlers, handler, body);
+//	std::string file = _config.Handler(inputHandlers->getHandlers(), *inputHandlers);
+	tmp.push_back(handler);
+	tmp.push_back(body);
+//	tmp.push_back(
+//			"HTTP/1.1 200 OK\r\nContent-type: text/html\r\nContent-Length: " +
+//			std::to_string(file.size()) + "\r\n\r\n");
+//	tmp.push_back(file);
 	_request_to_client.insert(std::pair<int, std::vector<std::string> >(*Iter, tmp));
 	_write_socket_fd.push_back(*Iter);
 	Iter = _read_socket_fd.erase(Iter);

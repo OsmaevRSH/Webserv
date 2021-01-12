@@ -12,7 +12,8 @@
 
 #pragma once
 #include "master.hpp"
-#include "../../App/Parce_input_handlers/Parce_input_handler.hpp"
+#include "Parse_input_handler.hpp"
+#include "../../App/Metods/Search_path(BASE)/Path_to_file.hpp"
 
 namespace ConfigParser
 {
@@ -68,29 +69,12 @@ namespace ConfigParser
 	}								t_args;
 }
 
-namespace ConfigHandler
-{
-	typedef struct					s_params
-	{
-		ConfigParser::t_server		root_location;
-		std::string 				path_to_page;
-		std::vector<std::string>	allow_methods;
-		std::vector<std::string>	index;
-		std::string					root;
-		bool						autoindex;
-		int 						max_body_size;
-		std::string					autoindex_page;
-	}								t_params;
-}
-
 class Config
 {
 	private:
 		std::vector<ConfigParser::t_server>				_servers;
 		std::map<int, std::string>						_error_pages; // Ключ - номер страницы. Значение - путь
 		ConfigParser::t_everywhere						_ew;
-
-		std::map<std::string, std::string>				___cache;	//Ключ - url, значение - путь
 
 		void parse_server();
 		void parse_location();
@@ -100,25 +84,11 @@ class Config
 		void location_parse(ConfigParser::t_args args);
 		void error_page_parse(ConfigParser::t_args args);
 
-		//func for config_handlers
-		ConfigParser::t_server get_server(t_headers &);
-		template<class T>
-		std::string get_path(T &, Parce_input_handler &, ConfigHandler::t_params &);
-		void setup_global_params(ConfigHandler::t_params &global_params, ConfigParser::t_server &, bool);
-		std::string recursive_call_with_slash(Parce_input_handler &handlers, ConfigHandler::t_params &global_params);
-		std::string recursive_call_without_slash(Parce_input_handler &handlers, ConfigHandler::t_params &global_params);
-		friend bool search_index(ConfigHandler::t_params &global_params, Parce_input_handler &handlers);
-
-		bool check_allow_metods(const ConfigHandler::t_params &, Parce_input_handler &);
-
-		//autoindex
-		static std::string create_autoindex_page(ConfigHandler::t_params &, Parce_input_handler &);
 	public:
 		Config(const std::string& path_to_config);
 		const std::vector<ConfigParser::t_server> &getServers() const;
 		const std::map<int, std::string> &getErrorPages() const;
 		const ConfigParser::t_everywhere &getEw() const;
 
-		std::string Handler(t_headers &headers, Parce_input_handler &handlers);
 };
 

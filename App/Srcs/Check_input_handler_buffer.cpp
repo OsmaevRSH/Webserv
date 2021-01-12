@@ -1,6 +1,6 @@
 #include "../Server/Server.hpp"
 
-char *Server::check_input_handler_buffer(const char *input_buffer, std::vector<int>::iterator &Iter)
+char *Server::check_input_handler_buffer(char *input_buffer, std::vector<int>::iterator &Iter)
 {
 	char *tmp_return_buffer;
 	std::string check_buffer = input_buffer;

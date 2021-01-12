@@ -11,7 +11,7 @@ int main()
 #ifdef TESTER
 	Config config("./App/Test/conf_for_tester");
 #endif
-	Server server(config.getServers(), config, mime);
+	Server server(config.getServers(), config.getErrorPages(), config.getEw(), mime);
 	server.server_start();
 	return 0;
 }

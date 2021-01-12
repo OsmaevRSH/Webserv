@@ -1,40 +1,15 @@
 #include "Server.hpp"
 
-Server::Server(const std::vector<ConfigParser::t_server> &servers_config, Config &config, MIME & mime, int family, int type, int protocol)
-		: _family(family), _type(type), _protocol(protocol), _readfds(),
-		_writefds(), _master_socket_fd(0), _servers_config(servers_config),
-		_config(config), _mime(mime)
-{
-}
+Server::Server(const serv_vec &serv, const errp_map &err, const ew_str &ew, MIME &mime, int family, int type, int protocol)
+		: _config(serv, err, ew), _type(type), _family(family),
+		_protocol(protocol), _readfds(), _writefds(), _mime(mime) {}
 
-Server::Server(const Server &copy)
-		: _family(copy._family), _type(copy._type), _protocol(copy._protocol),
-		_readfds(), _writefds(), _master_socket_fd(copy._master_socket_fd),
-		_read_socket_fd(copy._read_socket_fd),
-		_servers_config(copy._servers_config), _config(copy._config)
-{
-}
-
-Server::~Server()
-{
-}
-
-Server &Server::operator=(const Server &copy)
-{
-	_family = copy._family;
-	_type = copy._type;
-	_protocol = copy._protocol;
-	_master_socket_fd = copy._master_socket_fd;
-	_read_socket_fd = copy._read_socket_fd;
-	_servers_config = copy._servers_config;
-	_config = copy._config;
-	return *this;
-}
+Server::~Server() {}
 
 void Server::Socket()
 {
-	_master_socket_fd.reserve(_servers_config.size());
-	for (int i = 0; i < static_cast<int>(_servers_config.size()); ++i)
+	_master_socket_fd.reserve(_config._servers.size());
+	for (int i = 0; i < static_cast<int>(_config._servers.size()); ++i)
 	{
 		_master_socket_fd.push_back(socket(_family, _type, _protocol));
 		if (*_master_socket_fd.rbegin() == -1)
@@ -50,7 +25,7 @@ void Server::Bind()
 {
 	std::vector<ConfigParser::s_server>::iterator Iter;
 	std::vector<int>::iterator Iter_fd;
-	Iter = _servers_config.begin();
+	Iter = _config._servers.begin();
 	Iter_fd = _master_socket_fd.begin();
 #ifdef SERVER_IP_DEBUG
 	int i = 0;
@@ -58,7 +33,7 @@ void Server::Bind()
 	int bind_res;
 	struct sockaddr_in addr = {};
 
-	for (; Iter < _servers_config.end(); ++Iter, ++Iter_fd)
+	for (; Iter < _config._servers.end(); ++Iter, ++Iter_fd)
 	{
 		bzero(&addr, sizeof(addr));
 		addr.sin_family = _family;
@@ -212,12 +187,12 @@ void Server::Check_write_set()
 	}
 }
 
-Parce_input_handler *Server::Reading_a_request(std::vector<int>::iterator &Iter)
+Parse_input_handler *Server::Reading_a_request(std::vector<int>::iterator &Iter)
 {
 	char *buffer_for_request;
 	char *output;
 	int request_size;
-	Parce_input_handler *inputHandlers;
+	Parse_input_handler *inputHandlers;
 
 	buffer_for_request = new char[576];
 	request_size = recv(*Iter, buffer_for_request, 575, 0);
@@ -239,7 +214,7 @@ Parce_input_handler *Server::Reading_a_request(std::vector<int>::iterator &Iter)
 		delete[] buffer_for_request;
 		return nullptr;
 	}
-	inputHandlers = new Parce_input_handler(output);
+	inputHandlers = new Parse_input_handler(output);
 	if ((inputHandlers->getVariableHandlers().find("Connection") !=
 		 inputHandlers->getVariableHandlers().end() &&
 		 inputHandlers->getVariableHandlers().at("Connection") == "close"))
