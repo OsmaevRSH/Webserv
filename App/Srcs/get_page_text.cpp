@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "shared.hpp"
+#include "master.hpp"
 
 std::string get_page_text(const std::string &path_to_file)
 {

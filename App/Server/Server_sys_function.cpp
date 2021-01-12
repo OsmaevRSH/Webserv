@@ -1,14 +1,15 @@
 #include "Server.hpp"
 
 Server::Server(const std::vector<ConfigParser::t_server> &servers_config, Config &config, int family, int type, int protocol)
-		: _family(family), _type(type), _protocol(protocol),
-		_master_socket_fd(0), _servers_config(servers_config), _config(config)
+		: _family(family), _type(type), _protocol(protocol), _readfds(),
+		_writefds(), _master_socket_fd(0), _servers_config(servers_config),
+		_config(config)
 {
 }
 
 Server::Server(const Server &copy)
 		: _family(copy._family), _type(copy._type), _protocol(copy._protocol),
-		_master_socket_fd(copy._master_socket_fd),
+		_readfds(), _writefds(), _master_socket_fd(copy._master_socket_fd),
 		_read_socket_fd(copy._read_socket_fd),
 		_servers_config(copy._servers_config), _config(copy._config)
 {
@@ -167,4 +168,87 @@ void Server::Search_max_fd(int &max_fd)
 		master_max = *(std::max_element(_master_socket_fd.begin(), _master_socket_fd.end()));
 	max_fd = std::max(read_max, write_max);
 	max_fd = std::max(max_fd, master_max);
+}
+
+void Server::Checkout_call_to_select(const int &res)
+{
+	if (res <= 0)
+	{
+		if (errno != EINTR)
+		{
+			perror("Select error");
+			exit(1);
+		}
+		else
+			exit(0);
+	}
+}
+
+void Server::Check_read_set()
+{
+	std::vector<int>::iterator Iter;
+
+	Iter = _read_socket_fd.begin();
+	while (Iter != _read_socket_fd.end())
+	{
+		if (FD_ISSET(*Iter, &_readfds))
+			Act_if_readfd_changed(Iter);
+		else
+			++Iter;
+	}
+}
+
+void Server::Check_write_set()
+{
+	std::vector<int>::iterator Iter;
+
+	Iter = _write_socket_fd.begin();
+	while (Iter != _write_socket_fd.end())
+	{
+		if (FD_ISSET(*Iter, &_writefds))
+			Act_if_writefd_changed(Iter);
+		else
+			++Iter;
+	}
+}
+
+Input_handlers *Server::Reading_a_request(std::vector<int>::iterator &Iter)
+{
+	char *buffer_for_request;
+	char *output;
+	int request_size;
+	Input_handlers *inputHandlers;
+
+	buffer_for_request = new char[576];
+	request_size = recv(*Iter, buffer_for_request, 575, 0);
+	if (request_size == 0 &&
+		_request_to_client.find(*Iter) == _request_to_client.end())
+	{
+		close(*Iter);
+		Iter = _read_socket_fd.erase(Iter);
+		delete[] buffer_for_request;
+		return nullptr;
+	}
+	if (request_size > 0)
+		buffer_for_request[request_size] = '\0';
+	if (request_size == -1 ||
+		(output = check_input_handler_buffer(buffer_for_request, Iter)) ==
+		nullptr)
+	{
+		++Iter;
+		delete[] buffer_for_request;
+		return nullptr;
+	}
+	inputHandlers = new Input_handlers(output);
+	if ((inputHandlers->getVariableHandlers().find("Connection") !=
+		 inputHandlers->getVariableHandlers().end() &&
+		 inputHandlers->getVariableHandlers().at("Connection") == "close"))
+	{
+		close(*Iter);
+		Iter = _read_socket_fd.erase(Iter);
+		delete[] buffer_for_request;
+		return nullptr;
+	}
+	delete[] buffer_for_request;
+	return inputHandlers;
 }

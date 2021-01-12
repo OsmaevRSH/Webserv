@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #pragma once
-#include "shared.hpp"
+#include "master.hpp"
 #include "Input_handlers.hpp"
 
 namespace ConfigParser

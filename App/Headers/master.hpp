@@ -24,12 +24,13 @@
 //#define AUTOINDEX_DEBUG
 //#define HANDLERS_DEBUG
 
-// For parser
+/* For parser */
 #include <cstdlib>
 #include <cstring>
 #include <string>
 #include <algorithm>
 
+class Input_handlers;
 typedef struct	s_headers
 {
 	std::string Accept_Charsets;
@@ -53,4 +54,4 @@ typedef struct	s_headers
 }				t_headers;
 
 std::string			get_page_text(const std::string& path_to_file);
-
+void				Method_selector(Input_handlers &inputHandlers, std::string &handler, std::string &body);
