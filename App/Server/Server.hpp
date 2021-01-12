@@ -1,8 +1,9 @@
 #pragma once
 
-#include "Input_handlers.hpp"
+#include "../Parce_input_handlers/Parce_input_handler.hpp"
 #include "master.hpp"
 #include "Config.hpp"
+#include "MIME.hpp"
 
 class Server
 {
@@ -13,6 +14,7 @@ class Server
 		fd_set _readfds;
 		fd_set _writefds;
 		Config _config;
+		MIME _mime;
 		std::vector<int> _read_socket_fd;
 		std::vector<int> _write_socket_fd;
 		std::vector<int> _master_socket_fd;
@@ -35,10 +37,10 @@ class Server
 		void Act_if_writefd_changed(std::vector<int>::iterator &);
 		void Check_read_set();
 		void Check_write_set();
-		Input_handlers *Reading_a_request(std::vector<int>::iterator &Iter);
+		Parce_input_handler *Reading_a_request(std::vector<int>::iterator &Iter);
 		char *check_input_handler_buffer(const char *input_buffer, std::vector<int>::iterator &);
 	public:
-		explicit Server(const std::vector<ConfigParser::t_server> &servers_config, Config &config, int family = AF_INET, int type = SOCK_STREAM, int protocol = 0);
+		explicit Server(const std::vector<ConfigParser::t_server> &, Config &, MIME &, int family = AF_INET, int type = SOCK_STREAM, int protocol = 0);
 		Server(const Server &);
 		~Server();
 		Server &operator=(const Server &);

@@ -1,25 +1,25 @@
-#include "Input_handlers.hpp"
+#include "Parce_input_handler.hpp"
 
-const std::string &Input_handlers::getType() const
+const std::string &Parce_input_handler::getType() const
 {
 	return _type;
 }
 
-const std::string &Input_handlers::getUrl() const
+const std::string &Parce_input_handler::getUrl() const
 {
 	return _url;
 }
 
-const std::string &Input_handlers::getProtocolType() const
+const std::string &Parce_input_handler::getProtocolType() const
 {
 	return _protocol_type;
 }
 
-Input_handlers::~Input_handlers()
+Parce_input_handler::~Parce_input_handler()
 {
 }
 
-Input_handlers &Input_handlers::operator=(const Input_handlers &copy)
+Parce_input_handler &Parce_input_handler::operator=(const Parce_input_handler &copy)
 {
 	_protocol_type = copy._protocol_type;
 	_type = copy._type;
@@ -28,11 +28,11 @@ Input_handlers &Input_handlers::operator=(const Input_handlers &copy)
 	return *this;
 }
 
-Input_handlers::Input_handlers(const Input_handlers &copy)
+Parce_input_handler::Parce_input_handler(const Parce_input_handler &copy)
 		: _url(copy._url), _type(copy._type),
 		_protocol_type(copy._protocol_type), _handlers(copy._handlers) {}
 
-Input_handlers::Input_handlers(const char *input)
+Parce_input_handler::Parce_input_handler(const char *input)
 {
 	Map_init();
 	std::vector<std::string>::iterator it;
@@ -70,7 +70,7 @@ Input_handlers::Input_handlers(const char *input)
 	}
 }
 
-void Input_handlers::parce_first_handler_string(std::string &tmp, std::string &handler)
+void Parce_input_handler::parce_first_handler_string(std::string &tmp, std::string &handler)
 {
 	size_t iter;
 
@@ -79,7 +79,7 @@ void Input_handlers::parce_first_handler_string(std::string &tmp, std::string &h
 	tmp.erase(0, iter + 1);
 }
 
-void Input_handlers::Map_init()
+void Parce_input_handler::Map_init()
 {
 	_config_list.insert(std::pair<std::string, std::string &>("Accept-Charsets", _handlers.Accept_Charsets));
 	_config_list.insert(std::pair<std::string, std::string &>("Accept-Language", _handlers.Accept_Language));
@@ -101,17 +101,17 @@ void Input_handlers::Map_init()
 	_config_list.insert(std::pair<std::string, std::string &>("WWW-Authenticate", _handlers.WWW_Authenticate));
 }
 
-t_headers &Input_handlers::getHandlers()
+t_headers &Parce_input_handler::getHandlers()
 {
 	return _handlers;
 }
 
-void Input_handlers::setUrl(const std::string &url)
+void Parce_input_handler::setUrl(const std::string &url)
 {
 	_url = url;
 }
 
-const std::map<std::string, std::string> &Input_handlers::getVariableHandlers() const
+const std::map<std::string, std::string> &Parce_input_handler::getVariableHandlers() const
 {
 	return _variable_handlers;
 }

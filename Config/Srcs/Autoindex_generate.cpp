@@ -1,6 +1,6 @@
 #include "Config.hpp"
 
-std::string Config::create_autoindex_page(ConfigHandler::t_params &params, Input_handlers &handler)
+std::string Config::create_autoindex_page(ConfigHandler::t_params &params, Parce_input_handler &handler)
 {
 	std::stringstream autoindex;
 	std::stringstream buff;

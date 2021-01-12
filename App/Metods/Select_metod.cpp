@@ -1,6 +1,6 @@
-#include "Input_handlers.hpp"
+#include "../Parce_input_handlers/Parce_input_handler.hpp"
 
-void Method_selector(Input_handlers &inputHandlers, std::string &handler, std::string &body)
+void Method_selector(Parce_input_handler &inputHandlers, std::string &handler, std::string &body)
 {
 	if (inputHandlers.getType() == "GET")
 	{}

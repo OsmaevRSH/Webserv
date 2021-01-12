@@ -2,7 +2,7 @@
 
 #include "master.hpp"
 
-class Input_handlers
+class Parce_input_handler
 {
 	private:
 		std::string _type;
@@ -13,10 +13,10 @@ class Input_handlers
 		t_headers _handlers;
 		std::map<std::string, std::string &> _config_list;
 	public:
-		explicit Input_handlers(const char *);
-		Input_handlers(const Input_handlers &);
-		Input_handlers &operator=(const Input_handlers &);
-		~Input_handlers();
+		explicit Parce_input_handler(const char *);
+		Parce_input_handler(const Parce_input_handler &);
+		Parce_input_handler &operator=(const Parce_input_handler &);
+		~Parce_input_handler();
 
 		t_headers &getHandlers();
 		static void parce_first_handler_string(std::string &, std::string &);
@@ -25,14 +25,4 @@ class Input_handlers
 		const std::string &getProtocolType() const;
 		void setUrl(const std::string &url);
 		const std::map<std::string, std::string> &getVariableHandlers() const;
-		void output() const
-		{
-			std::cout << "\nType: " << _type << "\nUrl: " << _url
-			   << "\nProtocol_type: " << _protocol_type << std::endl;
-			for (std::map<std::string, std::string>::const_iterator it = _variable_handlers.cbegin(); it != _variable_handlers.cend(); ++it)
-			{
-				std::cout << it->first << ": " << it->second << std::endl;
-			}
-			std::cout << std::endl;
-		}
 };

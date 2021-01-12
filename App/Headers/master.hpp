@@ -30,7 +30,7 @@
 #include <string>
 #include <algorithm>
 
-class Input_handlers;
+class Parce_input_handler;
 typedef struct	s_headers
 {
 	std::string Accept_Charsets;
@@ -54,4 +54,4 @@ typedef struct	s_headers
 }				t_headers;
 
 std::string			get_page_text(const std::string& path_to_file);
-void				Method_selector(Input_handlers &inputHandlers, std::string &handler, std::string &body);
+void				Method_selector(Parce_input_handler &inputHandlers, std::string &handler, std::string &body);
