@@ -316,7 +316,7 @@ void Config::					location_parse(t_args args) {
 }
 
 // Constructors
-Config::			Config(const std::string &path_to_config) {
+Config::						Config(const std::string &path_to_config) {
 	t_args args;
 	args.text = get_page_text(path_to_config);
 	args.ew = &_ew;
@@ -325,21 +325,70 @@ Config::			Config(const std::string &path_to_config) {
 }
 
 // Getters
-const std::vector<t_server> &Config::getServers() const {
+const std::vector<t_server> 	&Config::getServers() const {
 	return _servers;
 }
-const std::map<int, std::string> &Config::getErrorPages() const {
+const std::map<int, 			std::string> &Config::getErrorPages() const {
 	return _error_pages;
 }
-const t_everywhere &Config::getEw() const {
+const t_everywhere 				&Config::getEw() const {
 	return _ew;
 }
-t_server::			s_server() { port = 0; }
-t_everywhere::		s_everywhere() {
+
+t_server::						s_server() { port = 0; }
+t_server::						s_server(const s_server &copy)
+{
+	ip = copy.ip;
+	port = copy.port;
+	server_name = copy.server_name;
+	locations = copy.locations;
+	ew = copy.ew;
+}
+t_server 						&t_server::operator=(const struct s_server &copy)
+{
+	ip = copy.ip;
+	port = copy.port;
+	server_name = copy.server_name;
+	locations = copy.locations;
+	ew = copy.ew;
+}
+
+t_everywhere::					s_everywhere() {
 	max_body_size = 0;
 	autoindex = false;
 }
-t_location::			s_location() {}
+t_everywhere::					s_everywhere(const struct s_everywhere &copy)
+{
+	index = 		copy.index;
+	max_body_size = copy.max_body_size;
+	root = 			copy.root;
+	autoindex = 	copy.autoindex;
+}
+t_everywhere 					&t_everywhere::operator=(const struct s_everywhere &copy)
+{
+	index = 		copy.index;
+	max_body_size = copy.max_body_size;
+	root = 			copy.root;
+	autoindex = 	copy.autoindex;
+	return (*this);
+}
+
+t_location::					s_location() {}
+t_location::					s_location(const struct s_location &copy)
+{
+	block_args = copy.block_args;
+	allow_methods = copy.allow_methods;
+	locations = copy.locations;
+	ew = copy.ew;
+}
+t_location 						&t_location::operator=(const struct s_location &copy)
+{
+	block_args = copy.block_args;
+	allow_methods = copy.allow_methods;
+	locations = copy.locations;
+	ew = copy.ew;
+}
+
 t_args::			s_args() {
 	base_pos = 0;
 	rel_pos = 0;
