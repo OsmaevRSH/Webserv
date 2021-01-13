@@ -7,7 +7,7 @@ bool check_slash(Parse_input_handler &handlers)
 	return false;
 }
 
-bool search_index(t_params &global_params, Parse_input_handler &handlers)
+bool Path::search_index(t_params &global_params, Parse_input_handler &handlers)
 {
 	struct stat check = {};
 	std::vector<std::string>::iterator it;
@@ -22,7 +22,7 @@ bool search_index(t_params &global_params, Parse_input_handler &handlers)
 		}
 	}
 	if (global_params.autoindex)
-		global_params.autoindex_page = Path::create_autoindex_page(global_params, handlers);
+		_output.autoindex_page = Path::create_autoindex_page(global_params, handlers);
 	return false;
 }
 
@@ -149,24 +149,23 @@ void Path::setup_global_params(t_params &global_params, t_server &server, bool s
 	global_params.max_body_size = _config._ew.max_body_size;
 }
 
-std::string Path::recursive_call_with_slash(Parse_input_handler &handlers, t_params &global_params)
+void Path::recursive_call_with_slash(Parse_input_handler &handlers, t_params &global_params)
 {
-	if (search_folder(global_params, handlers) && search_index(global_params, handlers))
+	if (search_folder(global_params, handlers) && Path::search_index(global_params, handlers))
 		return Path::get_path(global_params.root_location, handlers, global_params);
 	_output.status_code = 404;
-	return _config._error_pages[404];
 }
 
-std::string Path::recursive_call_without_slash(Parse_input_handler &handlers, t_params &global_params)
+void Path::recursive_call_without_slash(Parse_input_handler &handlers, t_params &global_params)
 {
 	if (search_file(global_params, handlers))
 	{
 		if (check_slash(handlers))
 			return Path::get_path(global_params.root_location, handlers, global_params);
-		return global_params.root + handlers.getUrl();
+		_output.path_to_file =  global_params.root + handlers.getUrl();
 	}
 	else
-		return _config._error_pages[404];
+		_output.status_code = 404;
 }
 
 void Path::check_allow_metods(const t_params &param, Parse_input_handler &handlers)
@@ -191,17 +190,14 @@ void Path::Search_path()
 	setup_global_params(global_params, curent_server, false);
 	curent_server = get_server();
 	setup_global_params(global_params, curent_server, true);
-	_output.path_to_file = get_path(curent_server, _handler, global_params);
+	get_path(curent_server, _handler, global_params);
 	check_allow_metods(global_params, _handler);
-	if (!global_params.autoindex_page.empty())
-		_output.autoindex_page = global_params.autoindex_page;
 }
 
 template<class T>
-std::string Path::get_path(T &param, Parse_input_handler &handlers, t_params &global_params)
+void Path::get_path(T &param, Parse_input_handler &handlers, t_params &global_params)
 {
 	t_location	*location;
-	std::string	tmp;
 
 	if (check_slash(handlers))
 	{
@@ -218,9 +214,7 @@ std::string Path::get_path(T &param, Parse_input_handler &handlers, t_params &gl
 			_output.attached_location = true;
 			Path::get_path(*location, handlers, global_params);
 			if (!_output.attached_location)
-			/*if ((_output.attached_location = true) && (tmp = Path::get_path(*location, handlers, global_params)) == _config._error_pages[404])*/
 				return Path::recursive_call_with_slash(handlers, global_params);
-/*			return tmp;*/
 		}
 		else
 		{
@@ -228,7 +222,6 @@ std::string Path::get_path(T &param, Parse_input_handler &handlers, t_params &gl
 				_output.status_code = 404;
 			else
 				_output.attached_location = false;
-			return _config._error_pages[404];
 		}
 	}
 	else
@@ -243,14 +236,17 @@ std::string Path::get_path(T &param, Parse_input_handler &handlers, t_params &gl
 			update_global_params(global_params, *location);
 			if (location->locations.empty())
 				return Path::recursive_call_without_slash(handlers, global_params);
-			if ((tmp = Path::get_path(*location, handlers, global_params)) == _config._error_pages[404])
+			_output.attached_location = true;
+			Path::get_path(*location, handlers, global_params);
+			if (!_output.attached_location)
 				return Path::recursive_call_without_slash(handlers, global_params);
-			return tmp;
 		}
 		else
 		{
-			_output.status_code = 404;
-			return _config._error_pages[404];
+			if (!_output.attached_location)
+				_output.status_code = 404;
+			else
+				_output.attached_location = false;
 		}
 	}
 }

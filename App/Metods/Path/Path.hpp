@@ -38,9 +38,10 @@ class Path
 		void setup_global_params(t_params &global_params, t_server &server, bool save_server) const;
 		void check_allow_metods(const t_params &param, Parse_input_handler &handlers);
 		template<class T>
-		std::string get_path(T &param, Parse_input_handler &handlers, t_params &global_params);
-		std::string recursive_call_with_slash(Parse_input_handler &handlers, t_params &global_params);
-		std::string recursive_call_without_slash(Parse_input_handler &handlers, t_params &global_params);
+		void get_path(T &param, Parse_input_handler &handlers, t_params &global_params);
+		void recursive_call_with_slash(Parse_input_handler &handlers, t_params &global_params);
+		void recursive_call_without_slash(Parse_input_handler &handlers, t_params &global_params);
+		bool search_index(t_params &global_params, Parse_input_handler &handlers);
 	public:
 		Path(const Serv_conf &conf, const Parse_input_handler &handler);
 		~Path();
