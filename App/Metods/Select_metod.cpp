@@ -26,7 +26,7 @@ void Server::Method_selector(const Parse_input_handler &inputHandlers, std::stri
 	{}
 	else
 	{
-		std::cerr << "Error: Invalid method\n";
+		std::cerr << "|" << inputHandlers.getType() << "|" << " Error: Invalid method\n";
 		exit(EXIT_FAILURE);
 	}
 }
