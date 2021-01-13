@@ -11,7 +11,6 @@ class Parse_input_handler
 		std::map<std::string, std::string> _variable_handlers;
 	public:
 		explicit Parse_input_handler(const char *);
-		Parse_input_handler(const Parse_input_handler &);
 		Parse_input_handler &operator=(const Parse_input_handler &);
 		~Parse_input_handler();
 

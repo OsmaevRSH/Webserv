@@ -1,6 +1,7 @@
 #include "Config.hpp"
+#include "Path/Path.hpp"
 
-std::string Path_to_file::create_autoindex_page(ConfigHandler::t_params &params, Parse_input_handler &handler)
+ std::string Path::create_autoindex_page(t_params &params, Parse_input_handler &handler)
 {
 	std::stringstream autoindex;
 	std::stringstream buff;

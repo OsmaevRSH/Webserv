@@ -1,7 +1,9 @@
 #pragma once
 
-#include "../Search_path(BASE)/Path_to_file.hpp"
+#include "../Path/Path.hpp"
 
-class GET : public Path_to_file
+class GET : public Path
 {
+	public:
+		GET(const Serv_conf &, const Parse_input_handler &);
 };

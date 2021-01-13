@@ -13,7 +13,6 @@
 #pragma once
 #include "master.hpp"
 #include "Parse_input_handler.hpp"
-#include "../../App/Metods/Search_path(BASE)/Path_to_file.hpp"
 
 namespace ConfigParser
 {
@@ -25,8 +24,6 @@ namespace ConfigParser
 		bool						autoindex;
 
 		s_everywhere();
-		s_everywhere(const struct s_everywhere &copy);
-		struct s_everywhere &operator=(const struct s_everywhere &copy);
 	}							t_everywhere;
 	typedef struct					s_location
 	{
@@ -36,8 +33,6 @@ namespace ConfigParser
 		t_everywhere				ew;
 
 		s_location();
-		s_location(const struct s_location &copy);
-		struct s_location &operator=(const struct s_location &copy);
 	}								t_location;
 	typedef struct					s_server
 	{
@@ -47,8 +42,6 @@ namespace ConfigParser
 		std::vector<ConfigParser::t_location>		locations;
 		ConfigParser::t_everywhere				ew;
 		s_server();
-		s_server(const s_server &copy);
-		struct s_server &operator=(const struct s_server &copy);
 	}								t_server;
 	typedef struct					s_args
 	{
@@ -65,7 +58,6 @@ namespace ConfigParser
 		std::vector<std::string>	server_context;
 		bool 						debug;
 		s_args();
-		//s_args(const s_args &copy);
 	}								t_args;
 }
 

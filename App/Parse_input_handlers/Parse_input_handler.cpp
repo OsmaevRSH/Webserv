@@ -22,9 +22,6 @@ Parse_input_handler &Parse_input_handler::operator=(const Parse_input_handler &c
 	return *this;
 }
 
-Parse_input_handler::Parse_input_handler(const Parse_input_handler &copy)
-		: _url(copy._url), _type(copy._type),
-		_protocol_type(copy._protocol_type) {}
 
 Parse_input_handler::Parse_input_handler(const char *input)
 {
