@@ -1,21 +1,21 @@
 #pragma once
 
 #include "Parse_input_handler.hpp"
-#include "master.hpp"
+#include "../Main/master.hpp"
 #include "Config.hpp"
 #include "MIME.hpp"
 
 typedef std::vector<ConfigParser::t_server> serv_vec;
 typedef std::map<int, std::string> errp_map;
 typedef ConfigParser::t_everywhere ew_str;
-typedef std::map<std::string, std::string> cache;
+//typedef std::map<std::string, std::string> cache;
 
 struct Serv_conf
 {
 	serv_vec _servers;
 	errp_map _error_pages;
 	ew_str _ew;
-	cache _cache;
+//	cache _cache;
 
 	Serv_conf(const serv_vec &servers, const errp_map &errorPages, const ew_str &ew)
 			: _servers(servers), _error_pages(errorPages), _ew(ew) {}

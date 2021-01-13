@@ -33,4 +33,3 @@
 class Parse_input_handler;
 
 std::string			get_page_text(const std::string& path_to_file);
-void				Method_selector(Parse_input_handler &inputHandlers, std::string &handler, std::string &body);

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "master.hpp"
+#include "../Main/master.hpp"
 
 class MIME
 {

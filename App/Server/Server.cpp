@@ -61,14 +61,31 @@ void Server::Act_if_readfd_changed(std::vector<int>::iterator &Iter)
 	inputHandlers.output();
 #endif
 	Method_selector(*inputHandlers, handler, body);
-//	std::string file = _config.Handler(inputHandlers->getHandlers(), *inputHandlers);
 	tmp.push_back(handler);
 	tmp.push_back(body);
-//	tmp.push_back(
-//			"HTTP/1.1 200 OK\r\nContent-type: text/html\r\nContent-Length: " +
-//			std::to_string(file.size()) + "\r\n\r\n");
-//	tmp.push_back(file);
 	_request_to_client.insert(std::pair<int, std::vector<std::string> >(*Iter, tmp));
 	_write_socket_fd.push_back(*Iter);
 	Iter = _read_socket_fd.erase(Iter);
+}
+
+char *Server::check_input_handler_buffer(char *input_buffer, std::vector<int>::iterator &Iter)
+{
+	char *tmp_return_buffer;
+	std::string check_buffer = input_buffer;
+	if (check_buffer.find("\r\n\r\n") != std::string::npos)
+	{
+		if (_input_handler_buffer.find(*Iter) == _input_handler_buffer.end())
+			return strdup(check_buffer.c_str());
+		tmp_return_buffer = strdup((_input_handler_buffer[*Iter] + check_buffer).c_str());
+		_input_handler_buffer.erase(*Iter);
+		return tmp_return_buffer;
+	}
+	else
+	{
+		if (_input_handler_buffer.find(*Iter) == _input_handler_buffer.end())
+			_input_handler_buffer.insert(std::pair<int, std::string>(*Iter, check_buffer));
+		else
+			_input_handler_buffer[*Iter] += check_buffer;
+	}
+	return nullptr;
 }

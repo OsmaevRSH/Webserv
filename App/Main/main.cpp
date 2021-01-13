@@ -1,4 +1,4 @@
-#include "../Server/Server.hpp"
+#include "Server.hpp"
 #include "Config.hpp"
 #include "MIME.hpp"
 

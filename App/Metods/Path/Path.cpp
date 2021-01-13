@@ -116,9 +116,9 @@ bool search_file(t_params &params, Parse_input_handler &handlers)
 	return false;
 }
 
-ConfigParser::t_server Path::get_server()
+t_server Path::get_server()
 {
-	std::vector<ConfigParser::t_server>::iterator it;
+	std::vector<t_server>::iterator it;
 	it = _config._servers.begin();
 	for (; it < _config._servers.end(); ++it)
 	{
@@ -130,7 +130,7 @@ ConfigParser::t_server Path::get_server()
 				return *it;
 			}
 		}
-		if (it->ip + std::to_string(it->port) == _handler.getVariableHandlers().at("HOST"))
+		if (it->ip + std::to_string(it->port) == _handler.getVariableHandlers().at("Host"))
 		{
 			return *it;
 		}
@@ -139,7 +139,7 @@ ConfigParser::t_server Path::get_server()
 	exit(EXIT_FAILURE); //TODO
 }
 
-void Path::setup_global_params(t_params &global_params, ConfigParser::t_server &server, bool save_server)
+void Path::setup_global_params(t_params &global_params, t_server &server, bool save_server) const
 {
 	if (save_server)
 		global_params.root_location = server;
@@ -151,14 +151,10 @@ void Path::setup_global_params(t_params &global_params, ConfigParser::t_server &
 
 std::string Path::recursive_call_with_slash(Parse_input_handler &handlers, t_params &global_params)
 {
-	if (search_folder(global_params, handlers))
-	{
-		if (search_index(global_params, handlers))
-			return Path::get_path(global_params.root_location, handlers, global_params);
-		return _config._error_pages[404];
-	}
-	else
-		return _config._error_pages[404];
+	if (search_folder(global_params, handlers) && search_index(global_params, handlers))
+		return Path::get_path(global_params.root_location, handlers, global_params);
+	_output.status_code = 404;
+	return _config._error_pages[404];
 }
 
 std::string Path::recursive_call_without_slash(Parse_input_handler &handlers, t_params &global_params)
@@ -173,44 +169,32 @@ std::string Path::recursive_call_without_slash(Parse_input_handler &handlers, t_
 		return _config._error_pages[404];
 }
 
-bool Path::check_allow_metods(const t_params &param, Parse_input_handler &handlers)
+void Path::check_allow_metods(const t_params &param, Parse_input_handler &handlers)
 {
-	if (param.allow_methods.empty())
-		return false;
-	else
+	if (!param.allow_methods.empty())
 	{
 		for (int i = 0; i < static_cast<int>(param.allow_methods.size()); ++i)
 		{
 			if (param.allow_methods[i] == handlers.getType())
-				return false;
+				return;
 		}
-		return true;
+		_output.status_code = 405;
 	}
 }
 
-std::string Path::Search_path()
+void Path::Search_path()
 {
-	t_params	global_params;
-	ConfigParser::t_server	curent_server;
-	std::string				save_url;
+	t_params global_params;
+	t_server curent_server;
 
-	if (_config._cache.find(_handler.getUrl()) != _config._cache.end())
-		return _config._cache[_handler.getUrl()];
-	else
-		save_url = _handler.getUrl();
+	_output.status_code = 200;
 	setup_global_params(global_params, curent_server, false);
 	curent_server = get_server();
 	setup_global_params(global_params, curent_server, true);
-	global_params.path_to_page = get_path(curent_server, _handler, global_params);
-	if (check_allow_metods(global_params, _handler))
-		return _config._error_pages[405];
+	_output.path_to_file = get_path(curent_server, _handler, global_params);
+	check_allow_metods(global_params, _handler);
 	if (!global_params.autoindex_page.empty())
-		return global_params.autoindex_page;
-	else
-	{
-		_config._cache.insert(std::pair<std::string, std::string>(save_url, global_params.path_to_page));
-		return global_params.path_to_page;
-	}
+		_output.autoindex_page = global_params.autoindex_page;
 }
 
 template<class T>
@@ -236,7 +220,10 @@ std::string Path::get_path(T &param, Parse_input_handler &handlers, t_params &gl
 			return tmp;
 		}
 		else
+		{
+			_output.status_code = 404;
 			return _config._error_pages[404];
+		}
 	}
 	else
 	{
@@ -255,6 +242,12 @@ std::string Path::get_path(T &param, Parse_input_handler &handlers, t_params &gl
 			return tmp;
 		}
 		else
+		{
+			_output.status_code = 404;
 			return _config._error_pages[404];
+		}
 	}
 }
+
+Path::Path(const Serv_conf &conf, const Parse_input_handler &handler) : _config(conf), _handler(handler) {}
+Path::~Path() {}

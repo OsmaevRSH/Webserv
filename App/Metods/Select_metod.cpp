@@ -7,7 +7,7 @@ void Server::Method_selector(const Parse_input_handler &inputHandlers, std::stri
 	if (inputHandlers.getType() == "GET")
 	{
 		GET get(_config, inputHandlers);
-		body = get.Search_path();
+		body = get.get_page();
 		handler = "HTTP/1.1 200 OK\r\nContent-type: text/html\r\nContent-Length: " +
 				  std::to_string(body.size()) + "\r\n\r\n";
 	}

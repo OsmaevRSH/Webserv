@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #pragma once
-#include "master.hpp"
+#include "../../App/Main/master.hpp"
 #include "Parse_input_handler.hpp"
 
 namespace ConfigParser
