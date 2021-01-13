@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Path/Path.hpp"
+#include "Path.hpp"
 
 class GET : public Path
 {

@@ -27,9 +27,9 @@ bool search_index(t_params &global_params, Parse_input_handler &handlers)
 }
 
 template<class T>
-ConfigParser::t_location *check_path_with_complete_coincidence(T &param, Parse_input_handler &handlers)
+t_location *check_path_with_complete_coincidence(T &param, Parse_input_handler &handlers)
 {
-	std::vector<ConfigParser::t_location>::iterator it;
+	std::vector<t_location>::iterator it;
 	it = param.locations.begin();
 
 	for (; it < param.locations.end(); ++it)
@@ -43,7 +43,7 @@ ConfigParser::t_location *check_path_with_complete_coincidence(T &param, Parse_i
 	return nullptr;
 }
 
-void update_global_params(t_params &global_params, ConfigParser::t_location &location)
+void update_global_params(t_params &global_params, t_location &location)
 {
 	global_params.index = location.ew.index;
 	global_params.root = location.ew.root;
@@ -64,7 +64,7 @@ bool search_folder(t_params &params, Parse_input_handler &handlers)
 	return false;
 }
 
-void location_sort(std::vector<ConfigParser::t_location> &locations)
+void location_sort(std::vector<t_location> &locations)
 {
 	int max;
 
@@ -81,9 +81,9 @@ void location_sort(std::vector<ConfigParser::t_location> &locations)
 }
 
 template<class T>
-ConfigParser::t_location *check_simple_location(T &param, Parse_input_handler &handlers)
+t_location *check_simple_location(T &param, Parse_input_handler &handlers)
 {
-	std::vector<ConfigParser::t_location>::iterator it;
+	std::vector<t_location>::iterator it;
 	location_sort(param.locations);
 	it = param.locations.begin();
 
@@ -200,8 +200,8 @@ void Path::Search_path()
 template<class T>
 std::string Path::get_path(T &param, Parse_input_handler &handlers, t_params &global_params)
 {
-	ConfigParser::t_location *location;
-	std::string tmp;
+	t_location	*location;
+	std::string	tmp;
 
 	if (check_slash(handlers))
 	{
@@ -215,13 +215,19 @@ std::string Path::get_path(T &param, Parse_input_handler &handlers, t_params &gl
 			update_global_params(global_params, *location);
 			if (location->locations.empty())
 				return Path::recursive_call_with_slash(handlers, global_params);
-			if ((tmp = Path::get_path(*location, handlers, global_params)) == _config._error_pages[404])
+			_output.attached_location = true;
+			Path::get_path(*location, handlers, global_params);
+			if (!_output.attached_location)
+			/*if ((_output.attached_location = true) && (tmp = Path::get_path(*location, handlers, global_params)) == _config._error_pages[404])*/
 				return Path::recursive_call_with_slash(handlers, global_params);
-			return tmp;
+/*			return tmp;*/
 		}
 		else
 		{
-			_output.status_code = 404;
+			if (!_output.attached_location)
+				_output.status_code = 404;
+			else
+				_output.attached_location = false;
 			return _config._error_pages[404];
 		}
 	}

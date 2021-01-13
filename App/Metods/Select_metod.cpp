@@ -1,6 +1,6 @@
 #include "Parse_input_handler.hpp"
 #include "Server.hpp"
-#include "GET/GET.hpp"
+#include "GET.hpp"
 
 void Server::Method_selector(const Parse_input_handler &inputHandlers, std::string &handler, std::string &body)
 {

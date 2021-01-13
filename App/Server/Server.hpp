@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Parse_input_handler.hpp"
-#include "../Main/master.hpp"
+#include "master.hpp"
 #include "Config.hpp"
 #include "MIME.hpp"
 

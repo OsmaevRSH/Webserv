@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Main/master.hpp"
+#include "master.hpp"
 
 class Parse_input_handler
 {
