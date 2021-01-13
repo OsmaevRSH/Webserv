@@ -162,7 +162,7 @@ void Path::recursive_call_without_slash(Parse_input_handler &handlers, t_params 
 	{
 		if (check_slash(handlers))
 			return Path::get_path(global_params.root_location, handlers, global_params);
-		_output.path_to_file =  global_params.root + handlers.getUrl();
+		_output.path_to_file = global_params.root + handlers.getUrl();
 	}
 	else
 		_output.status_code = 404;
@@ -197,7 +197,7 @@ void Path::Search_path()
 template<class T>
 void Path::get_path(T &param, Parse_input_handler &handlers, t_params &global_params)
 {
-	t_location	*location;
+	t_location *location;
 
 	if (check_slash(handlers))
 	{
@@ -251,5 +251,6 @@ void Path::get_path(T &param, Parse_input_handler &handlers, t_params &global_pa
 	}
 }
 
-Path::Path(const Serv_conf &conf, const Parse_input_handler &handler) : _config(conf), _handler(handler) {}
+Path::Path(const Serv_conf &conf, const Parse_input_handler &handler, const MIME_ERROR &mime)
+		: _config(conf), _handler(handler), _mime(mime) {}
 Path::~Path() {}

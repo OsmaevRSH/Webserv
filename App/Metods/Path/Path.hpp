@@ -33,6 +33,7 @@ class Path
 		Serv_conf _config;
 		Parse_input_handler _handler;
 		t_output _output;
+		MIME_ERROR _mime;
 
 		t_server get_server();
 		void setup_global_params(t_params &global_params, t_server &server, bool save_server) const;
@@ -42,8 +43,13 @@ class Path
 		void recursive_call_with_slash(Parse_input_handler &handlers, t_params &global_params);
 		void recursive_call_without_slash(Parse_input_handler &handlers, t_params &global_params);
 		bool search_index(t_params &global_params, Parse_input_handler &handlers);
+
+		std::string get_date_handler();
+		std::string get_first_line();
+		std::string get_content_type();
+		std::string get_content_length(const std::string &);
 	public:
-		Path(const Serv_conf &conf, const Parse_input_handler &handler);
+		Path(const Serv_conf &conf, const Parse_input_handler &handler, const MIME_ERROR &);
 		~Path();
 
 		void Search_path();

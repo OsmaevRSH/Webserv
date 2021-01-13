@@ -3,7 +3,7 @@
 #include "Parse_input_handler.hpp"
 #include "master.hpp"
 #include "Config.hpp"
-#include "MIME.hpp"
+#include "MIME_ERROR.hpp"
 
 typedef std::vector<ConfigParser::t_server> serv_vec;
 typedef std::map<int, std::string> errp_map;
@@ -30,7 +30,7 @@ class Server
 		fd_set _readfds;
 		fd_set _writefds;
 		Serv_conf _config;
-		MIME _mime;
+		MIME_ERROR _mime;
 		std::vector<int> _read_socket_fd;
 		std::vector<int> _write_socket_fd;
 		std::vector<int> _master_socket_fd;
@@ -56,7 +56,7 @@ class Server
 		char *check_input_handler_buffer(char *input_buffer, std::vector<int>::iterator &);
 		void Method_selector(const Parse_input_handler &inputHandlers, std::string &handler, std::string &body);
 	public:
-		explicit Server(const serv_vec &, const errp_map &, const ew_str &, MIME &, int family = AF_INET, int type = SOCK_STREAM, int protocol = 0);
+		explicit Server(const serv_vec &, const errp_map &, const ew_str &, MIME_ERROR &, int family = AF_INET, int type = SOCK_STREAM, int protocol = 0);
 		~Server();
 		void server_start();
 };

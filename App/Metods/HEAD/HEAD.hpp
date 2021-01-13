@@ -1,11 +1,10 @@
 #pragma once
 
 #include "../../Main/master.hpp"
-#include "MIME.hpp"
+#include "MIME_ERROR.hpp"
 
 class HEAD
 {
 	private:
-		static std::string get_date_handler();
 	public:
 };

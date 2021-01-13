@@ -1,6 +1,6 @@
 #include "Server.hpp"
 
-Server::Server(const serv_vec &serv, const errp_map &err, const ew_str &ew, MIME &mime, int family, int type, int protocol)
+Server::Server(const serv_vec &serv, const errp_map &err, const ew_str &ew, MIME_ERROR &mime, int family, int type, int protocol)
 		: _config(serv, err, ew), _type(type), _family(family),
 		_protocol(protocol), _readfds(), _writefds(), _mime(mime) {}
 

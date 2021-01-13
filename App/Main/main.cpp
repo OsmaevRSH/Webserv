@@ -1,10 +1,10 @@
 #include "Server.hpp"
 #include "Config.hpp"
-#include "MIME.hpp"
+#include "MIME_ERROR.hpp"
 
 int main()
 {
-	MIME mime;
+	MIME_ERROR mime;
 #ifndef TESTER
 	Config config("./App/Test/conf");
 #endif
