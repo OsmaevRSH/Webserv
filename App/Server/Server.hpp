@@ -36,7 +36,7 @@ class Server
 		std::vector<int> _master_socket_fd;
 		std::map<int, std::string> _input_handler_buffer;
 		std::map<int, std::vector<std::string> > _request_to_client;
-	private:
+
 		void Socket();
 		void Bind();
 		void Listen() const;

@@ -6,10 +6,10 @@ int main()
 {
 	MIME_ERROR mime;
 #ifndef TESTER
-	Config config("./App/Test/conf");
+	Config config("./App/Config/conf");
 #endif
 #ifdef TESTER
-	Config config("./App/Test/conf_for_tester");
+	Config config("./App/Config/conf_for_tester");
 #endif
 	Server server(config.getServers(), config.getErrorPages(), config.getEw(), mime);
 	server.server_start();

@@ -6,9 +6,8 @@ void Server::Method_selector(const Parse_input_handler &inputHandlers, std::stri
 {
 	if (inputHandlers.getType() == "GET")
 	{
-		GET get(_config, inputHandlers, _mime);
-		body = get.get_page();
-		handler = get.get_hendler(body);
+		GET get(_config, inputHandlers, _mime, handler, body);
+		get.get_start();
 	}
 	else if (inputHandlers.getType() == "HEAD")
 	{}

@@ -39,3 +39,30 @@ std::string Path::get_content_length(const std::string &page)
 	tmp << "Content-Length: " << page.size() << "\r\n";
 	return tmp.str();
 }
+
+std::string Path::get_server_name()
+{
+	std::stringstream tmp;
+
+	tmp << "Server: " << "Webserver/1.0" << "\r\n";
+	return tmp.str();
+}
+
+std::string Path::get_last_modified()
+{
+	struct stat buf = {0};
+	struct tm *time = nullptr;
+	char time_buff[1024];
+	std::stringstream tmp;
+
+	if (!(stat(_output.path_to_file.c_str(), &buf)))
+	{
+		time = localtime(&buf.st_mtimespec.tv_sec);
+		std::string format = "%a, %d %b %G %T %Z";
+		strftime(time_buff, 1024, format.c_str(), time);
+		tmp << "Last-Modified: " << time_buff << "\r\n";
+		return tmp.str();
+	}
+	else
+		return "";
+}

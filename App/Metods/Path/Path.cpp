@@ -22,7 +22,10 @@ bool Path::search_index(t_params &global_params, Parse_input_handler &handlers)
 		}
 	}
 	if (global_params.autoindex)
+	{
+		_output.status_code = 200;
 		_output.autoindex_page = Path::create_autoindex_page(global_params, handlers);
+	}
 	return false;
 }
 
@@ -153,7 +156,8 @@ void Path::recursive_call_with_slash(Parse_input_handler &handlers, t_params &gl
 {
 	if (search_folder(global_params, handlers) && Path::search_index(global_params, handlers))
 		return Path::get_path(global_params.root_location, handlers, global_params);
-	_output.status_code = 404;
+	if (_output.autoindex_page.empty())
+		_output.status_code = 404;
 }
 
 void Path::recursive_call_without_slash(Parse_input_handler &handlers, t_params &global_params)
@@ -165,7 +169,9 @@ void Path::recursive_call_without_slash(Parse_input_handler &handlers, t_params 
 		_output.path_to_file = global_params.root + handlers.getUrl();
 	}
 	else
+	{
 		_output.status_code = 404;
+	}
 }
 
 void Path::check_allow_metods(const t_params &param, Parse_input_handler &handlers)

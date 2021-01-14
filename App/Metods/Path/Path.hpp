@@ -24,7 +24,6 @@ typedef struct s_params
 	std::string root;
 	bool autoindex;
 	int max_body_size;
-	std::string autoindex_page;
 } t_params;
 
 class Path
@@ -48,6 +47,8 @@ class Path
 		std::string get_first_line();
 		std::string get_content_type();
 		std::string get_content_length(const std::string &);
+		std::string get_server_name();
+		std::string get_last_modified();
 	public:
 		Path(const Serv_conf &conf, const Parse_input_handler &handler, const MIME_ERROR &);
 		~Path();
