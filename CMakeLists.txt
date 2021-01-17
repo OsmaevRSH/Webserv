@@ -7,7 +7,7 @@ include_directories(App/Main)
 include_directories(App/MIME&ERROR_CODE)
 include_directories(App/Parse_input_handlers)
 include_directories(App/Server)
-include_directories(App/Metods/Path)
+include_directories(App/Metods/Search_by_configuration)
 include_directories(App/Metods/GET)
 include_directories(App/Metods/HEAD)
 include_directories(Config/Headers)
@@ -25,6 +25,6 @@ add_executable(Webserv App/Main/utils.cpp
                         App/Metods/GET/GET.hpp
                         App/Metods/HEAD/HEAD.cpp
                         App/Metods/HEAD/HEAD.hpp
-                        App/Metods/Path/Path.cpp
-                        App/Metods/Path/Path.hpp
-                        Config/Srcs/Config_parser.cpp App/Metods/Path/Header.cpp)
+        App/Metods/Search_by_configuration/Search_by_configuration.cpp
+        App/Metods/Search_by_configuration/Search_by_configuration.hpp
+                        Config/Srcs/Config_parser.cpp App/Metods/Search_by_configuration/Header.cpp App/Metods/PUT/PUT.cpp App/Metods/PUT/PUT.hpp)

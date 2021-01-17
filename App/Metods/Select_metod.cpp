@@ -1,16 +1,20 @@
 #include "Parse_input_handler.hpp"
 #include "Server.hpp"
 #include "GET.hpp"
+#include "HEAD.hpp"
 
 void Server::Method_selector(const Parse_input_handler &inputHandlers, std::string &handler, std::string &body)
 {
 	if (inputHandlers.getType() == "GET")
 	{
 		GET get(_config, inputHandlers, _mime, handler, body);
-		get.get_start();
+		get.start_processing();
 	}
 	else if (inputHandlers.getType() == "HEAD")
-	{}
+	{
+		HEAD head(_config, inputHandlers, _mime, handler, body);
+		head.start_processing();
+	}
 	else if (inputHandlers.getType() == "PUT")
 	{}
 	else if (inputHandlers.getType() == "POST")
@@ -25,7 +29,7 @@ void Server::Method_selector(const Parse_input_handler &inputHandlers, std::stri
 	{}
 	else
 	{
-		std::cerr << "|" << inputHandlers.getType() << "|" << " Error: Invalid method\n";
+		std::cerr << inputHandlers.getType() << " Error: Invalid method\n";
 		exit(EXIT_FAILURE);
 	}
 }

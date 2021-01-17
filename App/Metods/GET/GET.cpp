@@ -1,7 +1,7 @@
 #include "GET.hpp"
 
 GET::GET(const Serv_conf &serv, const Parse_input_handler &handler, const MIME_ERROR &mime, std::string &head, std::string &body)
-		: Path(serv, handler, mime), _body(body), _hendler(head) {}
+		: Search_by_configuration(serv, handler, mime), _body(body), _hendler(head) {}
 
 void GET::get_page()
 {
@@ -24,13 +24,21 @@ void GET::get_hendler()
 {
 	std::stringstream output;
 
-	output << this->get_first_line() << this->get_content_type() << this->get_content_length(_body) << this->get_date_handler()
-		   << this->get_server_name() << this->get_last_modified() << "\r\n";
+	output << this->get_first_line() << this->get_content_type() << this->get_content_length() << this->get_date_handler()
+		   << this->get_server_name() << this->get_last_modified() << this->get_allow_metods() << "\r\n";
 	_hendler = output.str();
 }
 
-void GET::get_start()
+void GET::start_processing()
 {
 	this->get_page();
 	this->get_hendler();
+}
+
+std::string GET::get_content_length()
+{
+	std::stringstream tmp;
+
+	tmp << "Content-Length: " << _body.size() << "\r\n";
+	return tmp.str();
 }

@@ -12,6 +12,7 @@ typedef struct s_output
 	std::string path_to_file;
 	std::string autoindex_page;
 	bool attached_location;
+	t_location location;
 
 	s_output() : status_code(200), path_to_file(), autoindex_page(), attached_location(false) {}
 } t_output;
@@ -26,7 +27,7 @@ typedef struct s_params
 	int max_body_size;
 } t_params;
 
-class Path
+class Search_by_configuration
 {
 	protected:
 		Serv_conf _config;
@@ -35,7 +36,8 @@ class Path
 		MIME_ERROR _mime;
 
 		t_server get_server();
-		void setup_global_params(t_params &global_params, t_server &server, bool save_server) const;
+		void setup_global_params(t_params &global_params, t_server &server, bool save_server);
+		void update_global_params(t_params &global_params, t_location &location);
 		void check_allow_metods(const t_params &param, Parse_input_handler &handlers);
 		template<class T>
 		void get_path(T &param, Parse_input_handler &handlers, t_params &global_params);
@@ -46,22 +48,21 @@ class Path
 		std::string get_date_handler();
 		std::string get_first_line();
 		std::string get_content_type();
-		std::string get_content_length(const std::string &);
+		virtual std::string get_content_length() = 0;
 		std::string get_server_name();
 		std::string get_last_modified();
-	public:
-		Path(const Serv_conf &conf, const Parse_input_handler &handler, const MIME_ERROR &);
-		~Path();
-
+		std::string get_allow_metods();
 		void Search_path();
-		static std::string create_autoindex_page(t_params &params, Parse_input_handler &handler);
+		std::string create_autoindex_page(t_params &params, Parse_input_handler &handler);
+	public:
+		Search_by_configuration(const Serv_conf &conf, const Parse_input_handler &handler, const MIME_ERROR &);
+		~Search_by_configuration();
 };
 
 bool check_slash(Parse_input_handler &handlers);
 bool search_folder(t_params &params, Parse_input_handler &handlers);
 bool search_file(t_params &params, Parse_input_handler &handlers);
 
-void update_global_params(t_params &global_params, t_location &location);
 void location_sort(std::vector<t_location> &locations);
 
 template<class T>

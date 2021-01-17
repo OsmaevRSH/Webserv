@@ -1,4 +1,4 @@
-#include "Path.hpp"
+#include "Search_by_configuration.hpp"
 
 bool check_slash(Parse_input_handler &handlers)
 {
@@ -7,7 +7,7 @@ bool check_slash(Parse_input_handler &handlers)
 	return false;
 }
 
-bool Path::search_index(t_params &global_params, Parse_input_handler &handlers)
+bool Search_by_configuration::search_index(t_params &global_params, Parse_input_handler &handlers)
 {
 	struct stat check = {};
 	std::vector<std::string>::iterator it;
@@ -24,7 +24,7 @@ bool Path::search_index(t_params &global_params, Parse_input_handler &handlers)
 	if (global_params.autoindex)
 	{
 		_output.status_code = 200;
-		_output.autoindex_page = Path::create_autoindex_page(global_params, handlers);
+		_output.autoindex_page = Search_by_configuration::create_autoindex_page(global_params, handlers);
 	}
 	return false;
 }
@@ -46,13 +46,14 @@ t_location *check_path_with_complete_coincidence(T &param, Parse_input_handler &
 	return nullptr;
 }
 
-void update_global_params(t_params &global_params, t_location &location)
+void Search_by_configuration::update_global_params(t_params &global_params, t_location &location)
 {
 	global_params.index = location.ew.index;
 	global_params.root = location.ew.root;
 	global_params.allow_methods = location.allow_methods;
 	global_params.autoindex = location.ew.autoindex;
 	global_params.max_body_size = location.ew.max_body_size;
+	_output.location = location;
 }
 
 bool search_folder(t_params &params, Parse_input_handler &handlers)
@@ -119,7 +120,7 @@ bool search_file(t_params &params, Parse_input_handler &handlers)
 	return false;
 }
 
-t_server Path::get_server()
+t_server Search_by_configuration::get_server()
 {
 	std::vector<t_server>::iterator it;
 	it = _config._servers.begin();
@@ -142,7 +143,7 @@ t_server Path::get_server()
 	exit(EXIT_FAILURE); //TODO
 }
 
-void Path::setup_global_params(t_params &global_params, t_server &server, bool save_server) const
+void Search_by_configuration::setup_global_params(t_params &global_params, t_server &server, bool save_server)
 {
 	if (save_server)
 		global_params.root_location = server;
@@ -152,20 +153,20 @@ void Path::setup_global_params(t_params &global_params, t_server &server, bool s
 	global_params.max_body_size = _config._ew.max_body_size;
 }
 
-void Path::recursive_call_with_slash(Parse_input_handler &handlers, t_params &global_params)
+void Search_by_configuration::recursive_call_with_slash(Parse_input_handler &handlers, t_params &global_params)
 {
-	if (search_folder(global_params, handlers) && Path::search_index(global_params, handlers))
-		return Path::get_path(global_params.root_location, handlers, global_params);
+	if (search_folder(global_params, handlers) && Search_by_configuration::search_index(global_params, handlers))
+		return Search_by_configuration::get_path(global_params.root_location, handlers, global_params);
 	if (_output.autoindex_page.empty())
 		_output.status_code = 404;
 }
 
-void Path::recursive_call_without_slash(Parse_input_handler &handlers, t_params &global_params)
+void Search_by_configuration::recursive_call_without_slash(Parse_input_handler &handlers, t_params &global_params)
 {
 	if (search_file(global_params, handlers))
 	{
 		if (check_slash(handlers))
-			return Path::get_path(global_params.root_location, handlers, global_params);
+			return Search_by_configuration::get_path(global_params.root_location, handlers, global_params);
 		_output.path_to_file = global_params.root + handlers.getUrl();
 	}
 	else
@@ -174,7 +175,7 @@ void Path::recursive_call_without_slash(Parse_input_handler &handlers, t_params 
 	}
 }
 
-void Path::check_allow_metods(const t_params &param, Parse_input_handler &handlers)
+void Search_by_configuration::check_allow_metods(const t_params &param, Parse_input_handler &handlers)
 {
 	if (!param.allow_methods.empty())
 	{
@@ -187,7 +188,7 @@ void Path::check_allow_metods(const t_params &param, Parse_input_handler &handle
 	}
 }
 
-void Path::Search_path()
+void Search_by_configuration::Search_path()
 {
 	t_params global_params;
 	t_server curent_server;
@@ -201,7 +202,7 @@ void Path::Search_path()
 }
 
 template<class T>
-void Path::get_path(T &param, Parse_input_handler &handlers, t_params &global_params)
+void Search_by_configuration::get_path(T &param, Parse_input_handler &handlers, t_params &global_params)
 {
 	t_location *location;
 
@@ -210,17 +211,17 @@ void Path::get_path(T &param, Parse_input_handler &handlers, t_params &global_pa
 		if ((location = check_path_with_complete_coincidence(param, handlers)))
 		{
 			update_global_params(global_params, *location);
-			return Path::recursive_call_with_slash(handlers, global_params);
+			return Search_by_configuration::recursive_call_with_slash(handlers, global_params);
 		}
 		if ((location = check_simple_location(param, handlers)))
 		{
 			update_global_params(global_params, *location);
 			if (location->locations.empty())
-				return Path::recursive_call_with_slash(handlers, global_params);
+				return Search_by_configuration::recursive_call_with_slash(handlers, global_params);
 			_output.attached_location = true;
-			Path::get_path(*location, handlers, global_params);
+			Search_by_configuration::get_path(*location, handlers, global_params);
 			if (!_output.attached_location)
-				return Path::recursive_call_with_slash(handlers, global_params);
+				return Search_by_configuration::recursive_call_with_slash(handlers, global_params);
 		}
 		else
 		{
@@ -235,17 +236,17 @@ void Path::get_path(T &param, Parse_input_handler &handlers, t_params &global_pa
 		if ((location = check_path_with_complete_coincidence(param, handlers)))
 		{
 			update_global_params(global_params, *location);
-			return Path::recursive_call_without_slash(handlers, global_params);
+			return Search_by_configuration::recursive_call_without_slash(handlers, global_params);
 		}
 		if ((location = check_simple_location(param, handlers)))
 		{
 			update_global_params(global_params, *location);
 			if (location->locations.empty())
-				return Path::recursive_call_without_slash(handlers, global_params);
+				return Search_by_configuration::recursive_call_without_slash(handlers, global_params);
 			_output.attached_location = true;
-			Path::get_path(*location, handlers, global_params);
+			Search_by_configuration::get_path(*location, handlers, global_params);
 			if (!_output.attached_location)
-				return Path::recursive_call_without_slash(handlers, global_params);
+				return Search_by_configuration::recursive_call_without_slash(handlers, global_params);
 		}
 		else
 		{
@@ -257,6 +258,6 @@ void Path::get_path(T &param, Parse_input_handler &handlers, t_params &global_pa
 	}
 }
 
-Path::Path(const Serv_conf &conf, const Parse_input_handler &handler, const MIME_ERROR &mime)
+Search_by_configuration::Search_by_configuration(const Serv_conf &conf, const Parse_input_handler &handler, const MIME_ERROR &mime)
 		: _config(conf), _handler(handler), _mime(mime) {}
-Path::~Path() {}
+Search_by_configuration::~Search_by_configuration() {}

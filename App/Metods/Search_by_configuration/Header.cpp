@@ -1,6 +1,6 @@
-#include "Path.hpp"
+#include "Search_by_configuration.hpp"
 
-std::string Path::get_date_handler()
+std::string Search_by_configuration::get_date_handler()
 {
 	std::stringstream tmp;
 	time_t curent_time;
@@ -16,7 +16,7 @@ std::string Path::get_date_handler()
 	return tmp.str();
 }
 
-std::string Path::get_first_line()
+std::string Search_by_configuration::get_first_line()
 {
 	std::stringstream tmp;
 
@@ -24,7 +24,7 @@ std::string Path::get_first_line()
 	return tmp.str();
 }
 
-std::string Path::get_content_type()
+std::string Search_by_configuration::get_content_type()
 {
 	std::stringstream tmp;
 
@@ -32,15 +32,7 @@ std::string Path::get_content_type()
 	return tmp.str();
 }
 
-std::string Path::get_content_length(const std::string &page)
-{
-	std::stringstream tmp;
-
-	tmp << "Content-Length: " << page.size() << "\r\n";
-	return tmp.str();
-}
-
-std::string Path::get_server_name()
+std::string Search_by_configuration::get_server_name()
 {
 	std::stringstream tmp;
 
@@ -48,7 +40,7 @@ std::string Path::get_server_name()
 	return tmp.str();
 }
 
-std::string Path::get_last_modified()
+std::string Search_by_configuration::get_last_modified()
 {
 	struct stat buf = {0};
 	struct tm *time = nullptr;
@@ -65,4 +57,22 @@ std::string Path::get_last_modified()
 	}
 	else
 		return "";
+}
+
+std::string Search_by_configuration::get_allow_metods()
+{
+	std::stringstream tmp;
+	std::vector<std::string>::iterator it;
+
+	it = _output.location.allow_methods.begin();
+
+	if (it != _output.location.allow_methods.end() && _output.status_code == 405)
+	{
+		tmp << "Allow: ";
+		tmp << *it++;
+		for (; it < _output.location.allow_methods.end(); ++it)
+			tmp << ", " << *it;
+		tmp << "\r\n";
+	}
+	return tmp.str();
 }
