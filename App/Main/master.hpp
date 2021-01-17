@@ -17,7 +17,7 @@
 #include <dirent.h>
 #include <ctime>
 
-#define TESTER
+//#define TESTER
 //#define SERVER_DEBUG
 #define SERVER_IP_DEBUG
 //#define CONFIG_DEBUG

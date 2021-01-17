@@ -261,4 +261,5 @@ void Search_by_configuration::get_path(T &param, Parse_input_handler &handlers, 
 
 Search_by_configuration::Search_by_configuration(const Serv_conf &conf, const Parse_input_handler &handler, const MIME_ERROR &mime)
 		: _config(conf), _handler(handler), _mime(mime) {}
-Search_by_configuration::~Search_by_configuration() {}
+
+		Search_by_configuration::~Search_by_configuration() {}

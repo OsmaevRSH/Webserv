@@ -1,7 +1,7 @@
 #include "PUT.hpp"
 
-PUT::PUT(const Serv_conf &serv, const Parse_input_handler &handler, const MIME_ERROR &mime, std::string &body)
-		: Search_by_configuration(serv, handler, mime), _body(body) {}
+PUT::PUT(const Serv_conf &serv, const Parse_input_handler &handler, const MIME_ERROR &mime, std::string &head, std::string &handler_body)
+		: Search_by_configuration(serv, handler, mime), _head(head), _body(handler_body) {}
 
 //std::string PUT::get_content_location()
 //{
@@ -10,14 +10,16 @@ PUT::PUT(const Serv_conf &serv, const Parse_input_handler &handler, const MIME_E
 ////	tmp <<
 //}
 
-std::string PUT::get_PUT_status()
+void PUT::get_PUT_status()
 {
 	this->Search_path();
 
 	if (_output.status_code == 200)
 		_status_code = 204;
-	else
+	else if (_output.status_code == 404)
 		_status_code = 201;
+	else
+		_status_code = _output.status_code;
 }
 
 void PUT::start_processing()
@@ -25,18 +27,22 @@ void PUT::start_processing()
 	std::ofstream file;
 
 	get_PUT_status();
-	file.open(_status_code == 204 ? _output.path_to_file : _output.location., std::ios_base::trunc);
-	if (_status_code == 204)
+	if (_status_code == 201 || _status_code == 204)
 	{
-		std::ofstream file(_output.path_to_file, std::ios_base::trunc);
-		file << _handler.getBody();
+		file.open(_status_code == 204 ? _output.path_to_file : (_output.path_to_file = _output.root + _handler.getUrl()), std::ios_base::trunc);
+		file << _body;
 		file.close();
 	}
+	get_hendler();
 }
 
 void PUT::get_hendler()
 {
 	std::stringstream output;
 
-	output << "HTTP/1.1 " <<
+	output << "HTTP/1.1 " << _status_code << " " << _mime.get_error(_status_code) << "\r\n";
+//	if (_status_code == 201 || _status_code == 204)
+//	{
+//		output <<
+//	}
 }

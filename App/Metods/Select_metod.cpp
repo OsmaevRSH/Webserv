@@ -4,7 +4,7 @@
 #include "HEAD.hpp"
 #include "PUT.hpp"
 
-void Server::Method_selector(const Parse_input_handler &inputHandlers, std::string &handler, std::string &body)
+void Server::Method_selector(const Parse_input_handler &inputHandlers, std::string &handler, std::string &body, std::string &handler_body)
 {
 	if (inputHandlers.getType() == "GET")
 	{
@@ -16,11 +16,11 @@ void Server::Method_selector(const Parse_input_handler &inputHandlers, std::stri
 		HEAD head(_config, inputHandlers, _mime, handler, body);
 		head.start_processing();
 	}
-//	else if (inputHandlers.getType() == "PUT")
-//	{
-//		PUT put(_config, inputHandlers, _mime, handler);
-//		put.start_processing();
-//	}
+	else if (inputHandlers.getType() == "PUT")
+	{
+		PUT put(_config, inputHandlers, _mime, handler, handler_body);
+		put.start_processing();
+	}
 //	else if (inputHandlers.getType() == "POST")
 //	{}
 //	else if (inputHandlers.getType() == "TRACE")

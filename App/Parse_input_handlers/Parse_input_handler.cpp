@@ -22,7 +22,6 @@ Parse_input_handler &Parse_input_handler::operator=(const Parse_input_handler &c
 	return *this;
 }
 
-
 Parse_input_handler::Parse_input_handler(const char *input)
 {
 	std::vector<std::string>::iterator it;

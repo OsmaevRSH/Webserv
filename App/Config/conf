@@ -4,7 +4,7 @@ server   {
 	server_name ltheresi.team;
 
 	location / {
-		allow GET;
+		allow GET HEAD;
 		autoindex on;
 		root ./Html;
 		max_body_size 55;
