@@ -66,6 +66,23 @@ void Server::Act_if_readfd_changed(std::vector<int>::iterator &Iter)
 	Iter = _read_socket_fd.erase(Iter);
 }
 
+static void read_with_content_length(int size, std::vector<int>::iterator &Iter, Parse_input_handler &inputHandlers)
+{
+	int count;
+	char *buff;
+
+	buff = new char[size + 1];
+	count = recv(*Iter, buff, size, 0);
+	buff[count] = '\0';
+	inputHandlers.setBody(buff);
+	delete[] buff;
+}
+
+static void read_with_chunked()
+{
+
+}
+
 Parse_input_handler *Server::Reading_a_request(std::vector<int>::iterator &Iter)
 {
 	char *buffer_for_request;
@@ -99,6 +116,10 @@ Parse_input_handler *Server::Reading_a_request(std::vector<int>::iterator &Iter)
 		delete[] buffer_for_request;
 		return nullptr;
 	}
+	if ((inputHandlers->getVariableHandlers().find("Content-length") != inputHandlers->getVariableHandlers().end()))
+		read_with_content_length(std::stoi(inputHandlers->getVariableHandlers().at("Content-length")), Iter, *inputHandlers);
+	if ((inputHandlers->getVariableHandlers().find("Transfer-Encoding") != inputHandlers->getVariableHandlers().end()))
+		read_with_chunked();
 	delete[] buffer_for_request;
 	return inputHandlers;
 }

@@ -199,6 +199,7 @@ void Search_by_configuration::Search_path()
 	setup_global_params(global_params, curent_server, true);
 	get_path(curent_server, _handler, global_params);
 	check_allow_metods(global_params, _handler);
+	_output.root = global_params.root;
 }
 
 template<class T>

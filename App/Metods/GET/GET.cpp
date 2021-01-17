@@ -1,7 +1,7 @@
 #include "GET.hpp"
 
 GET::GET(const Serv_conf &serv, const Parse_input_handler &handler, const MIME_ERROR &mime, std::string &head, std::string &body)
-		: Search_by_configuration(serv, handler, mime), _body(body), _hendler(head) {}
+		: Search_by_configuration(serv, handler, mime), _body(body), _head(head) {}
 
 void GET::get_page()
 {
@@ -26,7 +26,7 @@ void GET::get_hendler()
 
 	output << this->get_first_line() << this->get_content_type() << this->get_content_length() << this->get_date_handler()
 		   << this->get_server_name() << this->get_last_modified() << this->get_allow_metods() << "\r\n";
-	_hendler = output.str();
+	_head = output.str();
 }
 
 void GET::start_processing()

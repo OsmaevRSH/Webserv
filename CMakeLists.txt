@@ -10,6 +10,7 @@ include_directories(App/Server)
 include_directories(App/Metods/Search_by_configuration)
 include_directories(App/Metods/GET)
 include_directories(App/Metods/HEAD)
+include_directories(App/Metods/PUT)
 include_directories(Config/Headers)
 
 add_executable(Webserv App/Main/utils.cpp

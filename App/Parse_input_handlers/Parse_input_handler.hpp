@@ -8,6 +8,7 @@ class Parse_input_handler
 		std::string _type;
 		std::string _url;
 		std::string _protocol_type;
+		std::string _body;
 		std::map<std::string, std::string> _variable_handlers;
 	public:
 		explicit Parse_input_handler(const char *);
@@ -18,7 +19,8 @@ class Parse_input_handler
 		const std::map<std::string, std::string> &getVariableHandlers() const;
 
 		void setUrl(const std::string &url);
-
+		void setBody(const std::string &body);
+		const std::string &getBody() const;
 		const std::string &getType() const;
 		const std::string &getUrl() const;
 };

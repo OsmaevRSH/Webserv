@@ -66,3 +66,13 @@ const std::map<std::string, std::string> &Parse_input_handler::getVariableHandle
 {
 	return _variable_handlers;
 }
+
+void Parse_input_handler::setBody(const std::string &body)
+{
+	_body = body;
+}
+
+const std::string &Parse_input_handler::getBody() const
+{
+	return _body;
+}

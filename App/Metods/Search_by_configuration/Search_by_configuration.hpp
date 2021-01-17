@@ -13,6 +13,7 @@ typedef struct s_output
 	std::string autoindex_page;
 	bool attached_location;
 	t_location location;
+	std::string root;
 
 	s_output() : status_code(200), path_to_file(), autoindex_page(), attached_location(false) {}
 } t_output;
