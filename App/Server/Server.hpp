@@ -35,6 +35,7 @@ class Server
 		std::vector<int> _write_socket_fd;
 		std::vector<int> _master_socket_fd;
 		std::map<int, std::string> _input_handler_buffer;
+		std::map<int, std::string> _body_in_request;
 		std::map<int, std::vector<std::string> > _request_to_client;
 
 		void Socket();
@@ -55,6 +56,8 @@ class Server
 		Parse_input_handler *Reading_a_request(std::vector<int>::iterator &Iter);
 		char *check_input_handler_buffer(char *input_buffer, std::vector<int>::iterator &);
 		void Method_selector(const Parse_input_handler &inputHandlers, std::string &handler, std::string &body);
+		void read_with_content_length(int size, std::vector<int>::iterator &Iter);
+		bool read_with_chunked(int);
 	public:
 		explicit Server(const serv_vec &, const errp_map &, const ew_str &, MIME_ERROR &, int family = AF_INET, int type = SOCK_STREAM, int protocol = 0);
 		~Server();

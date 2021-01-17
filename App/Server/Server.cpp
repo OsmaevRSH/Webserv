@@ -53,8 +53,13 @@ void Server::Act_if_readfd_changed(std::vector<int>::iterator &Iter)
 	std::string handler;
 	std::string body;
 
-	if ((inputHandlers = Reading_a_request(Iter)) == nullptr)
+	if (_body_in_request.find(*Iter) == _body_in_request.end() && (inputHandlers = Reading_a_request(Iter)) == nullptr)
 		return;
+	if ((inputHandlers->getVariableHandlers().find("Content-length") != inputHandlers->getVariableHandlers().end()))
+		read_with_content_length(std::stoi(inputHandlers->getVariableHandlers().at("Content-length")), Iter);
+	if ((inputHandlers->getVariableHandlers().find("Transfer-Encoding") != inputHandlers->getVariableHandlers().end()))
+		if (!read_with_chunked(*Iter))
+			return;
 #ifdef SERVER_DEBUG
 	inputHandlers.output();
 #endif
@@ -66,7 +71,7 @@ void Server::Act_if_readfd_changed(std::vector<int>::iterator &Iter)
 	Iter = _read_socket_fd.erase(Iter);
 }
 
-static void read_with_content_length(int size, std::vector<int>::iterator &Iter, Parse_input_handler &inputHandlers)
+void Server::read_with_content_length(int size, std::vector<int>::iterator &Iter)
 {
 	int count;
 	char *buff;
@@ -74,13 +79,42 @@ static void read_with_content_length(int size, std::vector<int>::iterator &Iter,
 	buff = new char[size + 1];
 	count = recv(*Iter, buff, size, 0);
 	buff[count] = '\0';
-	inputHandlers.setBody(buff);
+	_body_in_request.insert(std::pair<int, std::string>(*Iter, buff));
 	delete[] buff;
 }
 
-static void read_with_chunked()
+bool Server::read_with_chunked(int fd)
 {
+	int count;
+	char *buff;
+	std::string checker;
+	std::stringstream tmp;
 
+	buff = new char[256];
+	count = recv(fd, buff, 255, MSG_PEEK); // выделяем память для просмотра колличества букв в chunked
+	buff[count] = '\0';
+	checker = buff;
+	count = checker.find("\r\n"); //находит CRLF последовательность
+	count = recv(fd, buff, count, 0); // Читаем до CRLF последовательности
+	buff[count] = '\0';
+	checker = buff;
+	tmp << std::hex << checker; // Переводим из HEX в DEC
+	recv(fd, nullptr, 2, 0);
+	count = std::stoi(tmp.str());
+	if (!count)
+	{
+		recv(fd, nullptr, 4, 0);
+		return true;
+	}
+	count = recv(fd, buff, count, 0); // Считываем колличесво байт, которое было указано в первом блоке
+	buff[count] = '\0';
+	recv(fd, nullptr, 2, 0);
+	checker = buff;
+	if (_body_in_request.find(fd) == _body_in_request.end())
+		_body_in_request.insert(std::pair<int, std::string>(fd, checker));
+	else
+		_body_in_request[fd] += checker;
+	return false;
 }
 
 Parse_input_handler *Server::Reading_a_request(std::vector<int>::iterator &Iter)
@@ -116,10 +150,6 @@ Parse_input_handler *Server::Reading_a_request(std::vector<int>::iterator &Iter)
 		delete[] buffer_for_request;
 		return nullptr;
 	}
-	if ((inputHandlers->getVariableHandlers().find("Content-length") != inputHandlers->getVariableHandlers().end()))
-		read_with_content_length(std::stoi(inputHandlers->getVariableHandlers().at("Content-length")), Iter, *inputHandlers);
-	if ((inputHandlers->getVariableHandlers().find("Transfer-Encoding") != inputHandlers->getVariableHandlers().end()))
-		read_with_chunked();
 	delete[] buffer_for_request;
 	return inputHandlers;
 }
