@@ -22,25 +22,25 @@ void Server::Act_if_writefd_changed(std::vector<int>::iterator &Iter)
 {
 	//	int send_number;
 	//	send_number =
-	send(*Iter, (_request_to_client[*Iter][0] + _request_to_client[*Iter][1]).c_str(),
-			_request_to_client[*Iter][0].size() + _request_to_client[*Iter][1].size(), 0);
-	//	if (send_number < static_cast<int>(_request_to_client[*Iter][0].size() +
-	//									   _request_to_client[*Iter][1].size()))
+	send(*Iter, (_ready_response_to_the_customer[*Iter][0] + _ready_response_to_the_customer[*Iter][1]).c_str(),
+			_ready_response_to_the_customer[*Iter][0].size() + _ready_response_to_the_customer[*Iter][1].size(), 0);
+	//	if (send_number < static_cast<int>(_ready_response_to_the_customer[*Iter][0].size() +
+	//									   _ready_response_to_the_customer[*Iter][1].size()))
 	//	{
 	//		if (send_number <=
-	//			static_cast<int>(_request_to_client[*Iter][0].size()))
-	//			_request_to_client[*Iter][0].erase(0, send_number);
+	//			static_cast<int>(_ready_response_to_the_customer[*Iter][0].size()))
+	//			_ready_response_to_the_customer[*Iter][0].erase(0, send_number);
 	//		else
 	//		{
-	//			_request_to_client[*Iter][1].erase(0,
-	//					send_number - _request_to_client[*Iter][0].size());
-	//			_request_to_client[*Iter][0].erase(_request_to_client[*Iter][0].begin(), _request_to_client[*Iter][0].end());
+	//			_ready_response_to_the_customer[*Iter][1].erase(0,
+	//					send_number - _ready_response_to_the_customer[*Iter][0].size());
+	//			_ready_response_to_the_customer[*Iter][0].erase(_ready_response_to_the_customer[*Iter][0].begin(), _ready_response_to_the_customer[*Iter][0].end());
 	//		}
 	//	}
 	//	else
 	//	{
 	//		close(*Iter);
-	_request_to_client.erase(*Iter);
+	_ready_response_to_the_customer.erase(*Iter);
 	_read_socket_fd.push_back(*Iter);
 	Iter = _write_socket_fd.erase(Iter);
 	//	}
@@ -49,26 +49,28 @@ void Server::Act_if_writefd_changed(std::vector<int>::iterator &Iter)
 void Server::Act_if_readfd_changed(std::vector<int>::iterator &Iter)
 {
 	std::vector<std::string> tmp;
-	static Parse_input_handler *inputHandlers;
 	std::string handler;
 	std::string body;
 
-	if (_body_in_request.find(*Iter) == _body_in_request.end() && (inputHandlers = Reading_a_request(Iter)) == nullptr)
+	if (_edited_headers.find(*Iter) == _edited_headers.end() && _request_body.find(*Iter) == _request_body.end() && Reading_a_request(Iter))
 		return;
-	if ((inputHandlers->getVariableHandlers().find("Content-Length") != inputHandlers->getVariableHandlers().end()))
-		read_with_content_length(std::stoi(inputHandlers->getVariableHandlers().at("Content-Length")), *Iter);
-	if ((inputHandlers->getVariableHandlers().find("Transfer-Encoding") != inputHandlers->getVariableHandlers().end()))
+	if ((_edited_headers.find(*Iter) != _edited_headers.end()) && (_edited_headers[*Iter]->getVariableHandlers().find("Content-Length") != _edited_headers[*Iter]->getVariableHandlers().end()))
+		read_with_content_length(std::stoi(_edited_headers[*Iter]->getVariableHandlers().at("Content-Length")), *Iter);
+	if ((_edited_headers.find(*Iter) != _edited_headers.end()) && (_edited_headers[*Iter]->getVariableHandlers().find("Transfer-Encoding") != _edited_headers[*Iter]->getVariableHandlers().end()))
 		if (!read_with_chunked(*Iter))
+		{
+			++Iter;
 			return;
+		}
 #ifdef SERVER_DEBUG
 	inputHandlers.output();
 #endif
-	Method_selector(*inputHandlers, handler, body, _body_in_request[*Iter]);
-	_body_in_request.erase(*Iter);
-	delete inputHandlers;
+	Method_selector(*_edited_headers[*Iter], handler, body, _request_body[*Iter]);
+	_request_body.erase(*Iter);
+	delete _edited_headers[*Iter];
 	tmp.push_back(handler);
 	tmp.push_back(body);
-	_request_to_client.insert(std::pair<int, std::vector<std::string> >(*Iter, tmp));
+	_ready_response_to_the_customer.insert(std::pair<int, std::vector<std::string> >(*Iter, tmp));
 	_write_socket_fd.push_back(*Iter);
 	Iter = _read_socket_fd.erase(Iter);
 }
@@ -81,85 +83,99 @@ void Server::read_with_content_length(int size, int fd)
 	buff = new char[size + 1];
 	count = recv(fd, buff, size, 0);
 	buff[count] = '\0';
-	_body_in_request.insert(std::pair<int, std::string>(fd, buff));
+	_request_body.insert(std::pair<int, std::string>(fd, buff));
 	delete[] buff;
 }
 
 bool Server::read_with_chunked(int fd)
 {
-	int count;
+	int count = 0;
 	char *buff;
+	char crlf_buffer[5];
 	std::string checker;
 	std::stringstream tmp;
 
-	buff = new char[256];
-	count = recv(fd, buff, 255, MSG_PEEK); // выделяем память для просмотра колличества букв в chunked
-	if (count == -1)
-		return false;
-	buff[count] = '\0';
-	checker = buff;
-	count = checker.find("\r\n"); //находит CRLF последовательность
-	count = recv(fd, buff, count, 0); // Читаем до CRLF последовательности
-	buff[count] = '\0';
-	checker = buff;
-//	std::cout << std::hex << checker;
-	tmp << checker; // Переводим из HEX в DEC
-	tmp >> std::hex >> count;
-	std::cout << count;
-	recv(fd, nullptr, 2, 0);
-//	count = std::stoi(tmp.str());
-	if (!count)
+	if (_chunked_end_check.find(fd) == _chunked_end_check.end())
 	{
-		recv(fd, nullptr, 4, 0);
-		return true;
-		nullptr
+		buff = new char[256];
+		count = recv(fd, buff, 255, MSG_PEEK); // выделяем память для просмотра колличества букв в chunked
+		if (count == -1)
+			return false;
+		buff[count] = '\0';
+		checker = buff;
+		count = checker.find("\r\n"); //находит CRLF последовательность
+		count = recv(fd, buff, count, 0); // Читаем до CRLF последовательности
+		buff[count] = '\0';
+		checker = buff;
+		tmp << checker; // Переводим из HEX в DEC
+		tmp >> std::hex >> count;
 	}
+	if (!count || _chunked_end_check.find(fd) != _chunked_end_check.end())
+	{
+		count = recv(fd, crlf_buffer, 4, 0);
+		crlf_buffer[count] = '\0';
+		if (!std::strcmp(crlf_buffer, "\r\n\r\n"))
+			return true;
+		if (_chunked_end_check.find(fd) == _chunked_end_check.end())
+			_chunked_end_check.insert(std::pair<int, std::string>(fd, crlf_buffer));
+		else
+			_chunked_end_check[fd] += crlf_buffer;
+		if (_chunked_end_check.find(fd) != _chunked_end_check.end())
+			if (!std::strcmp(_chunked_end_check[fd].c_str(), "\r\n\r\n"))
+			{
+				_chunked_end_check.erase(fd);
+				return true;
+			}
+		return false;
+	}
+	recv(fd, crlf_buffer, 2, 0);
 	count = recv(fd, buff, count, 0); // Считываем колличесво байт, которое было указано в первом блоке
 	buff[count] = '\0';
-	recv(fd, nullptr, 2, 0);
+	recv(fd, crlf_buffer, 2, 0);
 	checker = buff;
-	if (_body_in_request.find(fd) == _body_in_request.end())
-		_body_in_request.insert(std::pair<int, std::string>(fd, checker));
+	if (_request_body.find(fd) == _request_body.end())
+		_request_body.insert(std::pair<int, std::string>(fd, checker));
 	else
-		_body_in_request[fd] += checker;
+		_request_body[fd] += checker;
 	return false;
 }
 
-Parse_input_handler *Server::Reading_a_request(std::vector<int>::iterator &Iter)
+bool Server::Reading_a_request(std::vector<int>::iterator &Iter)
 {
 	char *buffer_for_request;
 	char *output;
 	int request_size;
-	Parse_input_handler *inputHandlers;
 
 	buffer_for_request = new char[576];
 	request_size = recv(*Iter, buffer_for_request, 575, MSG_PEEK);
 	if (request_size > 0)
 		buffer_for_request[request_size] = '\0';
-	if (request_size == 0 && _request_to_client.find(*Iter) == _request_to_client.end())
+	if (request_size == 0 && _ready_response_to_the_customer.find(*Iter) == _ready_response_to_the_customer.end())
 	{
 		close(*Iter);
 		Iter = _read_socket_fd.erase(Iter);
 		delete[] buffer_for_request;
-		return nullptr;
+		return true;
 	}
 	if (request_size == -1 || (output = check_input_handler_buffer(buffer_for_request, Iter)) == nullptr)
 	{
 		++Iter;
 		delete[] buffer_for_request;
-		return nullptr;
+		return true;
 	}
-	inputHandlers = new Parse_input_handler(output);
-	if ((inputHandlers->getVariableHandlers().find("Connection") != inputHandlers->getVariableHandlers().end() &&
-		 inputHandlers->getVariableHandlers().at("Connection") == "close"))
+	if (_edited_headers.find(*Iter) == _edited_headers.end())
+		_edited_headers.insert(std::pair<int, Parse_input_handler *>(*Iter,  nullptr));
+	_edited_headers[*Iter] = new Parse_input_handler(output);
+	if ((_edited_headers[*Iter]->getVariableHandlers().find("Connection") != _edited_headers[*Iter]->getVariableHandlers().end() &&
+			_edited_headers[*Iter]->getVariableHandlers().at("Connection") == "close"))
 	{
 		close(*Iter);
 		Iter = _read_socket_fd.erase(Iter);
 		delete[] buffer_for_request;
-		return nullptr;
+		return true;
 	}
 	delete[] buffer_for_request;
-	return inputHandlers;
+	return false;
 }
 
 char *Server::check_input_handler_buffer(char *input_buffer, std::vector<int>::iterator &Iter)
@@ -168,17 +184,17 @@ char *Server::check_input_handler_buffer(char *input_buffer, std::vector<int>::i
 	char *tmp_return_buffer;
 	std::string check_buffer;
 
-	if (_input_handler_buffer.find(*Iter) != _input_handler_buffer.end())
+	if (_request_header.find(*Iter) != _request_header.end())
 	{
-		check_buffer = _input_handler_buffer[*Iter] + input_buffer;
+		check_buffer = _request_header[*Iter] + input_buffer;
 		if ((pos = check_buffer.find("\r\n\r\n")) != std::string::npos)
 		{
-			pos -= _input_handler_buffer[*Iter].size();
+			pos -= _request_header[*Iter].size();
 			pos = recv(*Iter, input_buffer, pos + 4, 0);
 			if (pos > 0)
 				input_buffer[pos] = '\0';
-			tmp_return_buffer = strdup((_input_handler_buffer[*Iter] + input_buffer).c_str());
-			_input_handler_buffer.erase(*Iter);
+			tmp_return_buffer = strdup((_request_header[*Iter] + input_buffer).c_str());
+			_request_header.erase(*Iter);
 			return tmp_return_buffer;
 		}
 	}
@@ -188,10 +204,10 @@ char *Server::check_input_handler_buffer(char *input_buffer, std::vector<int>::i
 		pos = recv(*Iter, input_buffer, pos + 4, 0);
 		if (pos > 0)
 			input_buffer[pos] = '\0';
-		if (_input_handler_buffer.find(*Iter) == _input_handler_buffer.end())
+		if (_request_header.find(*Iter) == _request_header.end())
 			return strdup(input_buffer);
-		tmp_return_buffer = strdup((_input_handler_buffer[*Iter] + input_buffer).c_str());
-		_input_handler_buffer.erase(*Iter);
+		tmp_return_buffer = strdup((_request_header[*Iter] + input_buffer).c_str());
+		_request_header.erase(*Iter);
 		return tmp_return_buffer;
 	}
 	else
@@ -199,10 +215,10 @@ char *Server::check_input_handler_buffer(char *input_buffer, std::vector<int>::i
 		pos = recv(*Iter, input_buffer, 575, 0);
 		if (pos > 0)
 			input_buffer[pos] = '\0';
-		if (_input_handler_buffer.find(*Iter) == _input_handler_buffer.end())
-			_input_handler_buffer.insert(std::pair<int, std::string>(*Iter, input_buffer));
+		if (_request_header.find(*Iter) == _request_header.end())
+			_request_header.insert(std::pair<int, std::string>(*Iter, input_buffer));
 		else
-			_input_handler_buffer[*Iter] += input_buffer;
+			_request_header[*Iter] += input_buffer;
 	}
 	return nullptr;
 }
