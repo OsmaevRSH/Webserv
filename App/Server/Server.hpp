@@ -55,8 +55,8 @@ class Server
 		void Check_write_set();
 		Parse_input_handler *Reading_a_request(std::vector<int>::iterator &Iter);
 		char *check_input_handler_buffer(char *input_buffer, std::vector<int>::iterator &);
-		void Method_selector(const Parse_input_handler &inputHandlers, std::string &handler, std::string &body);
-		void read_with_content_length(int size, std::vector<int>::iterator &Iter);
+		void Method_selector(const Parse_input_handler &inputHandlers, std::string &handler, std::string &body, std::string &handler_body);
+		void read_with_content_length(int size, int fd);
 		bool read_with_chunked(int);
 	public:
 		explicit Server(const serv_vec &, const errp_map &, const ew_str &, MIME_ERROR &, int family = AF_INET, int type = SOCK_STREAM, int protocol = 0);

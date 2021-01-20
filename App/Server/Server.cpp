@@ -49,21 +49,23 @@ void Server::Act_if_writefd_changed(std::vector<int>::iterator &Iter)
 void Server::Act_if_readfd_changed(std::vector<int>::iterator &Iter)
 {
 	std::vector<std::string> tmp;
-	Parse_input_handler *inputHandlers;
+	static Parse_input_handler *inputHandlers;
 	std::string handler;
 	std::string body;
 
 	if (_body_in_request.find(*Iter) == _body_in_request.end() && (inputHandlers = Reading_a_request(Iter)) == nullptr)
 		return;
-	if ((inputHandlers->getVariableHandlers().find("Content-length") != inputHandlers->getVariableHandlers().end()))
-		read_with_content_length(std::stoi(inputHandlers->getVariableHandlers().at("Content-length")), Iter);
+	if ((inputHandlers->getVariableHandlers().find("Content-Length") != inputHandlers->getVariableHandlers().end()))
+		read_with_content_length(std::stoi(inputHandlers->getVariableHandlers().at("Content-Length")), *Iter);
 	if ((inputHandlers->getVariableHandlers().find("Transfer-Encoding") != inputHandlers->getVariableHandlers().end()))
 		if (!read_with_chunked(*Iter))
 			return;
 #ifdef SERVER_DEBUG
 	inputHandlers.output();
 #endif
-	Method_selector(*inputHandlers, handler, body);
+	Method_selector(*inputHandlers, handler, body, _body_in_request[*Iter]);
+	_body_in_request.erase(*Iter);
+	delete inputHandlers;
 	tmp.push_back(handler);
 	tmp.push_back(body);
 	_request_to_client.insert(std::pair<int, std::vector<std::string> >(*Iter, tmp));
@@ -71,15 +73,15 @@ void Server::Act_if_readfd_changed(std::vector<int>::iterator &Iter)
 	Iter = _read_socket_fd.erase(Iter);
 }
 
-void Server::read_with_content_length(int size, std::vector<int>::iterator &Iter)
+void Server::read_with_content_length(int size, int fd)
 {
 	int count;
 	char *buff;
 
 	buff = new char[size + 1];
-	count = recv(*Iter, buff, size, 0);
+	count = recv(fd, buff, size, 0);
 	buff[count] = '\0';
-	_body_in_request.insert(std::pair<int, std::string>(*Iter, buff));
+	_body_in_request.insert(std::pair<int, std::string>(fd, buff));
 	delete[] buff;
 }
 
@@ -92,19 +94,25 @@ bool Server::read_with_chunked(int fd)
 
 	buff = new char[256];
 	count = recv(fd, buff, 255, MSG_PEEK); // выделяем память для просмотра колличества букв в chunked
+	if (count == -1)
+		return false;
 	buff[count] = '\0';
 	checker = buff;
 	count = checker.find("\r\n"); //находит CRLF последовательность
 	count = recv(fd, buff, count, 0); // Читаем до CRLF последовательности
 	buff[count] = '\0';
 	checker = buff;
-	tmp << std::hex << checker; // Переводим из HEX в DEC
+//	std::cout << std::hex << checker;
+	tmp << checker; // Переводим из HEX в DEC
+	tmp >> std::hex >> count;
+	std::cout << count;
 	recv(fd, nullptr, 2, 0);
-	count = std::stoi(tmp.str());
+//	count = std::stoi(tmp.str());
 	if (!count)
 	{
 		recv(fd, nullptr, 4, 0);
 		return true;
+		nullptr
 	}
 	count = recv(fd, buff, count, 0); // Считываем колличесво байт, которое было указано в первом блоке
 	buff[count] = '\0';

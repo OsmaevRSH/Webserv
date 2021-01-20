@@ -8,7 +8,7 @@ class PUT : public Search_by_configuration
 		int _status_code;
 		std::string &_head;
 		std::string _body;
-		std::string get_content_length() {};
+		std::string get_content_length();
 		void get_PUT_status();
 		void get_hendler();
 	public:
