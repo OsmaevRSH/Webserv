@@ -122,22 +122,21 @@ bool search_file(t_params &params, Parse_input_handler &handlers)
 
 t_server Search_by_configuration::get_server()
 {
+	std::string port;
+
+	port = _handler.getVariableHandlers().at("Host").substr(_handler.getVariableHandlers().at("Host").find(":"));
 	std::vector<t_server>::iterator it;
 	it = _config._servers.begin();
 	for (; it < _config._servers.end(); ++it)
 	{
 		if (it->ip == "127.0.0.1" || it->ip == "localhost")
 		{
-			if ("127.0.0.1:" + std::to_string(it->port) == _handler.getVariableHandlers().at("Host") ||
-				"localhost:" + std::to_string(it->port) == _handler.getVariableHandlers().at("Host"))
-			{
+			if ("127.0.0.1:" + std::to_string(it->port) == _handler.getIp() + port ||
+				"localhost:" + std::to_string(it->port) == _handler.getIp() + port)
 				return *it;
-			}
 		}
-		if (it->ip + std::to_string(it->port) == _handler.getVariableHandlers().at("Host"))
-		{
+		if (it->ip + std::to_string(it->port) == _handler.getIp() + port)
 			return *it;
-		}
 	}
 	std::cout << "Invalid server!" << std::endl;
 	exit(EXIT_FAILURE); //TODO

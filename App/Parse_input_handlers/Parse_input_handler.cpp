@@ -22,7 +22,7 @@ Parse_input_handler &Parse_input_handler::operator=(const Parse_input_handler &c
 	return *this;
 }
 
-Parse_input_handler::Parse_input_handler(const char *input)
+Parse_input_handler::Parse_input_handler(const char *input, std::string &ip) : _ip(ip)
 {
 	std::vector<std::string>::iterator it;
 	std::vector<std::string> handlers;
@@ -64,4 +64,9 @@ void Parse_input_handler::setUrl(const std::string &url)
 const std::map<std::string, std::string> &Parse_input_handler::getVariableHandlers() const
 {
 	return _variable_handlers;
+}
+
+const std::string &Parse_input_handler::getIp() const
+{
+	return _ip;
 }

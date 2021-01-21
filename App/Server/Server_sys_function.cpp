@@ -73,6 +73,7 @@ void Server::Listen() const
 
 void Server::Accept(int fd)
 {
+	char str[256];
 	struct sockaddr_in addr = {0};
 	socklen_t addr_len;
 	int new_client_fd;
@@ -83,6 +84,8 @@ void Server::Accept(int fd)
 		perror("Accept error");
 		exit(EXIT_FAILURE);
 	}
+	inet_ntop(AF_INET, &(addr.sin_addr), str, INET_ADDRSTRLEN);
+	_server_client_ip.insert(std::pair<int, std::string>(new_client_fd, str));
 	Set_non_blocked(new_client_fd);
 	_read_socket_fd.push_back(new_client_fd);
 }

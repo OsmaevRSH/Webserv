@@ -165,7 +165,7 @@ bool Server::Reading_a_request(std::vector<int>::iterator &Iter)
 	}
 	if (_edited_headers.find(*Iter) == _edited_headers.end())
 		_edited_headers.insert(std::pair<int, Parse_input_handler *>(*Iter,  nullptr));
-	_edited_headers[*Iter] = new Parse_input_handler(output);
+	_edited_headers[*Iter] = new Parse_input_handler(output, _server_client_ip[*Iter]);
 	if ((_edited_headers[*Iter]->getVariableHandlers().find("Connection") != _edited_headers[*Iter]->getVariableHandlers().end() &&
 			_edited_headers[*Iter]->getVariableHandlers().at("Connection") == "close"))
 	{
