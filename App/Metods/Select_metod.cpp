@@ -18,7 +18,7 @@ void Server::Method_selector(const Parse_input_handler &inputHandlers, std::stri
 	}
 	else if (inputHandlers.getType() == "PUT")
 	{
-		PUT put(_config, inputHandlers, _mime, handler, handler_body);
+		PUT put(_config, inputHandlers, _mime, handler, handler_body, body);
 		put.start_processing();
 	}
 //	else if (inputHandlers.getType() == "POST")

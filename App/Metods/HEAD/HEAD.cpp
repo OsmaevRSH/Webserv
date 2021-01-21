@@ -6,9 +6,9 @@ void HEAD::get_page()
 	if (_output.status_code != 200)
 	{
 		_output.path_to_file = _config._error_pages[_output.status_code];
-		_tmp_body = get_page_text(_config._error_pages[_output.status_code]);
+		_body = get_page_text(_output.path_to_file);
 	}
-	if (!_output.autoindex_page.empty())
+	else if (!_output.autoindex_page.empty())
 	{
 		_output.path_to_file = "index.html";
 		_tmp_body = _output.autoindex_page;
@@ -24,6 +24,6 @@ std::string HEAD::get_content_length()
 {
 	std::stringstream tmp;
 
-	tmp << "Content-Length: " << _tmp_body.size() << "\r\n";
+	tmp << "Content-Length: " << (_output.status_code == 405 ? _body.size() : _tmp_body.size()) << "\r\n";
 	return tmp.str();
 }

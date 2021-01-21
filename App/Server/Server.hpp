@@ -35,7 +35,7 @@ class Server
 		std::map<int, Parse_input_handler *> _edited_headers; //map для хранения указателей на класс с обратанным заголовком клиента
 		std::map<int, std::string> _request_header; //map для хранения заголовка запроса
 		std::map<int, std::string> _request_body; //map для хранения тела запроса
-		std::map<int, std::vector<std::string> > _ready_response_to_the_customer; //map для хренения готового ответа для клиента
+		std::map<int, std::string> _ready_response_to_the_customer; //map для хренения готового ответа для клиента
 		std::map<int, std::string> _chunked_end_check; //map для проверки chunked окончания в случае прихода 0
 		std::map<int, std::string> _server_client_ip; //map для хренения на какой ip сервера пришло соединение
 

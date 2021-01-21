@@ -11,7 +11,7 @@ void GET::get_page()
 		_output.path_to_file = _config._error_pages[_output.status_code];
 		_body = get_page_text(_config._error_pages[_output.status_code]);
 	}
-	if (!_output.autoindex_page.empty())
+	else if (!_output.autoindex_page.empty())
 	{
 		_output.path_to_file = "index.html";
 		_body = _output.autoindex_page;

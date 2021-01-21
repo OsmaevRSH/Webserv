@@ -18,11 +18,9 @@
 #include <ctime>
 
 //#define TESTER
-//#define SERVER_DEBUG
 #define SERVER_IP_DEBUG
 //#define CONFIG_DEBUG
 //#define AUTOINDEX_DEBUG
-//#define HANDLERS_DEBUG
 
 /* For parser */
 #include <cstdlib>

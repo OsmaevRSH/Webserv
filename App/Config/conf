@@ -1,47 +1,9 @@
 server   {
-	ip 192.168.21.74;
-	port 5555;
-	server_name ltheresi.team;
-
-	location / {
-		allow GET HEAD PUT;
-		autoindex on;
-		root ./Html;
-		max_body_size 55;
-		location /html {
-			autoindex on;
-			root ./Html;
-			max_body_size 100;
-			index index3.html;
-			location /html/ttt {
-				autoindex on;
-				root ./Html;
-				max_body_size 100;
-				index index3.html;
-			}
-		}
-	}
-	location /abs {
-		autoindex on;
-		root ./Html;
-		max_body_size 55;
-		index index2.html;
-		location /html {
-			autoindex on;
-			root ./Html;
-			max_body_size 100;
-			index index3.html;
-		}
-	}
-}
-
-server   {
 	ip 127.0.0.1;
 	port 5555;
 	server_name ltheresi.team;
 
 	location / {
-		allow GET HEAD PUT;
 		autoindex on;
 		root ./Html;
 		max_body_size 55;

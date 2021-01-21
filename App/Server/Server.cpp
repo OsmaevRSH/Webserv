@@ -22,8 +22,7 @@ void Server::Act_if_writefd_changed(std::vector<int>::iterator &Iter)
 {
 	//	int send_number;
 	//	send_number =
-	send(*Iter, (_ready_response_to_the_customer[*Iter][0] + _ready_response_to_the_customer[*Iter][1]).c_str(),
-			_ready_response_to_the_customer[*Iter][0].size() + _ready_response_to_the_customer[*Iter][1].size(), 0);
+	send(*Iter, (_ready_response_to_the_customer[*Iter]).c_str(), _ready_response_to_the_customer[*Iter].size(), 0);
 	//	if (send_number < static_cast<int>(_ready_response_to_the_customer[*Iter][0].size() +
 	//									   _ready_response_to_the_customer[*Iter][1].size()))
 	//	{
@@ -48,7 +47,6 @@ void Server::Act_if_writefd_changed(std::vector<int>::iterator &Iter)
 
 void Server::Act_if_readfd_changed(std::vector<int>::iterator &Iter)
 {
-	std::vector<std::string> tmp;
 	std::string handler;
 	std::string body;
 
@@ -62,15 +60,10 @@ void Server::Act_if_readfd_changed(std::vector<int>::iterator &Iter)
 			++Iter;
 			return;
 		}
-#ifdef SERVER_DEBUG
-	inputHandlers.output();
-#endif
 	Method_selector(*_edited_headers[*Iter], handler, body, _request_body[*Iter]);
 	_request_body.erase(*Iter);
 	_edited_headers.erase(*Iter);
-	tmp.push_back(handler);
-	tmp.push_back(body);
-	_ready_response_to_the_customer.insert(std::pair<int, std::vector<std::string> >(*Iter, tmp));
+	_ready_response_to_the_customer.insert(std::pair<int, std::string>(*Iter, handler + body));
 	_write_socket_fd.push_back(*Iter);
 	Iter = _read_socket_fd.erase(Iter);
 }
