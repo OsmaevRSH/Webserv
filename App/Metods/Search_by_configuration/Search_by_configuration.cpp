@@ -135,7 +135,7 @@ t_server Search_by_configuration::get_server()
 				"localhost:" + std::to_string(it->port) == _handler.getIp() + port)
 				return *it;
 		}
-		if (it->ip + std::to_string(it->port) == _handler.getIp() + port)
+		if (it->ip + ":" + std::to_string(it->port) == _handler.getIp() + port)
 			return *it;
 	}
 	std::cout << "Invalid server!" << std::endl;

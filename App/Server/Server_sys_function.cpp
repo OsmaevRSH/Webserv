@@ -73,7 +73,7 @@ void Server::Listen() const
 
 void Server::Accept(int fd)
 {
-	char str[256];
+	char str[32];
 	struct sockaddr_in addr = {0};
 	socklen_t addr_len;
 	int new_client_fd;

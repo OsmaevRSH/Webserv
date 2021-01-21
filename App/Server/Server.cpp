@@ -52,7 +52,7 @@ void Server::Act_if_readfd_changed(std::vector<int>::iterator &Iter)
 	std::string handler;
 	std::string body;
 
-	if (_edited_headers.find(*Iter) == _edited_headers.end() && _request_body.find(*Iter) == _request_body.end() && Reading_a_request(Iter))
+	if (_request_body.find(*Iter) == _request_body.end() && _edited_headers.find(*Iter) == _edited_headers.end() && Reading_a_request(Iter))
 		return;
 	if ((_edited_headers.find(*Iter) != _edited_headers.end()) && (_edited_headers[*Iter]->getVariableHandlers().find("Content-Length") != _edited_headers[*Iter]->getVariableHandlers().end()))
 		read_with_content_length(std::stoi(_edited_headers[*Iter]->getVariableHandlers().at("Content-Length")), *Iter);
@@ -67,7 +67,7 @@ void Server::Act_if_readfd_changed(std::vector<int>::iterator &Iter)
 #endif
 	Method_selector(*_edited_headers[*Iter], handler, body, _request_body[*Iter]);
 	_request_body.erase(*Iter);
-	delete _edited_headers[*Iter];
+	_edited_headers.erase(*Iter);
 	tmp.push_back(handler);
 	tmp.push_back(body);
 	_ready_response_to_the_customer.insert(std::pair<int, std::vector<std::string> >(*Iter, tmp));
@@ -153,6 +153,7 @@ bool Server::Reading_a_request(std::vector<int>::iterator &Iter)
 	if (request_size == 0 && _ready_response_to_the_customer.find(*Iter) == _ready_response_to_the_customer.end())
 	{
 		close(*Iter);
+		_server_client_ip.erase(*Iter);
 		Iter = _read_socket_fd.erase(Iter);
 		delete[] buffer_for_request;
 		return true;
@@ -170,6 +171,7 @@ bool Server::Reading_a_request(std::vector<int>::iterator &Iter)
 			_edited_headers[*Iter]->getVariableHandlers().at("Connection") == "close"))
 	{
 		close(*Iter);
+		_server_client_ip.erase(*Iter);
 		Iter = _read_socket_fd.erase(Iter);
 		delete[] buffer_for_request;
 		return true;
