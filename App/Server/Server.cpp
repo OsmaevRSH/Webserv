@@ -140,7 +140,9 @@ bool Server::Reading_a_request(std::vector<int>::iterator &Iter)
 	int request_size;
 
 	buffer_for_request = new char[576];
+	bzero(buffer_for_request, 576);
 	request_size = recv(*Iter, buffer_for_request, 575, MSG_PEEK);
+	std::cout << buffer_for_request <<std::endl;
 	if (request_size > 0)
 		buffer_for_request[request_size] = '\0';
 	if (request_size == 0 && _ready_response_to_the_customer.find(*Iter) == _ready_response_to_the_customer.end())
