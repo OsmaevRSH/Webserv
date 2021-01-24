@@ -11,8 +11,7 @@
 /* ************************************************************************** */
 
 #pragma once
-#include "../../App/Main/master.hpp"
-#include "Parse_input_handler.hpp"
+#include "../App/Main/master.hpp"
 
 namespace ConfigParser
 {
@@ -24,13 +23,14 @@ namespace ConfigParser
 		bool						autoindex;
 
 		s_everywhere();
-	}							t_everywhere;
-	typedef struct					s_location
+	}								t_everywhere;
+	typedef struct						s_location
 	{
-		std::vector<std::string>	block_args;
-		std::vector<std::string>	allow_methods;
+		std::vector<std::string>		block_args;
+		std::vector<std::string>		allow_methods;
 		std::vector<struct s_location>	locations;
-		t_everywhere				ew;
+		std::string 					cgi_path;
+		t_everywhere					ew;
 
 		s_location();
 	}								t_location;
@@ -61,15 +61,15 @@ namespace ConfigParser
 	}								t_args;
 }
 
-class Config
+class Parser
 {
 	private:
 		std::vector<ConfigParser::t_server>				_servers;
 		std::map<int, std::string>						_error_pages; // Ключ - номер страницы. Значение - путь
 		ConfigParser::t_everywhere						_ew;
 
-		void parse_server();
-		void parse_location();
+		//void parse_server();
+		//void parse_location();
 		void parse(ConfigParser::t_args args);
 		void select_dir(ConfigParser::t_args &args, std::string word);
 		void server_parse(ConfigParser::t_args args);
@@ -77,7 +77,7 @@ class Config
 		void error_page_parse(ConfigParser::t_args args);
 
 	public:
-		Config(const std::string& path_to_config);
+		Parser(const std::string& path_to_config);
 		const std::vector<ConfigParser::t_server> &getServers() const;
 		const std::map<int, std::string> &getErrorPages() const;
 		const ConfigParser::t_everywhere &getEw() const;

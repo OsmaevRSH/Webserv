@@ -2,7 +2,7 @@
 
 #include "Parse_input_handler.hpp"
 #include "master.hpp"
-#include "Config.hpp"
+#include "../../Config/Parser.hpp"
 #include "MIME_ERROR.hpp"
 
 typedef std::vector<ConfigParser::t_server> serv_vec;

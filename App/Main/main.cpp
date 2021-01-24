@@ -1,5 +1,5 @@
 #include "Server.hpp"
-#include "Config.hpp"
+#include "../../Config/Parser.hpp"
 #include "MIME_ERROR.hpp"
 
 int main()

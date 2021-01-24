@@ -10,11 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Config.hpp"
+#include "Parser.hpp"
 
 typedef ConfigParser::t_args 			t_args;
 typedef ConfigParser::t_everywhere 		t_everywhere;
-typedef ConfigParser::t_location 			t_location;
+typedef ConfigParser::t_location 		t_location;
 typedef ConfigParser::t_server 			t_server;
 
 // Utils:
@@ -181,7 +181,7 @@ static void 					max_body_size_parse(t_args args) {
 }
 
 // Class parse functions:
-void Config::					parse(t_args args) {
+void Parser::					parse(t_args args) {
 	std::string word;
 	std::string dir_content;
 	std::vector<std::string> context;
@@ -202,7 +202,7 @@ void Config::					parse(t_args args) {
 		word = get_next_word(args.fragment, args.rel_pos);
 	}
 }
-void Config::					select_dir(t_args &args, std::string word) {
+void Parser::					select_dir(t_args &args, std::string word) {
 	t_args new_args;
 	new_args.text = args.text;
 	new_args.ew = args.ew;
@@ -247,8 +247,10 @@ void Config::					select_dir(t_args &args, std::string word) {
 	}
 	else if (word == "allow")
 		allow_methods_parse(new_args);
+	else if (word == "cgi")
+		args.location->cgi_path = string_parse(new_args);
 }
-void Config::					server_parse(t_args args) {
+void Parser::					server_parse(t_args args) {
 	if (!args.block_args.empty())
 		show_error(args, "Server directive must not have block-directive arguments\n");
 	t_server *server = new t_server;
@@ -263,7 +265,7 @@ void Config::					server_parse(t_args args) {
 	std::cout << "}\n";
 #endif
 }
-void Config::					error_page_parse(t_args args)
+void Parser::					error_page_parse(t_args args)
 {
 	std::string			tmp;
 	int 				page;
@@ -291,7 +293,7 @@ void Config::					error_page_parse(t_args args)
 		std::cout << (*i).first << ":" << (*i).second << "\n";
 #endif
 }
-void Config::					location_parse(t_args args) {
+void Parser::					location_parse(t_args args) {
 	t_location *location = new t_location;
 	t_location *parent_location = args.location;
 	location->block_args = args.block_args;
@@ -316,7 +318,7 @@ void Config::					location_parse(t_args args) {
 }
 
 // Constructors
-Config::						Config(const std::string &path_to_config) {
+Parser::						Parser(const std::string &path_to_config) {
 	t_args args;
 	args.text = get_page_text(path_to_config);
 	args.ew = &_ew;
@@ -325,13 +327,13 @@ Config::						Config(const std::string &path_to_config) {
 }
 
 // Getters
-const std::vector<t_server> 	&Config::getServers() const {
+const std::vector<t_server> 	&Parser::getServers() const {
 	return _servers;
 }
-const std::map<int, 			std::string> &Config::getErrorPages() const {
+const std::map<int, 			std::string> &Parser::getErrorPages() const {
 	return _error_pages;
 }
-const t_everywhere 				&Config::getEw() const {
+const t_everywhere 				&Parser::getEw() const {
 	return _ew;
 }
 t_server::						s_server() { port = 0; }
@@ -369,4 +371,5 @@ t_args::			s_args() {
 	location_context.push_back("autoindex");
 	location_context.push_back("location");
 	location_context.push_back("allow");
+	location_context.push_back("cgi");
 }

@@ -10,12 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Config.hpp"
+#include "../Parser.hpp"
 
 int		main(void)
 {
-	Config conf("./Config/conf");
+	Parser conf("./Parser/Test/conf");
 	std::cout <<  "\n" << conf.getServers().front().ip << "\n";
-	std::cout << "\n";
 	return (0);
 }

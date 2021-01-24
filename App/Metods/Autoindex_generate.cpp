@@ -1,4 +1,4 @@
-#include "Config.hpp"
+#include "../../Config/Parser.hpp"
 #include "Search_by_configuration.hpp"
 
  std::string Search_by_configuration::create_autoindex_page(t_params &params, Parse_input_handler &handler)
