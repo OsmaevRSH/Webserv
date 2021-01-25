@@ -27,6 +27,7 @@
 #include <cstring>
 #include <string>
 #include <algorithm>
+#include "Color.hpp"
 
 class Parse_input_handler;
 

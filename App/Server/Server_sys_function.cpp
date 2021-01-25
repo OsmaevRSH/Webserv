@@ -170,7 +170,11 @@ void Server::Check_read_set()
 	while (Iter != _read_socket_fd.end())
 	{
 		if (FD_ISSET(*Iter, &_readfds))
+		{
+//			std::cout << std::endl;
+//			std::cout << RED << "Read event" << RESET << std::endl << std::endl;
 			Act_if_readfd_changed(Iter);
+		}
 		else
 			++Iter;
 	}
@@ -184,7 +188,11 @@ void Server::Check_write_set()
 	while (Iter != _write_socket_fd.end())
 	{
 		if (FD_ISSET(*Iter, &_writefds))
+		{
+//			std::cout << std::endl;
+//			std::cout << GREEN << "Write event" << RESET << std::endl << std::endl;
 			Act_if_writefd_changed(Iter);
+		}
 		else
 			++Iter;
 	}
