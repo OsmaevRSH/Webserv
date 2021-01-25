@@ -16,9 +16,6 @@ HEADERS_DIR = App/Main/master.hpp App/MIME&ERROR_CODE/MIME_ERROR.hpp App/Parse_i
 	App/Server/Server.hpp App/Metods/Search_by_configuration/Search_by_configuration.hpp App/Metods/GET/GET.hpp \
 	App/Metods/HEAD/HEAD.hpp App/Metods/PUT/PUT.hpp Config/Headers/Config.hpp
 
-#HEADERS_DIR = App/Main/ App/MIME&ERROR_CODE/ App/Parse_input_handlers/ \
-#	App/Server/ App/Metods/Search_by_configuration/ App/Metods/GET/ \
-#	App/Metods/HEAD/ App/Metods/PUT/ Config/Headers/
 
 OBJS = $(SRCS:.cpp=.o)
 

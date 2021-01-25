@@ -23,7 +23,7 @@ void PUT::start_processing()
 	if (_status_code == 201 || _status_code == 204)
 	{
 		file.open(_status_code == 204 ? _output.path_to_file : (_output.path_to_file = _output.root + _handler.getUrl()), std::ios_base::trunc);
-		file << _body;
+		file << _handler_body;
 		file.close();
 	}
 	else
