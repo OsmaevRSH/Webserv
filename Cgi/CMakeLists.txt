@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.17)
-project(parser)
+project(cgi)
 
 set(CMAKE_CXX_STANDARD 98)
 include_directories(../App/Headers)
 include_directories(./Headers)
 
-add_executable(parser Config_parser.cpp Test/main.cpp ../App/Main/utils.cpp)
+add_executable(cgi Cgi.cpp)
