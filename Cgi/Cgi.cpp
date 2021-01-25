@@ -9,8 +9,11 @@ Cgi::Cgi(const std::string &path_to_cgi, const t_data_for_cgi &data)
 	for (int i = 0; i < 18; i++)
 		env[i] = NULL;
 
+	env[0] = strdup("SERVER_SOFTWARE = Webserver");
+	env[1] = strdup("GATEWAY_INTERFACE = CGI/1.1");
+	env[2]
 
-	value = data.headers.getVariableHandlers().at("CONTENT_TYPE");
+	value = data.headers.getVariableHandlers().at("Content-type");
 	if (value.empty() == false)
 	{
 		name = "CONTENT_TYPE = " + value;
@@ -19,13 +22,15 @@ Cgi::Cgi(const std::string &path_to_cgi, const t_data_for_cgi &data)
 
 	if (data.body.empty() == false)
 	{
-		value = data.headers.getVariableHandlers().at("CONTENT_LENGTH");
+		value = data.headers.getVariableHandlers().at("Content-length");
 		if (value.empty() == false)
 		{
 			name = "CONTENT_LENGTH = " + value;
-			env[0] = strdup(name.c_str());
+			env[1] = strdup(name.c_str());
 		}
 	}
+
+
 }
 
 static void send_body_to_cgi(const std::string &body, int *pipe_fd)

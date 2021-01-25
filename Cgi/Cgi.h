@@ -6,7 +6,6 @@
 #include <cstdlib>
 #include "../App/Parse_input_handlers/Parse_input_handler.hpp"
 
-typedef Parse_input_handler data;
 
 typedef struct				s_data_for_cgi
 {
