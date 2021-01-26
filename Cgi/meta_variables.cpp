@@ -53,20 +53,56 @@ static char *auth_type(const t_data_for_cgi &data)
 
 	if (it != data.headers.getVariableHandlers().end())
 	{
-		tmp = "CONTENT_TYPE = " + (*it).second;
+		tmp = (*it).second;
 		int i = 0;
 		for (; i < tmp.length() || isalnum(tmp[i]) == false; ++i){}
 		tmp = tmp.substr(i);
 		i = 0;
 		for (; i < tmp.length() || isalnum(tmp[i]) == true; ++i){}
-		tmp = tmp.substr(i);
+		tmp = "AUTH_TYPE = " + tmp.substr(i);
+		ret = strdup(tmp.c_str());
+	}
+	return ret;
+}
+static char *remote_user(const t_data_for_cgi &data)
+{
+	std::string tmp;
+	char *ret 										= NULL;
+	std::map<std::string, std::string>::iterator it = data.headers.getVariableHandlers().find("Authorization");
 
+	if (it != data.headers.getVariableHandlers().end())
+	{
+		tmp = (*it).second;
+		int i = tmp.length() - 1;
+		for (; i >= 0 || isalnum(tmp[i]) == false; --i){}
+		for (; i >= 0 || isalnum(tmp[i]) == true; --i){}
+		tmp = tmp.substr(i);
+		tmp = "REMOTE_USER = " + tmp;
 		ret = strdup(tmp.c_str());
 	}
 	return ret;
 }
 
-char **get_meta_variables(const t_data_for_cgi &data)
+static char *remote_ident(const t_data_for_cgi &data)
+{
+	std::string tmp;
+	char *ret 										= NULL;
+	std::map<std::string, std::string>::iterator it = data.headers.getVariableHandlers().find("Authorization");
+
+	if (it != data.headers.getVariableHandlers().end())
+	{
+		tmp = (*it).second;
+		int i = tmp.length() - 1;
+		for (; i >= 0 || isalnum(tmp[i]) == false; --i){}
+		for (; i >= 0 || isalnum(tmp[i]) == true; --i){}
+		tmp = tmp.substr(i);
+		tmp = "REMOTE_IDENT = " + tmp + "." + (*it).second;
+		ret = strdup(tmp.c_str());
+	}
+	return ret;
+}
+
+char		**get_meta_variables(const t_data_for_cgi &data)
 {
 	char **vars = (char**)malloc(sizeof(char*) * 17);
 
@@ -83,8 +119,8 @@ char **get_meta_variables(const t_data_for_cgi &data)
 	vars[11] = content_type(data);
 	vars[12] = content_length(data);
 	vars[13] = query_string(data);
-	vars[14] = strdup("AUTH_TYPE = " + data.headers.)
-	// REQUEST_USER
-	// REQUEST_IDENT
-	// REQUEST_URI
+	vars[14] = auth_type(data);
+	vars[15] = remote_user(data);
+	vars[16] = remote_ident(data);
+	// vars[17] = request_uri(data);
 }
