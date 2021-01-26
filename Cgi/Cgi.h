@@ -5,10 +5,15 @@
 #include <cstring>
 #include <cstdlib>
 #include "../App/Parse_input_handlers/Parse_input_handler.hpp"
-
+#include <stdio.h>
+#include <stdlib.h>
 
 typedef struct				s_data_for_cgi
 {
+	std::string 			server_ip;
+	int 					port;
+	std::string 			path_info; // Путь относительно директории сервера
+	std::string 			path_translated; // Полный путь в файловой системе
 	std::string				body;
 	Parse_input_handler		headers;
 }							t_data_for_cgi;

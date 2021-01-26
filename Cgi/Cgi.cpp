@@ -1,36 +1,18 @@
 #include "Cgi.h"
 
+/*
+ * Логика добавления переменных такая:
+ * Создаем массив строк с максимальным возможным размером.
+ * Мы не знаем, какие переменные у нас могут быть. Для каждой переменной будет
+ * своя ячейка в массиве.
+ * Если переменно нет, ячейка пуста.
+ * Затем, когда будем добавлять их уже в массив переменных окружения, то
+ * мы ведем счетчик до кол-ва переменных.
+ * Если видим, что данная ячека пуста - просто пропускаем ее.
+ * */
+
 Cgi::Cgi(const std::string &path_to_cgi, const t_data_for_cgi &data)
 {
-	char **env = (char**)malloc(sizeof(char*) * 18);
-	std::string value;
-	std::string name;
-
-	for (int i = 0; i < 18; i++)
-		env[i] = NULL;
-
-	env[0] = strdup("SERVER_SOFTWARE = Webserver");
-	env[1] = strdup("GATEWAY_INTERFACE = CGI/1.1");
-	env[2]
-
-	value = data.headers.getVariableHandlers().at("Content-type");
-	if (value.empty() == false)
-	{
-		name = "CONTENT_TYPE = " + value;
-		env[0] = strdup(name.c_str());
-	}
-
-	if (data.body.empty() == false)
-	{
-		value = data.headers.getVariableHandlers().at("Content-length");
-		if (value.empty() == false)
-		{
-			name = "CONTENT_LENGTH = " + value;
-			env[1] = strdup(name.c_str());
-		}
-	}
-
-
 }
 
 static void send_body_to_cgi(const std::string &body, int *pipe_fd)
