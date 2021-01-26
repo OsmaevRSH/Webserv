@@ -29,6 +29,7 @@ class Cgi {
 
 };
 
+char **get_meta_variables(const t_data_for_cgi &data);
 /*
  * Нужно: тело сообщения
  *
