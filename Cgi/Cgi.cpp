@@ -13,6 +13,7 @@
 
 Cgi::Cgi(const std::string &path_to_cgi, const t_data_for_cgi &data)
 {
+
 }
 
 static void send_body_to_cgi(const std::string &body, int *pipe_fd)
