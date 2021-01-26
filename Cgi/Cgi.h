@@ -11,9 +11,12 @@
 typedef struct				s_data_for_cgi
 {
 	std::string 			server_ip;
-	int 					port;
+	std::string 			client_ip;
 	std::string 			path_info; // Путь относительно директории сервера
 	std::string 			path_translated; // Полный путь в файловой системе
+	std::string 			script_name; // Виртуальный путь к скрипту (http путь)
+
+	int 					port;
 	std::string				body;
 	Parse_input_handler		headers;
 }							t_data_for_cgi;
