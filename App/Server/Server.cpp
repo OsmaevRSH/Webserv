@@ -34,13 +34,15 @@ void Server::Act_if_readfd_changed(std::vector<int>::iterator &Iter)
 
 	if (_request_body.find(*Iter) == _request_body.end() && _edited_headers.find(*Iter) == _edited_headers.end() && Reading_a_request(Iter))
 		return;
-	if ((_edited_headers.find(*Iter) != _edited_headers.end()) && (_edited_headers[*Iter]->getVariableHandlers().find("Content-Length") != _edited_headers[*Iter]->getVariableHandlers().end()))
+	if ((_edited_headers.find(*Iter) != _edited_headers.end()) &&
+		(_edited_headers[*Iter]->getVariableHandlers().find("Content-Length") != _edited_headers[*Iter]->getVariableHandlers().end()))
 		if (read_with_content_length(std::stoi(_edited_headers[*Iter]->getVariableHandlers().at("Content-Length")), *Iter))
 		{
 			++Iter;
 			return;
 		}
-	if ((_edited_headers.find(*Iter) != _edited_headers.end()) && (_edited_headers[*Iter]->getVariableHandlers().find("Transfer-Encoding") != _edited_headers[*Iter]->getVariableHandlers().end()))
+	if ((_edited_headers.find(*Iter) != _edited_headers.end()) &&
+		(_edited_headers[*Iter]->getVariableHandlers().find("Transfer-Encoding") != _edited_headers[*Iter]->getVariableHandlers().end()))
 		if (!read_with_chunked(*Iter))
 		{
 			++Iter;
@@ -208,7 +210,7 @@ bool Server::read_with_chunked(int fd)
 		recv(fd, crlf_buffer, 2, 0);
 		_chunked_length.erase(fd);
 	}
-	delete [] buff;
+	delete[] buff;
 	return false;
 }
 
@@ -218,22 +220,18 @@ bool Server::Reading_a_request(std::vector<int>::iterator &Iter)
 	char *output;
 	int request_size;
 
-	std::cout << "Read!!!\n";
 	buffer_for_request = new char[576];
 	bzero(buffer_for_request, 576);
 	request_size = recv(*Iter, buffer_for_request, 575, MSG_PEEK);
 	if (request_size == -1)
 	{
-		std::cout << "-1\n";
 		++Iter;
 		delete[] buffer_for_request;
 		return true;
 	}
 	buffer_for_request[request_size] = '\0';
-	std::cout << buffer_for_request << std::endl;
 	if (request_size == 0 && _ready_response_to_the_customer.find(*Iter) == _ready_response_to_the_customer.end())
 	{
-		std::cout << "Error!!!\n";
 		close(*Iter);
 		_server_client_ip.erase(*Iter);
 		Iter = _read_socket_fd.erase(Iter);
@@ -242,13 +240,12 @@ bool Server::Reading_a_request(std::vector<int>::iterator &Iter)
 	}
 	if ((output = check_input_handler_buffer(buffer_for_request, Iter)) == nullptr)
 	{
-		std::cout << "Handlers\n";
 		++Iter;
 		delete[] buffer_for_request;
 		return true;
 	}
 	if (_edited_headers.find(*Iter) == _edited_headers.end())
-		_edited_headers.insert(std::pair<int, Parse_input_handler *>(*Iter,  nullptr));
+		_edited_headers.insert(std::pair<int, Parse_input_handler *>(*Iter, nullptr));
 	_edited_headers[*Iter] = new Parse_input_handler(output, _server_client_ip[*Iter]);
 	delete[] buffer_for_request;
 	return false;
@@ -262,6 +259,7 @@ char *Server::check_input_handler_buffer(char *input_buffer, std::vector<int>::i
 
 	if (_request_header.find(*Iter) != _request_header.end())
 	{
+
 		check_buffer = _request_header[*Iter] + input_buffer;
 		if ((pos = check_buffer.find("\r\n\r\n")) != std::string::npos)
 		{
@@ -277,11 +275,8 @@ char *Server::check_input_handler_buffer(char *input_buffer, std::vector<int>::i
 		}
 	}
 	check_buffer = input_buffer;
-	if (!std::strncmp(input_buffer, "\r\n\r\n", 4))
-		std::cout << "Нашел CRLF ccccccc\n";
 	if ((pos = check_buffer.find("\r\n\r\n")) != std::string::npos)
 	{
-		std::cout << "Нашел CRLF\n";
 		pos = recv(*Iter, input_buffer, pos + 4, 0);
 		if (pos == -1)
 			return nullptr;
@@ -296,15 +291,11 @@ char *Server::check_input_handler_buffer(char *input_buffer, std::vector<int>::i
 	else
 	{
 		bzero(input_buffer, 575);
-		std::cout << "NOT!!!\n";
-		pos = recv(*Iter, input_buffer, 575, 0);
-		std::cout << input_buffer;
+		pos = recv(*Iter, input_buffer, check_buffer.size(), 0);
 		if (pos == -1)
 			return nullptr;
 		if (pos > 0)
 			input_buffer[pos] = '\0';
-		check_buffer = input_buffer;
-		std::cout << "Pos: " << pos << "    " << "Size: " << check_buffer.size() << std::endl << check_buffer << input_buffer;
 		if (_request_header.find(*Iter) == _request_header.end())
 			_request_header.insert(std::pair<int, std::string>(*Iter, input_buffer));
 		else
