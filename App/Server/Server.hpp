@@ -38,6 +38,7 @@ class Server
 		std::map<int, std::string> _ready_response_to_the_customer; //map для хренения готового ответа для клиента
 		std::map<int, std::string> _chunked_end_check; //map для проверки chunked окончания в случае прихода 0
 		std::map<int, std::string> _server_client_ip; //map для хренения на какой ip сервера пришло соединение
+		std::map<int, int> _chunked_length; //map для хренения размера чанка
 
 		void Socket();
 		void Bind();
@@ -57,7 +58,7 @@ class Server
 		bool Reading_a_request(std::vector<int>::iterator &Iter);
 		char *check_input_handler_buffer(char *input_buffer, std::vector<int>::iterator &);
 		void Method_selector(const Parse_input_handler &inputHandlers, std::string &handler, std::string &body, std::string &handler_body);
-		void read_with_content_length(int size, int fd);
+		bool read_with_content_length(int size, int fd);
 		bool read_with_chunked(int);
 	public:
 		explicit Server(const serv_vec &, const errp_map &, const ew_str &, MIME_ERROR &, int family = AF_INET, int type = SOCK_STREAM, int protocol = 0);

@@ -67,7 +67,7 @@ void Server::Listen() const
 
 	for (; it < _master_socket_fd.end(); ++it)
 	{
-		listen(*it, 16);
+		listen(*it, SOMAXCONN);
 	}
 }
 
