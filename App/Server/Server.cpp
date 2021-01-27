@@ -53,15 +53,25 @@ void Server::Act_if_readfd_changed(std::vector<int>::iterator &Iter)
 
 bool Server::read_with_content_length(int size, int fd)
 {
+	std::map<int, int> &_content_length_buffer = _chunked_length;
 	int count;
 	char *buff;
 
-	buff = new char[size + 1];
-	count = recv(fd, buff, size, 0);
+	if (_content_length_buffer.find(fd) == _content_length_buffer.end())
+		_content_length_buffer.insert(std::pair<int, int>(fd, size));
+	if (_request_body.find(fd) == _request_body.end())
+		_request_body.insert(std::pair<int, std::string>(fd, ""));
+	buff = new char[_content_length_buffer[fd] + 1];
+	count = recv(fd, buff, _content_length_buffer[fd], 0);
 	if (count == -1)
 		return true;
 	buff[count] = '\0';
-	_request_body.insert(std::pair<int, std::string>(fd, buff));
+	_request_body[fd] += buff;
+	if (count < _content_length_buffer[fd])
+	{
+		_content_length_buffer[fd] -= count;
+		return true;
+	}
 	delete[] buff;
 	return false;
 }
