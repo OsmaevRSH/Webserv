@@ -56,7 +56,7 @@ class Search_by_configuration
 		virtual std::string get_content_length() = 0;
 		std::string get_server_name();
 		std::string get_last_modified();
-		std::string get_allow_metods();
+		std::string get_allow_methods();
 		void Search_path();
 		std::string create_autoindex_page(t_params &params, Parse_input_handler &handler);
 	public:

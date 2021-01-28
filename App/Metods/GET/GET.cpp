@@ -25,7 +25,7 @@ void GET::get_hendler()
 	std::stringstream output;
 
 	output << this->get_first_line() << this->get_content_type() << this->get_content_length() << this->get_date_handler()
-		   << this->get_server_name() << this->get_last_modified() << this->get_allow_metods() << "\r\n";
+		   << this->get_server_name() << this->get_last_modified() << this->get_allow_methods() << "\r\n";
 	_head = output.str();
 }
 

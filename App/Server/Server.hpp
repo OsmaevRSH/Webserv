@@ -4,6 +4,7 @@
 #include "master.hpp"
 #include "Parser.hpp"
 #include "MIME_ERROR.hpp"
+#include "Client.hpp"
 
 typedef std::vector<ConfigParser::t_server> serv_vec;
 typedef std::map<int, std::string> errp_map;
@@ -29,16 +30,8 @@ class Server
 		fd_set _writefds;
 		Serv_conf _config;
 		MIME_ERROR _mime;
-		std::vector<int> _read_socket_fd;
-		std::vector<int> _write_socket_fd;
+		std::list<Client> _clients;
 		std::vector<int> _master_socket_fd;
-		std::map<int, Parse_input_handler *> _edited_headers; //map для хранения указателей на класс с обратанным заголовком клиента
-		std::map<int, std::string> _request_header; //map для хранения заголовка запроса
-		std::map<int, std::string> _request_body; //map для хранения тела запроса
-		std::map<int, std::string> _ready_response_to_the_customer; //map для хренения готового ответа для клиента
-		std::map<int, std::string> _chunked_end_check; //map для проверки chunked окончания в случае прихода 0
-		std::map<int, std::string> _server_client_ip; //map для хренения на какой ip сервера пришло соединение
-		std::map<int, int> _chunked_length; //map для хренения размера чанка
 
 		void Socket();
 		void Bind();
@@ -51,15 +44,15 @@ class Server
 		void Search_max_fd(int &);
 		static void Checkout_call_to_select(const int &);
 		void Accept_if_serv_fd_changed();
-		void Act_if_readfd_changed(std::vector<int>::iterator &);
-		void Act_if_writefd_changed(std::vector<int>::iterator &);
+		void Act_if_readfd_changed(std::list<Client>::iterator &);
+		void Act_if_writefd_changed(std::list<Client>::iterator &);
 		void Check_read_set();
 		void Check_write_set();
-		bool Reading_a_request(std::vector<int>::iterator &Iter);
-		char *check_input_handler_buffer(char *input_buffer, std::vector<int>::iterator &);
+		bool Reading_a_request(std::list<Client>::iterator &Iter);
+		static char *check_input_handler_buffer(char *input_buffer, std::list<Client>::iterator &);
 		void Method_selector(const Parse_input_handler &inputHandlers, std::string &handler, std::string &body, std::string &handler_body);
-		bool read_with_content_length(int size, int fd);
-		bool read_with_chunked(int);
+		static bool read_with_content_length(int size, std::list<Client>::iterator &);
+		static bool read_with_chunked(std::list<Client>::iterator &);
 	public:
 		explicit Server(const serv_vec &, const errp_map &, const ew_str &, MIME_ERROR &, int family = AF_INET, int type = SOCK_STREAM, int protocol = 0);
 		~Server();

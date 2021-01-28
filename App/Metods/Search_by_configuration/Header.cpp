@@ -59,7 +59,7 @@ std::string Search_by_configuration::get_last_modified()
 		return "";
 }
 
-std::string Search_by_configuration::get_allow_metods()
+std::string Search_by_configuration::get_allow_methods()
 {
 	std::stringstream tmp;
 	std::vector<std::string>::iterator it;

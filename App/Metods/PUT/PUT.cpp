@@ -26,7 +26,7 @@ void PUT::start_processing()
 		if (_output.root.empty() && _status_code == 201)
 		{
 			tmp_path = _handler.getUrl().substr(_output.curent_location.size());
-			if (tmp_path.find("/") != 0)
+			if (tmp_path.find('/') != 0)
 				tmp_path = "/" + tmp_path;
 			_output.path_to_file = _output.alias + tmp_path;
 		}
@@ -50,7 +50,7 @@ void PUT::get_hendler()
 	output << get_date_handler();
 	output << get_content_type();
 	if (_status_code == 405)
-		output << get_allow_metods();
+		output << get_allow_methods();
 	output << "\r\n";
 	_head = output.str();
 }

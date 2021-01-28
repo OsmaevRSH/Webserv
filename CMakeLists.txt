@@ -4,6 +4,7 @@ project(Webserv)
 set(CMAKE_CXX_STANDARD 98)
 
 include_directories(App/Main)
+include_directories(App/Client)
 include_directories(App/MIME&ERROR_CODE)
 include_directories(App/Parse_input_handlers)
 include_directories(App/Server)
@@ -31,4 +32,4 @@ add_executable(Webserv  App/Main/utils.cpp
                         Parser/Parser.cpp
                         App/Metods/Search_by_configuration/Header.cpp
                         App/Metods/PUT/PUT.cpp
-                        App/Metods/PUT/PUT.hpp App/Main/Color.hpp)
+                        App/Metods/PUT/PUT.hpp App/Main/Color.hpp App/Client/Client.cpp App/Client/Client.hpp)
