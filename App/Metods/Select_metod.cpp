@@ -8,6 +8,7 @@ void Server::Method_selector(const Parse_input_handler &inputHandlers, std::stri
 {
 	if (inputHandlers.getType() == "GET")
 	{
+		std::cout << "GET!!!\n";
 		GET get(_config, inputHandlers, _mime, handler, body);
 		get.start_processing();
 	}
@@ -26,7 +27,6 @@ void Server::Method_selector(const Parse_input_handler &inputHandlers, std::stri
 		handler = "HTTP/1.1 405 METHOD NOT ALLOWED\r\n"
 				  "Content-Type: text/plain\r\n"
 				  "Content-Length: 0\r\n"
-				  "Date: Sat, 23 Jan 2021 17:40:53 MSK\r\n"
 				  "Server: Webserver/1.0\r\n"
 				  "Allow: GET\r\n\r\n";
 	}
