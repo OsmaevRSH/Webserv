@@ -10,15 +10,31 @@ bool check_slash(Parse_input_handler &handlers)
 bool Search_by_configuration::search_index(t_params &global_params, Parse_input_handler &handlers)
 {
 	struct stat check = {};
+	std::string tmp_path;
 	std::vector<std::string>::iterator it;
 	it = global_params.index.begin();
 
 	for (; it < global_params.index.end(); ++it)
 	{
-		if (!stat((global_params.root + handlers.getUrl() + *it).c_str(), &check))
+		if (!global_params.root.empty())
 		{
-			handlers.setUrl(handlers.getUrl() + *it);
-			return true;
+			if (!stat((global_params.root + handlers.getUrl() + *it).c_str(), &check))
+			{
+				handlers.setUrl(handlers.getUrl() + *it);
+				return true;
+			}
+		}
+		else
+		{
+			tmp_path = handlers.getUrl().substr(global_params.curent_location.size());
+			if (tmp_path.find("/") != 0)
+				tmp_path = "/" + tmp_path;
+			if (!stat((global_params.alias + tmp_path + *it).c_str(), &check))
+			{
+				handlers.setUrl(handlers.getUrl() + *it);
+				return true;
+			}
+			return false;
 		}
 	}
 	if (global_params.autoindex)
@@ -49,7 +65,12 @@ t_location *check_path_with_complete_coincidence(T &param, Parse_input_handler &
 void Search_by_configuration::update_global_params(t_params &global_params, t_location &location)
 {
 	global_params.index = location.ew.index;
+	if (location.block_args[0] == "=")
+		global_params.curent_location = location.block_args[1];
+	else
+		global_params.curent_location = location.block_args[0];
 	global_params.root = location.ew.root;
+	global_params.alias = location.ew.alias;
 	global_params.allow_methods = location.allow_methods;
 	global_params.autoindex = location.ew.autoindex;
 	global_params.max_body_size = location.ew.max_body_size;
@@ -59,13 +80,29 @@ void Search_by_configuration::update_global_params(t_params &global_params, t_lo
 bool search_folder(t_params &params, Parse_input_handler &handlers)
 {
 	struct stat check = {};
+	std::string tmp_path;
 
-	if (!stat((params.root + handlers.getUrl()).c_str(), &check))
+	if (!params.root.empty())
 	{
-		if (S_ISDIR(check.st_mode))
-			return true;
+		if (!stat((params.root + handlers.getUrl()).c_str(), &check))
+		{
+			if (S_ISDIR(check.st_mode))
+				return true;
+		}
+		return false;
 	}
-	return false;
+	else
+	{
+		tmp_path = handlers.getUrl().substr(params.curent_location.size());
+		if (tmp_path.find("/") != 0)
+			tmp_path = "/" + tmp_path;
+		if (!stat((params.alias + tmp_path).c_str(), &check))
+		{
+			if (S_ISDIR(check.st_mode))
+				return true;
+		}
+		return false;
+	}
 }
 
 void location_sort(std::vector<t_location> &locations)
@@ -105,19 +142,41 @@ t_location *check_simple_location(T &param, Parse_input_handler &handlers)
 bool search_file(t_params &params, Parse_input_handler &handlers)
 {
 	struct stat check = {};
+	std::string tmp_path;
 
-	if (!stat((params.root + handlers.getUrl()).c_str(), &check))
+	if (!params.root.empty())
 	{
-		if (S_ISDIR(check.st_mode))
+		if (!stat((params.root + handlers.getUrl()).c_str(), &check))
 		{
-			handlers.setUrl(handlers.getUrl() + "/");
-			return true;
+			if (S_ISDIR(check.st_mode))
+			{
+				handlers.setUrl(handlers.getUrl() + "/");
+				return true;
+			}
+			if (S_ISREG(check.st_mode))
+				return true;
+			return false;
 		}
-		if (S_ISREG(check.st_mode))
-			return true;
 		return false;
 	}
-	return false;
+	else
+	{
+		tmp_path = handlers.getUrl().substr(params.curent_location.size());
+		if (tmp_path.find("/") != 0)
+			tmp_path = "/" + tmp_path;
+		if (!stat((params.alias + tmp_path).c_str(), &check))
+		{
+			if (S_ISDIR(check.st_mode))
+			{
+				handlers.setUrl(handlers.getUrl() + "/");
+				return true;
+			}
+			if (S_ISREG(check.st_mode))
+				return true;
+			return false;
+		}
+		return false;
+	}
 }
 
 t_server Search_by_configuration::get_server()
@@ -138,8 +197,7 @@ t_server Search_by_configuration::get_server()
 		if (it->ip + ":" + std::to_string(it->port) == _handler.getIp() + port)
 			return *it;
 	}
-	std::cout << "Invalid server!" << std::endl;
-	exit(EXIT_FAILURE); //TODO
+	return _config._servers[0];
 }
 
 void Search_by_configuration::setup_global_params(t_params &global_params, t_server &server, bool save_server)
@@ -148,6 +206,7 @@ void Search_by_configuration::setup_global_params(t_params &global_params, t_ser
 		global_params.root_location = server;
 	global_params.index = _config._ew.index;
 	global_params.root = _config._ew.root;
+	global_params.alias = _config._ew.alias;
 	global_params.autoindex = _config._ew.autoindex;
 	global_params.max_body_size = _config._ew.max_body_size;
 }
@@ -162,16 +221,26 @@ void Search_by_configuration::recursive_call_with_slash(Parse_input_handler &han
 
 void Search_by_configuration::recursive_call_without_slash(Parse_input_handler &handlers, t_params &global_params)
 {
+	std::string tmp_path;
+
 	if (search_file(global_params, handlers))
 	{
 		if (check_slash(handlers))
 			return Search_by_configuration::get_path(global_params.root_location, handlers, global_params);
 		_output.path_to_file = global_params.root + handlers.getUrl();
+
+		if (!global_params.root.empty())
+			_output.path_to_file = global_params.root + handlers.getUrl();
+		else
+		{
+			tmp_path = handlers.getUrl().substr(global_params.curent_location.size());
+			if (tmp_path.find("/") != 0)
+				tmp_path = "/" + tmp_path;
+			_output.path_to_file = global_params.alias + tmp_path;
+		}
 	}
 	else
-	{
 		_output.status_code = 404;
-	}
 }
 
 void Search_by_configuration::check_allow_metods(const t_params &param, Parse_input_handler &handlers)
@@ -199,6 +268,8 @@ void Search_by_configuration::Search_path()
 	get_path(curent_server, _handler, global_params);
 	check_allow_metods(global_params, _handler);
 	_output.root = global_params.root;
+	_output.alias = global_params.alias;
+	_output.curent_location = global_params.curent_location;
 }
 
 template<class T>

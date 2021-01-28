@@ -1,7 +1,7 @@
 #include "Parser.hpp"
 #include "Search_by_configuration.hpp"
 
- std::string Search_by_configuration::create_autoindex_page(t_params &params, Parse_input_handler &handler)
+std::string Search_by_configuration::create_autoindex_page(t_params &params, Parse_input_handler &handler)
 {
 	std::stringstream autoindex;
 	std::stringstream buff;
@@ -10,15 +10,24 @@
 	struct dirent *elem;
 	struct stat file_stat = {};
 	struct tm *time;
+	std::string tmp_path;
 
-	autoindex << "<html>\n<head><title>Index of " + handler.getUrl() +
-				 "</title></head>\n<body bgcolor=\"white\">\n<h1>Index of " +
+	autoindex << "<html>\n<head><title>Index of " + handler.getUrl() + "</title></head>\n<body bgcolor=\"white\">\n<h1>Index of " +
 				 handler.getUrl() + "</h1><hr><pre><a href=\"../\">../</a>\n";
 
 #ifdef AUTOINDEX_DEBUG
 	std::cout << autoindex.str();
 #endif
-	directory = opendir((params.root + handler.getUrl()).c_str());
+	if (!params.root.empty())
+	{
+		tmp_path = params.root + handler.getUrl();
+		directory = opendir(tmp_path.c_str());
+	}
+	else
+	{
+		tmp_path = params.alias + "/" + handler.getUrl().substr(params.curent_location.size());
+		directory = opendir(tmp_path.c_str());
+	}
 	elem = readdir(directory);
 	while (elem)
 	{
@@ -31,13 +40,10 @@
 		std::cout << params.root << handler.getUrl() << elem->d_name
 				  << std::endl;
 #endif
-		if (!(stat((params.root + handler.getUrl() +
-					elem->d_name).c_str(), &file_stat)))
+		if (!(stat((tmp_path + elem->d_name).c_str(), &file_stat)))
 		{
-			autoindex << "<a href=" << elem->d_name
-					  << (S_ISDIR(file_stat.st_mode) ? "/" : "") << ">"
-					  << elem->d_name << (S_ISDIR(file_stat.st_mode) ? "/" : "")
-					  << "</a>";
+			autoindex << "<a href=" << elem->d_name << (S_ISDIR(file_stat.st_mode) ? "/" : "") << ">" << elem->d_name
+					  << (S_ISDIR(file_stat.st_mode) ? "/" : "") << "</a>";
 			for (int i = 0; i < static_cast<int>(51 - std::strlen(elem->d_name) - (S_ISDIR(file_stat.st_mode) ? 1 : 0)); ++i)
 				autoindex << " ";
 			time = localtime(&file_stat.st_mtimespec.tv_sec);

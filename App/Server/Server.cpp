@@ -20,11 +20,39 @@ _Noreturn void Server::ListenLoop()
 
 void Server::Act_if_writefd_changed(std::vector<int>::iterator &Iter)
 {
-	std::cout << RED << _ready_response_to_the_customer[*Iter] << std::endl << RESET;
-	send(*Iter, (_ready_response_to_the_customer[*Iter]).c_str(), _ready_response_to_the_customer[*Iter].size(), MSG_DONTWAIT);
-	_ready_response_to_the_customer.erase(*Iter);
-	_read_socket_fd.push_back(*Iter);
-	Iter = _write_socket_fd.erase(Iter);
+	int counter = 0;
+	if (_ready_response_to_the_customer[*Iter].size() > 32768)
+	{
+		if ((counter = send(*Iter, (_ready_response_to_the_customer[*Iter]).substr(0, 32768).c_str(), 32768, MSG_DONTWAIT)) < 0)
+		{
+			++Iter;
+			return;
+		}
+		std::cout << counter << std::endl;
+		_ready_response_to_the_customer[*Iter].erase(0, counter);
+		++Iter;
+		return;
+	}
+	if (send(*Iter, (_ready_response_to_the_customer[*Iter]).c_str(), _ready_response_to_the_customer[*Iter].size(), 0) < 0)
+	{
+		++Iter;
+		return;
+	}
+	if (_edited_headers[*Iter]->getVariableHandlers().find("Connection") != _edited_headers[*Iter]->getVariableHandlers().end() &&
+		_edited_headers[*Iter]->getVariableHandlers().at("Connection") == "close")
+	{
+		close(*Iter);
+		_ready_response_to_the_customer.erase(*Iter);
+		_edited_headers.erase(*Iter);
+		_read_socket_fd.erase(Iter);
+		Iter = _write_socket_fd.erase(--Iter);
+	}
+	else
+	{
+		_ready_response_to_the_customer.erase(*Iter);
+		_read_socket_fd.push_back(*Iter);
+		Iter = _write_socket_fd.erase(Iter);
+	}
 }
 
 void Server::Act_if_readfd_changed(std::vector<int>::iterator &Iter)
@@ -50,10 +78,9 @@ void Server::Act_if_readfd_changed(std::vector<int>::iterator &Iter)
 		}
 	Method_selector(*_edited_headers[*Iter], handler, body, _request_body[*Iter]);
 	_request_body.erase(*Iter);
-	_edited_headers.erase(*Iter);
 	_ready_response_to_the_customer.insert(std::pair<int, std::string>(*Iter, handler + body));
 	_write_socket_fd.push_back(*Iter);
-	Iter = _read_socket_fd.erase(Iter);
+	++Iter;
 }
 
 bool Server::read_with_content_length(int size, int fd)
@@ -212,11 +239,14 @@ bool Server::Reading_a_request(std::vector<int>::iterator &Iter)
 	request_size = recv(*Iter, buffer_for_request, 575, MSG_PEEK);
 	if (request_size > 0)
 		buffer_for_request[request_size] = '\0';
-	if (request_size == 0 && _ready_response_to_the_customer.find(*Iter) == _ready_response_to_the_customer.end())
+	if (request_size == 0)
 	{
 		close(*Iter);
+		_edited_headers.erase(*Iter);
 		_server_client_ip.erase(*Iter);
-		Iter = _read_socket_fd.erase(Iter);
+		_ready_response_to_the_customer.erase(*Iter);
+		_write_socket_fd.erase(Iter);
+		_read_socket_fd.erase(--Iter);
 		delete[] buffer_for_request;
 		return true;
 	}
@@ -226,6 +256,7 @@ bool Server::Reading_a_request(std::vector<int>::iterator &Iter)
 		delete[] buffer_for_request;
 		return true;
 	}
+	std::cout << output << std::endl;
 	if (_edited_headers.find(*Iter) == _edited_headers.end())
 		_edited_headers.insert(std::pair<int, Parse_input_handler *>(*Iter, nullptr));
 	_edited_headers[*Iter] = new Parse_input_handler(output, _server_client_ip[*Iter]);

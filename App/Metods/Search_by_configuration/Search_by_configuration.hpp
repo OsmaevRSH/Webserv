@@ -14,6 +14,8 @@ typedef struct s_output
 	bool attached_location;
 	t_location location;
 	std::string root;
+	std::string alias;
+	std::string curent_location;
 
 	s_output() : status_code(200), path_to_file(), autoindex_page(), attached_location(false) {}
 } t_output;
@@ -24,6 +26,8 @@ typedef struct s_params
 	std::vector<std::string> allow_methods;
 	std::vector<std::string> index;
 	std::string root;
+	std::string alias;
+	std::string curent_location;
 	bool autoindex;
 	int max_body_size;
 } t_params;

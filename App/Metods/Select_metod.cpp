@@ -8,7 +8,6 @@ void Server::Method_selector(const Parse_input_handler &inputHandlers, std::stri
 {
 	if (inputHandlers.getType() == "GET")
 	{
-		std::cout << "GET!!!\n";
 		GET get(_config, inputHandlers, _mime, handler, body);
 		get.start_processing();
 	}

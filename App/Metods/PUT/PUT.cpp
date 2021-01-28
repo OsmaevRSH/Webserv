@@ -18,11 +18,19 @@ void PUT::get_PUT_status()
 void PUT::start_processing()
 {
 	std::ofstream file;
+	std::string tmp_path;
 
 	get_PUT_status();
 	if (_status_code == 201 || _status_code == 204)
 	{
-		file.open(_status_code == 204 ? _output.path_to_file : (_output.path_to_file = _output.root + _handler.getUrl()), std::ios_base::trunc);
+		if (_output.root.empty() && _status_code == 201)
+		{
+			tmp_path = _handler.getUrl().substr(_output.curent_location.size());
+			if (tmp_path.find("/") != 0)
+				tmp_path = "/" + tmp_path;
+			_output.path_to_file = _output.alias + tmp_path;
+		}
+		file.open(_output.path_to_file, std::ios_base::trunc);
 		file << _handler_body;
 		file.close();
 	}
