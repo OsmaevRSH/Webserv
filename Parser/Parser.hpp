@@ -20,6 +20,7 @@ namespace ConfigParser
 		std::vector<std::string>	index;
 		size_t						max_body_size;
 		std::string					root;
+		std::string 				alias;
 		bool						autoindex;
 
 		s_everywhere();

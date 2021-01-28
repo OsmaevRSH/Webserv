@@ -249,6 +249,10 @@ void Parser::					select_dir(t_args &args, std::string word) {
 		allow_methods_parse(new_args);
 	else if (word == "cgi")
 		args.location->cgi_path = string_parse(new_args);
+	else if (word == "alias")
+	{
+		args.ew->alias = string_parse(new_args);
+	}
 }
 void Parser::					server_parse(t_args args) {
 	if (!args.block_args.empty())
@@ -352,6 +356,7 @@ t_args::			s_args() {
 	main_context.push_back("index");
 	main_context.push_back("max_body_size");
 	main_context.push_back("root");
+	main_context.push_back("alias");
 	main_context.push_back("autoindex");
 	main_context.push_back("server");
 	main_context.push_back("error_page");
@@ -359,6 +364,7 @@ t_args::			s_args() {
 	server_context.push_back("index");
 	server_context.push_back("max_body_size");
 	server_context.push_back("root");
+	server_context.push_back("alias");
 	server_context.push_back("autoindex");
 	server_context.push_back("ip");
 	server_context.push_back("port");
@@ -368,6 +374,7 @@ t_args::			s_args() {
 	location_context.push_back("index");
 	location_context.push_back("max_body_size");
 	location_context.push_back("root");
+	location_context.push_back("alias");
 	location_context.push_back("autoindex");
 	location_context.push_back("location");
 	location_context.push_back("allow");

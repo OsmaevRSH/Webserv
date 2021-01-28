@@ -15,6 +15,5 @@
 int		main(void)
 {
 	Parser conf("./Parser/Test/conf");
-	std::cout <<  "\n" << conf.getServers().front().ip << "\n";
 	return (0);
 }
