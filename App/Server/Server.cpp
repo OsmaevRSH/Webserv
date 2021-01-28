@@ -83,6 +83,7 @@ bool Server::read_with_content_length(int size, int fd)
 
 bool Server::read_with_chunked(int fd)
 {
+	int tmp_chunked_length;
 	int count = 0;
 	char *buff;
 	char crlf_buffer[5];
@@ -109,17 +110,12 @@ bool Server::read_with_chunked(int fd)
 		if (count == -1)
 			return false;
 		buff[count] = '\0';
-		if (count == _chunked_length[fd])
+		tmp_chunked_length = _chunked_length[fd];
+		_chunked_length[fd] -= count;
+		std::cout << GREEN << "Chunked_len: " << _chunked_length[fd] << std::endl << RESET;
+		_request_body[fd] += buff;
+		if (count < tmp_chunked_length)
 		{
-			_chunked_length[fd] -= count;
-			std::cout << GREEN << "Chunked_len: " << _chunked_length[fd] << std::endl << RESET;
-			_request_body[fd] += buff;
-		}
-		if (count < _chunked_length[fd])
-		{
-			_request_body[fd] += buff;
-			_chunked_length[fd] -= count;
-			std::cout << GREEN << "Chunked_len: " << _chunked_length[fd] << std::endl << RESET;
 			delete[] buff;
 			return false;
 		}
@@ -161,13 +157,8 @@ bool Server::read_with_chunked(int fd)
 		if (count == -1)
 			return false;
 		crlf_buffer[count] = '\0';
-		if (!std::strncmp(crlf_buffer, "\r\n\r\n", 4))
-		{
-			_chunked_end_check.erase(fd);
-			return true;
-		}
 		_chunked_end_check[fd] += crlf_buffer;
-		if (!std::strncmp(_chunked_end_check[fd].c_str(), "\r\n\r\n", 4))
+		if (!std::strncmp(crlf_buffer, "\r\n\r\n", 4) || !std::strncmp(_chunked_end_check[fd].c_str(), "\r\n\r\n", 4))
 		{
 			_chunked_end_check.erase(fd);
 			return true;
@@ -189,17 +180,13 @@ bool Server::read_with_chunked(int fd)
 	if (count == -1)
 		return false;
 	buff[count] = '\0';
-	if (count == _chunked_length[fd])
+	tmp_chunked_length = _chunked_length[fd];
+	_chunked_length[fd] -= count;
+	std::cout << GREEN << "Chunked_len: " << _chunked_length[fd] << std::endl << RESET;
+	_request_body[fd] += buff;
+	if (count < tmp_chunked_length)
 	{
-		_chunked_length[fd] -= count;
-		std::cout << GREEN << "Chunked_len: " << _chunked_length[fd] << std::endl << RESET;
-		_request_body[fd] += checker;
-	}
-	if (count < _chunked_length[fd])
-	{
-		_request_body[fd] += buff;
-		_chunked_length[fd] -= count;
-		std::cout << GREEN << "Chunked_len: " << _chunked_length[fd] << std::endl << RESET;
+		delete[] buff;
 		return false;
 	}
 	count = recv(fd, crlf_buffer, 2, MSG_PEEK);
@@ -223,13 +210,8 @@ bool Server::Reading_a_request(std::vector<int>::iterator &Iter)
 	buffer_for_request = new char[576];
 	bzero(buffer_for_request, 576);
 	request_size = recv(*Iter, buffer_for_request, 575, MSG_PEEK);
-	if (request_size == -1)
-	{
-		++Iter;
-		delete[] buffer_for_request;
-		return true;
-	}
-	buffer_for_request[request_size] = '\0';
+	if (request_size > 0)
+		buffer_for_request[request_size] = '\0';
 	if (request_size == 0 && _ready_response_to_the_customer.find(*Iter) == _ready_response_to_the_customer.end())
 	{
 		close(*Iter);
@@ -238,7 +220,7 @@ bool Server::Reading_a_request(std::vector<int>::iterator &Iter)
 		delete[] buffer_for_request;
 		return true;
 	}
-	if ((output = check_input_handler_buffer(buffer_for_request, Iter)) == nullptr)
+	if (request_size == -1 || (output = check_input_handler_buffer(buffer_for_request, Iter)) == nullptr)
 	{
 		++Iter;
 		delete[] buffer_for_request;
