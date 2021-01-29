@@ -28,7 +28,6 @@ void Server::Act_if_writefd_changed(std::list<Client>::iterator &Iter)
 			++Iter;
 			return;
 		}
-		std::cout << counter << std::endl;
 		Iter->_ready_response_to_the_customer.erase(0, counter);
 		++Iter;
 		return;
@@ -120,6 +119,7 @@ bool Server::read_with_chunked(std::list<Client>::iterator &Iter)
 			{
 				recv(Iter->_client_fd, crlf_buffer, 2, 0);
 				Iter->_chunked_length_status = false;
+				Iter->_chunked_length = 0;
 			}
 			return false;
 		}
@@ -145,6 +145,7 @@ bool Server::read_with_chunked(std::list<Client>::iterator &Iter)
 		{
 			recv(Iter->_client_fd, crlf_buffer, 2, 0);
 			Iter->_chunked_length_status = false;
+			Iter->_chunked_length = 0;
 		}
 		return false;
 	}
@@ -179,6 +180,7 @@ bool Server::read_with_chunked(std::list<Client>::iterator &Iter)
 		if (!std::strncmp(crlf_buffer, "\r\n\r\n", 4) || !std::strncmp(Iter->_chunked_end_check.c_str(), "\r\n\r\n", 4))
 		{
 			Iter->_chunked_end_check_status = false;
+			Iter->_chunked_end_check = "";
 			return true;
 		}
 		return false;
@@ -212,6 +214,7 @@ bool Server::read_with_chunked(std::list<Client>::iterator &Iter)
 	{
 		recv(Iter->_client_fd, crlf_buffer, 2, 0);
 		Iter->_chunked_length_status = false;
+		Iter->_chunked_length = 0;
 	}
 	delete[] buff;
 	return false;
@@ -241,7 +244,6 @@ bool Server::Reading_a_request(std::list<Client>::iterator &Iter)
 		delete[] buffer_for_request;
 		return true;
 	}
-	std::cout << output << std::endl;
 	Iter->_client_handler = new Parse_input_handler(output, Iter->_server_client_ip);
 	++Iter->_curent_progress;
 	delete[] buffer_for_request;
