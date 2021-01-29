@@ -148,7 +148,7 @@ bool Server::read_with_chunked(std::list<Client>::iterator &Iter)
 		}
 		return false;
 	}
-	if (!Iter->_chunked_length_status)
+	if (!Iter->_chunked_end_check_status)
 	{
 		buff = new char[256];
 		count = recv(Iter->_client_fd, buff, 255, MSG_PEEK); // выделяем память для просмотра колличества букв в chunked

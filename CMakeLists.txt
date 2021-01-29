@@ -13,7 +13,7 @@ include_directories(App/Metods/GET)
 include_directories(App/Metods/HEAD)
 include_directories(App/Metods/PUT)
 include_directories(Parser)
-4
+
 add_executable(Webserv  App/Main/utils.cpp
                         App/Parse_input_handlers/Parse_input_handler.cpp
                         App/Main/main.cpp
