@@ -28,8 +28,11 @@ std::string Search_by_configuration::create_autoindex_page(t_params &params, Par
 		tmp_path = params.alias + "/" + handler.getUrl().substr(params.curent_location.size());
 		directory = opendir(tmp_path.c_str());
 	}
-	if (directory)
-		elem = readdir(directory);
+	if (!directory)
+	{//		elem = readdir(directory); //TODO
+		return "";
+	}
+	elem = readdir(directory);
 	while (elem)
 	{
 		if (!std::strcmp(elem->d_name, ".") || !std::strcmp(elem->d_name, ".."))
@@ -61,5 +64,6 @@ std::string Search_by_configuration::create_autoindex_page(t_params &params, Par
 		}
 	}
 	autoindex << "</pre><hr></body>\n</html>\n";
+	closedir(directory);
 	return autoindex.str();
 }

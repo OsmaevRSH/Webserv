@@ -79,19 +79,10 @@ void Server::Accept(int fd)
 	int new_client_fd;
 	addr_len = sizeof(addr);
 	new_client_fd = accept(fd, reinterpret_cast<struct sockaddr *>(&addr), &addr_len);
-	if (new_client_fd > 1024)
-	{
-		std::cout << "Client №" << client_num << " Client fd: " << new_client_fd << std::endl;
-//		close(new_client_fd);
-		return;
-	}
 	std::cout << "Client №" << client_num << " Client fd: " << new_client_fd << std::endl;
 	++client_num;
 	if (new_client_fd == -1)
-	{
-		perror("Accept error");
-		exit(EXIT_FAILURE);
-	}
+		return;
 	inet_ntop(AF_INET, &(addr.sin_addr), str, INET_ADDRSTRLEN);
 	client._client_fd = new_client_fd;
 	client._server_client_ip = str;
