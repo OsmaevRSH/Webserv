@@ -71,6 +71,7 @@ void Server::Listen() const
 
 void Server::Accept(int fd)
 {
+	static int client_num = 0;
 	Client client;
 	char str[32];
 	struct sockaddr_in addr = {0};
@@ -78,6 +79,14 @@ void Server::Accept(int fd)
 	int new_client_fd;
 	addr_len = sizeof(addr);
 	new_client_fd = accept(fd, reinterpret_cast<struct sockaddr *>(&addr), &addr_len);
+	if (new_client_fd > 1024)
+	{
+		std::cout << "Client №" << client_num << " Client fd: " << new_client_fd << std::endl;
+//		close(new_client_fd);
+		return;
+	}
+	std::cout << "Client №" << client_num << " Client fd: " << new_client_fd << std::endl;
+	++client_num;
 	if (new_client_fd == -1)
 	{
 		perror("Accept error");
@@ -105,8 +114,10 @@ void Server::Set_non_blocked(int fd)
 
 void Server::Reset_fd_set()
 {
-	FD_ZERO(&_readfds);
-	FD_ZERO(&_writefds);
+	bzero(&_readfds, sizeof(fd_set));
+	bzero(&_writefds, sizeof(fd_set));
+//	FD_ZERO(&_readfds);
+//	FD_ZERO(&_writefds);
 }
 
 void Server::Add_new_fd_to_set()
@@ -117,7 +128,8 @@ void Server::Add_new_fd_to_set()
 	for (Iter_1 = _master_socket_fd.begin(); Iter_1 < _master_socket_fd.end(); ++Iter_1)
 		FD_SET(*Iter_1, &_readfds);
 	for (Iter_2 = _clients.begin(); Iter_2 != _clients.end(); ++Iter_2)
-		FD_SET(Iter_2->_client_fd, &_readfds);
+		if (!Iter_2->_answer_is_ready)
+			FD_SET(Iter_2->_client_fd, &_readfds);
 	for (Iter_2 = _clients.begin(); Iter_2 != _clients.end(); ++Iter_2)
 		if (Iter_2->_answer_is_ready)
 			FD_SET(Iter_2->_client_fd, &_writefds);
@@ -135,6 +147,7 @@ void Server::Accept_if_serv_fd_changed()
 void Server::Search_max_fd(int &max_fd)
 {
 	std::list<Client>::iterator Iter;
+	std::vector<int>::iterator Iter_1;
 
 	int read_max = 0;
 	int write_max = 0;
@@ -143,13 +156,17 @@ void Server::Search_max_fd(int &max_fd)
 	if (!_clients.empty())
 	{
 		for (Iter = _clients.begin(); Iter != _clients.end(); ++Iter)
-			read_max = Iter->_client_fd > read_max ? Iter->_client_fd : read_max;
+			if (!Iter->_answer_is_ready)
+				read_max = Iter->_client_fd > read_max ? Iter->_client_fd : read_max;
 		for (Iter = _clients.begin(); Iter != _clients.end(); ++Iter)
-			write_max = Iter->_client_fd > write_max && Iter->_answer_is_ready ?
-					Iter->_client_fd : write_max;
+			if (Iter->_answer_is_ready)
+				write_max = Iter->_client_fd > write_max && Iter->_answer_is_ready ?
+						Iter->_client_fd : write_max;
 	}
 	if (!_master_socket_fd.empty())
-		master_max = *(std::max_element(_master_socket_fd.begin(), _master_socket_fd.end()));
+		for (Iter_1 = _master_socket_fd.begin(); Iter_1 != _master_socket_fd.end() ; ++Iter_1)
+			master_max = *Iter_1 > master_max ? *Iter_1 : master_max;
+//		master_max = *(std::max_element(_master_socket_fd.begin(), _master_socket_fd.end()));
 	max_fd = std::max(read_max, write_max);
 	max_fd = std::max(max_fd, master_max);
 }
@@ -158,10 +175,25 @@ void Server::Checkout_call_to_select(const int &res)
 {
 	if (res <= 0)
 	{
-		if (errno != EINTR)
+		if (errno == EINTR)
 		{
 			perror("Select error");
 			exit(1);
+		}
+		else if (errno == EBADF)
+		{
+			perror("Select error");
+			exit(2);
+		}
+		else if (errno == EINVAL)
+		{
+			perror("Select error");
+			exit(3);
+		}
+		else if (errno == ENOMEM)
+		{
+			perror("Select error");
+			exit(4);
 		}
 		else
 			exit(0);
@@ -175,7 +207,7 @@ void Server::Check_read_set()
 	Iter = _clients.begin();
 	while (Iter != _clients.end())
 	{
-		if (FD_ISSET(Iter->_client_fd, &_readfds))
+		if (!Iter->_answer_is_ready && FD_ISSET(Iter->_client_fd, &_readfds))
 			Act_if_readfd_changed(Iter);
 		else
 			++Iter;

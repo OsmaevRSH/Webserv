@@ -5,11 +5,11 @@ std::string Search_by_configuration::create_autoindex_page(t_params &params, Par
 {
 	std::stringstream autoindex;
 	std::stringstream buff;
-	DIR *directory;
+	DIR *directory = nullptr;
 	char time_buff[1024];
-	struct dirent *elem;
+	struct dirent *elem = nullptr;
 	struct stat file_stat = {};
-	struct tm *time;
+	struct tm *time = nullptr;
 	std::string tmp_path;
 
 	autoindex << "<html>\n<head><title>Index of " + handler.getUrl() + "</title></head>\n<body bgcolor=\"white\">\n<h1>Index of " +
@@ -28,7 +28,8 @@ std::string Search_by_configuration::create_autoindex_page(t_params &params, Par
 		tmp_path = params.alias + "/" + handler.getUrl().substr(params.curent_location.size());
 		directory = opendir(tmp_path.c_str());
 	}
-	elem = readdir(directory);
+	if (directory)
+		elem = readdir(directory);
 	while (elem)
 	{
 		if (!std::strcmp(elem->d_name, ".") || !std::strcmp(elem->d_name, ".."))
