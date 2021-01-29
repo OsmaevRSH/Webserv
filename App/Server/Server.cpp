@@ -21,6 +21,7 @@ _Noreturn void Server::ListenLoop()
 void Server::Act_if_writefd_changed(std::list<Client>::iterator &Iter)
 {
 	int counter;
+	int tmp_count;
 	if (Iter->_ready_response_to_the_customer.size() > 32768)
 	{
 		if ((counter = send(Iter->_client_fd, Iter->_ready_response_to_the_customer.substr(0, 32768).c_str(), 32768, MSG_DONTWAIT)) < 0)
@@ -32,8 +33,15 @@ void Server::Act_if_writefd_changed(std::list<Client>::iterator &Iter)
 		++Iter;
 		return;
 	}
-	if (send(Iter->_client_fd, Iter->_ready_response_to_the_customer.c_str(), Iter->_ready_response_to_the_customer.size(), 0) < 0)
+	tmp_count = Iter->_ready_response_to_the_customer.size();
+	if ((counter = send(Iter->_client_fd, Iter->_ready_response_to_the_customer.c_str(), Iter->_ready_response_to_the_customer.size(), 0)) < 0)
 	{
+		++Iter;
+		return;
+	}
+	if (counter != tmp_count)
+	{
+		Iter->_ready_response_to_the_customer.erase(0, counter);
 		++Iter;
 		return;
 	}

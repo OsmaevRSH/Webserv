@@ -22,7 +22,7 @@ MIME_ERROR::MIME_ERROR()
 		it = line.find(' ');
 		_error_types.insert(std::pair<std::string, std::string>(line.substr(0, it), line.substr(it + 1)));
 	}
-	mime_file.close();
+	error_file.close();
 }
 
 std::string MIME_ERROR::get_document_types(const std::string &path)

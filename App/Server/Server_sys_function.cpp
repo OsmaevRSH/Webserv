@@ -105,10 +105,8 @@ void Server::Set_non_blocked(int fd)
 
 void Server::Reset_fd_set()
 {
-	bzero(&_readfds, sizeof(fd_set));
-	bzero(&_writefds, sizeof(fd_set));
-//	FD_ZERO(&_readfds);
-//	FD_ZERO(&_writefds);
+	FD_ZERO(&_readfds);
+	FD_ZERO(&_writefds);
 }
 
 void Server::Add_new_fd_to_set()
@@ -157,7 +155,6 @@ void Server::Search_max_fd(int &max_fd)
 	if (!_master_socket_fd.empty())
 		for (Iter_1 = _master_socket_fd.begin(); Iter_1 != _master_socket_fd.end() ; ++Iter_1)
 			master_max = *Iter_1 > master_max ? *Iter_1 : master_max;
-//		master_max = *(std::max_element(_master_socket_fd.begin(), _master_socket_fd.end()));
 	max_fd = std::max(read_max, write_max);
 	max_fd = std::max(max_fd, master_max);
 }

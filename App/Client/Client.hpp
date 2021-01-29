@@ -1,5 +1,4 @@
-#ifndef WEBSERV_CLIENT_HPP
-#define WEBSERV_CLIENT_HPP
+#pragma once
 
 #include "Parse_input_handler.hpp"
 
@@ -31,5 +30,3 @@ class Client
 			_chunked_end_check_status(false) {}
 };
 
-
-#endif
