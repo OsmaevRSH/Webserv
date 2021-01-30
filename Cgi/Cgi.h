@@ -27,11 +27,17 @@ class Cgi {
 		t_data_for_cgi	_data;
 		char			**_args;
 		std::string		_response;
+		char 			*_buf;
+		bool 			_is_end;
+
+		int 			_save_stdout;
+		int 			_save_stdin;
 	public:
 		const std::string	&getResponse() const;
 		Cgi(const std::string &path_to_cgi, const t_data_for_cgi &data);
-		const std::string &handleRequest();
-
+		~Cgi();
+		void handleRequest();
+		const char *getResponse();
 };
 
 char **get_meta_variables(const t_data_for_cgi &data);
