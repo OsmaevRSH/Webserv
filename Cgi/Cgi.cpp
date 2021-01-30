@@ -29,30 +29,51 @@ const std::string	&Cgi::getResponse() const
 }
 
 const std::string &Cgi::handleRequest() {
-	int		pipe_fd[2];
+	int		pipe_send[2];
+	int		pipe_recv[2];
 	int 	save_stdout;
 	int 	save_stdin;
 	pid_t	pid;
 
-	pipe(pipe_fd);
+	pipe(pipe_send);
+	pipe(pipe_recv);
+
 	save_stdout = dup(1);
 	save_stdin = dup(0);
-	dup2(pipe_fd[1], 1);
-	send_body_to_cgi(/* body */);
-	close(pipe_fd[1]);
+
+	dup2(pipe_send[1], 1);
+	close(pipe_send[1]);
+	send_body_to_cgi(_data.body);
 
 	pid = fork();
 	if (pid == 0)
 	{
-		dup2(pipe_fd[0], 0);
-		close(pipe_fd[0]);
+		dup2(pipe_send[0], 0);
+		close(pipe_send[0]);
+
+		dup2(pipe_recv[1], 1);
+		close(pipe_recv[1]);
+
 		execve(_path_to_sgi, _args, _env);
 	}
 	else
 	{
+		close(pipe_send[0]);
+		close(pipe_recv[1]);
+
 		waitpid(pid, NULL, 0);
 
-		read(0, )
+		dup2(pipe_recv[0], 0);
+		close(pipe_recv[0]);
+
+		char *buf = calloc(1024, 1);
+		while (read(1, buf, 1024))
+		{
+			// обрабатываем и зануляем;
+			bzero(buf, 1024);
+		}
+		free(buf);
+
 		dup2(save_stdout, 0);
 		dup2(save_stdin, 1);
 	}
