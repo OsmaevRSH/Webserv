@@ -82,7 +82,6 @@ static char *remote_user(const t_data_for_cgi &data)
 	}
 	return ret;
 }
-
 static char *remote_ident(const t_data_for_cgi &data)
 {
 	std::string tmp;
@@ -122,5 +121,5 @@ char		**get_meta_variables(const t_data_for_cgi &data)
 	vars[14] = auth_type(data);
 	vars[15] = remote_user(data);
 	vars[16] = remote_ident(data);
-	// vars[17] = request_uri(data);
+	vars[17] = strdup(("REQUEST_URI = " + data.headers.getUrl()).c_str());
 }

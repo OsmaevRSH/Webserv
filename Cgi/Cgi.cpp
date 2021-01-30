@@ -13,6 +13,9 @@
 
 Cgi::Cgi(const std::string &path_to_cgi, const t_data_for_cgi &data)
 {
+	_path_to_cgi = path_to_cgi;
+	_env = get_meta_variables(data);
+	handleRequest();
 
 }
 
@@ -20,18 +23,16 @@ static void send_body_to_cgi(const std::string &body, int *pipe_fd)
 {
 	write(1, body.c_str(), strlen(body.c_str()));
 }
-
-static **char create_env()
+const std::string	&Cgi::getResponse() const
 {
-
+	return (_response);
 }
 
-std::string &Cgi::handleRequest() {
+const std::string &Cgi::handleRequest() {
 	int		pipe_fd[2];
 	int 	save_stdout;
 	int 	save_stdin;
 	pid_t	pid;
-
 
 	pipe(pipe_fd);
 	save_stdout = dup(1);
@@ -50,7 +51,10 @@ std::string &Cgi::handleRequest() {
 	else
 	{
 		waitpid(pid, NULL, 0);
+
+		read(0, )
 		dup2(save_stdout, 0);
 		dup2(save_stdin, 1);
 	}
+	return
 }

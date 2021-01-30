@@ -23,12 +23,14 @@ typedef struct				s_data_for_cgi
 
 class Cgi {
 	private:
-		std::string _path_to_cgi;
-		char		**_args;
-		char		**_env;
+		std::string		_path_to_cgi;
+		t_data_for_cgi	_data;
+		char			**_args;
+		std::string		_response;
 	public:
+		const std::string	&getResponse() const;
 		Cgi(const std::string &path_to_cgi, const t_data_for_cgi &data);
-		std::string &handleRequest();
+		const std::string &handleRequest();
 
 };
 
