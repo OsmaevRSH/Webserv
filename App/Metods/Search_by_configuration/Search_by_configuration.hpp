@@ -16,6 +16,7 @@ typedef struct s_output
 	std::string root;
 	std::string alias;
 	std::string curent_location;
+	int			port;
 
 	s_output() : status_code(200), path_to_file(), autoindex_page(), attached_location(false) {}
 } t_output;

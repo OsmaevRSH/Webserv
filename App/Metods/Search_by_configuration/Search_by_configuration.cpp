@@ -183,7 +183,8 @@ t_server Search_by_configuration::get_server()
 {
 	std::string port;
 
-	port = _handler.getVariableHandlers().at("Host").substr(_handler.getVariableHandlers().at("Host").find(":"));
+	port = _handler.getVariableHandlers().at("Host").substr(_handler.getVariableHandlers().at("Host").find(':'));
+	_output.port = std::stoi(port);
 	std::vector<t_server>::iterator it;
 	it = _config._servers.begin();
 	for (; it < _config._servers.end(); ++it)
