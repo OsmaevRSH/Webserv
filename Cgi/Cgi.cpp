@@ -40,46 +40,32 @@ const std::string	&Cgi::getResponse() const
 }
 
 void Cgi::handleRequest() {
-
-
 	pid_t	pid;
-
-	/*int		pipe_send[2];
-	int		pipe_recv[2];
-
-	pipe(pipe_send);
-	pipe(pipe_recv);
-
-	_save_stdout = dup(1);
-	_save_stdin = dup(0);
-
-	dup2(pipe_send[1], 1);
-	close(pipe_send[1]);
-	send_body_to_cgi(_data.body);
-*/
 	int fd_file;
-	fd_file = open("./output", O_CREAT | O_WRONLY);
+	int pipeget[2];
+	char *buf = (char*)malloc(1025);
+	buf[1024] = '\0';
+
+	pipe(pipeget);
+	//fd_file = open("./output", O_CREAT | O_WRONLY);
 	pid = fork();
 	if (pid == 0)
 	{
-		dup2(fd_file, 1);
-		/*dup2(pipe_send[0], 0);
-		close(pipe_send[0]);
-		dup2(pipe_recv[1], 1);
-		close(pipe_recv[1]);*/
+		//dup2(fd_file, 1);
+		close(pipeget[0]);
+		dup2(pipeget[1], 1);
+		close(pipeget[1]);
 		execve(_path_to_cgi.c_str(), _args, _env);
 		exit(0);
 	}
 	else
 	{
+		close(pipeget[1]);
+		dup2(pipeget[0], 0);
+		close(pipeget[0]);
 		wait(NULL);
-		close(fd_file);
-		/*
-		close(pipe_send[0]);
-		close(pipe_recv[1]);
-		waitpid(pid, NULL, 0);
-		dup2(pipe_recv[0], 0);
-		close(pipe_recv[0]);*/
+		read(0, buf, 1024);
+
 	}
 }
 
@@ -118,3 +104,28 @@ const char *Cgi::getResponse()
  * главное, чтобы он был вызван.
  * */
 
+/*int		pipe_send[2];
+int		pipe_recv[2];
+
+pipe(pipe_send);
+pipe(pipe_recv);
+
+_save_stdout = dup(1);
+_save_stdin = dup(0);
+
+dup2(pipe_send[1], 1);
+close(pipe_send[1]);
+send_body_to_cgi(_data.body);
+*/
+//close(fd_file);
+/*
+close(pipe_send[0]);
+close(pipe_recv[1]);
+waitpid(pid, NULL, 0);
+dup2(pipe_recv[0], 0);
+close(pipe_recv[0]);*/
+
+/*dup2(pipe_send[0], 0);
+		close(pipe_send[0]);
+		dup2(pipe_recv[1], 1);
+		close(pipe_recv[1]);*/
