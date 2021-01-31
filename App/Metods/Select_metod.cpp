@@ -24,7 +24,8 @@ void Server::Method_selector(const Parse_input_handler &inputHandlers, std::stri
 	}
 	if (inputHandlers.getType() == "POST")
 	{
-		POST post(_config, inputHandlers, _mime, handler, body, handler_body);
+		POST post(_config, inputHandlers, _mime, handler, body, handler_body, env);
+		post.start_processing();
 		handler = "HTTP/1.1 405 METHOD NOT ALLOWED\r\n"
 				  "Content-Type: text/plain\r\n"
 				  "Content-Length: 0\r\n"

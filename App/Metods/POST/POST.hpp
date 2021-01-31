@@ -23,9 +23,10 @@ class POST : public Search_by_configuration
 		std::string &_head;
 		std::string _handler_body;
 		t_data_for_cgi _cgi_struct;
+		char **_env;
 		std::string get_content_length();
 	public:
-		POST(const Serv_conf &, const Parse_input_handler &, const MIME_ERROR &, std::string &, std::string &, std::string &);
+		POST(const Serv_conf &, const Parse_input_handler &, const MIME_ERROR &, std::string &, std::string &, std::string &, char **env);
 		void start_processing();
 };
 

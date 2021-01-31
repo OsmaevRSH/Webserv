@@ -36,4 +36,6 @@ add_executable(Webserv  App/Main/utils.cpp
                         App/Metods/PUT/PUT.cpp
                         App/Metods/PUT/PUT.hpp
                         App/Main/Color.hpp
-                        App/Client/Client.hpp App/Metods/POST/POST.cpp App/Metods/POST/POST.hpp)
+                        App/Client/Client.hpp App/Metods/POST/POST.cpp App/Metods/POST/POST.hpp
+                        Cgi/Cgi.cpp Cgi/meta_variables.cpp)
+

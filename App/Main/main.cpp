@@ -2,7 +2,7 @@
 #include "Parser.hpp"
 #include "MIME_ERROR.hpp"
 
-int main()
+int main(int argc, char **argv, char **env)
 {
 	MIME_ERROR mime;
 #ifndef TESTER
@@ -11,7 +11,7 @@ int main()
 #ifdef TESTER
 	Parser config("./App/Config/conf_for_tester");
 #endif
-	Server server(config.getServers(), config.getErrorPages(), config.getEw(), mime);
+	Server server(config.getServers(), config.getErrorPages(), config.getEw(), mime,env);
 	server.server_start();
 	return 0;
 }

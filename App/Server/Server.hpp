@@ -33,6 +33,8 @@ class Server
 		std::list<Client> _clients;
 		std::vector<int> _master_socket_fd;
 
+		char **env;
+
 		void Socket();
 		void Bind();
 		void Listen() const;
@@ -54,7 +56,7 @@ class Server
 		static bool read_with_content_length(int size, std::list<Client>::iterator &);
 		static bool read_with_chunked(std::list<Client>::iterator &);
 	public:
-		explicit Server(const serv_vec &, const errp_map &, const ew_str &, MIME_ERROR &, int family = AF_INET, int type = SOCK_STREAM, int protocol = 0);
+		explicit Server(const serv_vec &, const errp_map &, const ew_str &, MIME_ERROR &, char **env, int family = AF_INET, int type = SOCK_STREAM, int protocol = 0);
 		~Server();
 		void server_start();
 };
