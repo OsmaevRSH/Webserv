@@ -29,10 +29,6 @@ static void send_body_to_cgi(const std::string &body)
 {
 	write(1, body.c_str(), strlen(body.c_str()));
 }
-const std::string	&Cgi::getResponse() const
-{
-	return (_response);
-}
 
 void Cgi::handleRequest() {
 	pid_t	pid;
@@ -52,6 +48,7 @@ void Cgi::handleRequest() {
 	{
 		close(_pipe[1]);
 		wait(NULL);
+		//while (getResponse()) {}
 	}
 }
 

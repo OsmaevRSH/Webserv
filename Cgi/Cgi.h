@@ -36,7 +36,6 @@ class Cgi {
 		int 			_save_stdout;
 		int 			_save_stdin;
 	public:
-		const std::string	&getResponse() const;
 		Cgi(const std::string &path_to_cgi, const t_data_for_cgi &data);
 		~Cgi();
 		void handleRequest();
