@@ -18,8 +18,7 @@ void POST::start_processing()
 	_cgi_struct.server_ip = _handler.getIp();
 	_cgi_struct.env = _env;
 	Cgi cgi("./Tester/cgi_tester", _cgi_struct);
-	for (int i = 0; i < 10; ++i)
-		std::cout << cgi.getResponse() << std::endl;
+	while(cgi.getResponse()){}
 }
 
 std::string POST::get_content_length()
