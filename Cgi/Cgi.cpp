@@ -35,17 +35,28 @@ void Cgi::handleRequest() {
 	_buf = (char*)calloc(1025, 1);
 
 	pipe(_pipe);
+
+	pipe(_pipe_body);
+	write(_pipe_body[1], _data.body.c_str(), _data.body.length());
+	close(_pipe_body[1]);
+
 	pid = fork();
 	if (pid == 0)
 	{
+		dup2(_pipe_body[0], 0);
+		close(_pipe_body[0]);
+
 		close(_pipe[0]);
 		dup2(_pipe[1], 1);
 		close(_pipe[1]);
+
 		execve(_path_to_cgi.c_str(), _args, _env);
 		exit(0);
 	}
 	else
 	{
+		close(_pipe_body[0]);
+
 		close(_pipe[1]);
 		wait(NULL);
 		//while (getResponse()) {}

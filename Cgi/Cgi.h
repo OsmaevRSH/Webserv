@@ -25,6 +25,7 @@ typedef struct				s_data_for_cgi
 class Cgi {
 	private:
 		int 			_pipe[2];
+		int 			_pipe_body[2];
 		std::string		_path_to_cgi;
 		t_data_for_cgi	_data;
 		char			**_args;
