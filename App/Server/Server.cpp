@@ -252,7 +252,7 @@ bool Server::Reading_a_request(std::list<Client>::iterator &Iter)
 		delete[] buffer_for_request;
 		return true;
 	}
-	Iter->_client_handler = new Parse_input_handler(output, Iter->_server_ip);
+	Iter->_client_handler = new Parse_input_handler(output, Iter->_server_ip, Iter->_client_ip);
 	++Iter->_curent_progress;
 	delete[] buffer_for_request;
 	return false;
