@@ -10,12 +10,12 @@ void POST::start_processing()
 	_cgi_struct.body = _handler_body;
 	_cgi_struct.headers = &_handler;
 	_cgi_struct.port = _output.port;
-//	_cgi_struct.client_ip = _handler.getIp();
+	_cgi_struct.client_ip = _handler.getClientIp();
 //	_cgi_struct.path_info = "";
 	_cgi_struct.path_info = "./Tester/YoupiBanane/yaupi.bla";
 	_cgi_struct.path_translated = getcwd(nullptr, 0) + _output.path_to_file.substr(1);
 	_cgi_struct.script_name = _handler.getUrl();
-	_cgi_struct.server_ip = _handler.getIp();
+	_cgi_struct.server_ip = _handler.getServerIp();
 	_cgi_struct.env = _env;
 	Cgi cgi("./Tester/cgi_tester", _cgi_struct);
 	while(cgi.getResponse()){}

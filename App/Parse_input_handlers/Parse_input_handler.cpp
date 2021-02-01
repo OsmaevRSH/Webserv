@@ -22,14 +22,14 @@ Parse_input_handler &Parse_input_handler::operator=(const Parse_input_handler &c
 	return *this;
 }
 
-Parse_input_handler::Parse_input_handler(const char *input, std::string &ip) : _ip(ip)
+Parse_input_handler::Parse_input_handler(const char *input, std::string &server_ip, std::string &client_ip)
+		: _server_ip(server_ip), _client_ip(client_ip)
 {
 	std::vector<std::string>::iterator it;
 	std::vector<std::string> handlers;
 	std::string tmp = input;
 	size_t iter;
-	while ((iter = tmp.find("\r\n")) != std::string::npos &&
-		   tmp[iter + 2] != '\0')
+	while ((iter = tmp.find("\r\n")) != std::string::npos && tmp[iter + 2] != '\0')
 	{
 		handlers.push_back(tmp.substr(0, iter));
 		tmp.erase(0, iter + 2);
@@ -66,7 +66,12 @@ const std::map<std::string, std::string> &Parse_input_handler::getVariableHandle
 	return _variable_handlers;
 }
 
-const std::string &Parse_input_handler::getIp() const
+const std::string &Parse_input_handler::getServerIp() const
 {
-	return _ip;
+	return _server_ip;
+}
+
+const std::string &Parse_input_handler::getClientIp() const
+{
+	return _client_ip;
 }

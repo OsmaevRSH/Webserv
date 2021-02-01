@@ -8,10 +8,11 @@ class Parse_input_handler
 		std::string _type;
 		std::string _url;
 		std::string _protocol_type;
-		std::string _ip;
+		std::string _server_ip;
+		std::string _client_ip;
 		std::map<std::string, std::string> _variable_handlers;
 	public:
-		explicit Parse_input_handler(const char *, std::string &);
+		explicit Parse_input_handler(const char *, std::string &, std::string &);
 		Parse_input_handler &operator=(const Parse_input_handler &);
 		~Parse_input_handler();
 
@@ -21,5 +22,6 @@ class Parse_input_handler
 		void setUrl(const std::string &url);
 		const std::string &getType() const;
 		const std::string &getUrl() const;
-		const std::string &getIp() const;
+		const std::string &getServerIp() const;
+		const std::string &getClientIp() const;
 };

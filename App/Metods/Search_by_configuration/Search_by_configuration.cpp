@@ -191,11 +191,11 @@ t_server Search_by_configuration::get_server()
 	{
 		if (it->ip == "127.0.0.1" || it->ip == "localhost")
 		{
-			if ("127.0.0.1:" + std::to_string(it->port) == _handler.getIp() + port ||
-				"localhost:" + std::to_string(it->port) == _handler.getIp() + port)
+			if ("127.0.0.1:" + std::to_string(it->port) == _handler.getServerIp() + port ||
+				"localhost:" + std::to_string(it->port) == _handler.getServerIp() + port)
 				return *it;
 		}
-		if (it->ip + ":" + std::to_string(it->port) == _handler.getIp() + port)
+		if (it->ip + ":" + std::to_string(it->port) == _handler.getServerIp() + port)
 			return *it;
 	}
 	return _config._servers[0];

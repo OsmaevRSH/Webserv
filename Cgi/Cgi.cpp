@@ -65,7 +65,7 @@ const char *Cgi::getResponse()
 		return NULL;
 	bzero(_buf, 1024);
 	res = read(_pipe[0], _buf, 1024);
-	write(1, _buf, 1024);
+	write(1, _buf, res);
 	if (res == 0)
 	{
 		_is_end = true;
