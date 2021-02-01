@@ -23,12 +23,7 @@ Cgi::~Cgi()
 {
 	free(_buf);
 	if (_is_end == false)
-	{
-		dup2(_save_stdout, 0);
-		dup2(_save_stdin, 1);
-		close(_save_stdin);
-		close(_save_stdin);
-	}
+		close(_pipe[0]);
 }
 static void send_body_to_cgi(const std::string &body)
 {
@@ -41,53 +36,43 @@ const std::string	&Cgi::getResponse() const
 
 void Cgi::handleRequest() {
 	pid_t	pid;
-	int fd_file;
-	int pipeget[2];
-	char *buf = (char*)malloc(1025);
-	buf[1024] = '\0';
+	_buf = (char*)calloc(1025, 1);
 
-	pipe(pipeget);
-	//fd_file = open("./output", O_CREAT | O_WRONLY);
+	pipe(_pipe);
 	pid = fork();
 	if (pid == 0)
 	{
-		//dup2(fd_file, 1);
-		close(pipeget[0]);
-		dup2(pipeget[1], 1);
-		close(pipeget[1]);
+		close(_pipe[0]);
+		dup2(_pipe[1], 1);
+		close(_pipe[1]);
 		execve(_path_to_cgi.c_str(), _args, _env);
 		exit(0);
 	}
 	else
 	{
-		close(pipeget[1]);
-		dup2(pipeget[0], 0);
-		close(pipeget[0]);
+		close(_pipe[1]);
 		wait(NULL);
-		read(0, buf, 1024);
-
 	}
 }
 
 const char *Cgi::getResponse()
 {
-	char *tmp = *_env;
+	int res;
+	/*char *tmp = *_env;
 	for (int i = 0; i < 100; ++i)
 	{
 		tmp = *(_env + i);
-	}
+	}*/
 
 	if (_is_end == true)
 		return NULL;
 	bzero(_buf, 1024);
-	int res;
-	if ((res = read(1, _buf, 1024)) == 0)
+	res = read(_pipe[0], _buf, 1024);
+	write(1, _buf, 1024);
+	if (res == 0)
 	{
 		_is_end = true;
-		dup2(_save_stdout, 0);
-		dup2(_save_stdin, 1);
-		close(_save_stdin);
-		close(_save_stdin);
+		close(_pipe[0]);
 	}
 	return _buf;
 }
