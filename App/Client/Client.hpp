@@ -9,7 +9,8 @@ class Client
 		std::string				_request_header;
 		std::string				_request_body;
 		std::string				_ready_response_to_the_customer;
-		std::string				_server_client_ip;
+		std::string				_server_ip;
+		std::string				_client_ip;
 		std::string				_chunked_end_check;
 		bool					_chunked_end_check_status;
 		int						_content_length_buffer;
