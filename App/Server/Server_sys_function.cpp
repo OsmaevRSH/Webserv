@@ -75,17 +75,23 @@ void Server::Accept(int fd)
 	Client client;
 	char str[32];
 	struct sockaddr_in addr = {0};
+	struct sockaddr_in client_addr = {0};
 	socklen_t addr_len;
+	socklen_t client_addr_len;
 	int new_client_fd;
 	addr_len = sizeof(addr);
+	client_addr_len = sizeof(client_addr);
 	new_client_fd = accept(fd, reinterpret_cast<struct sockaddr *>(&addr), &addr_len);
+	getsockname(new_client_fd, reinterpret_cast<struct sockaddr *>(&client_addr) ,&client_addr_len);
 	std::cout << "Client №" << client_num << " Client fd: " << new_client_fd << std::endl;
 	++client_num;
 	if (new_client_fd == -1)
 		return;
 	inet_ntop(AF_INET, &(addr.sin_addr), str, INET_ADDRSTRLEN);
+	client._server_ip = str;
+	inet_ntop(AF_INET, &(client_addr.sin_addr), str, INET_ADDRSTRLEN);
+	client._client_ip = str;
 	client._client_fd = new_client_fd;
-	client._server_client_ip = str;
 	_clients.push_back(client);
 	Set_non_blocked(new_client_fd);
 }
