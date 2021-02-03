@@ -298,6 +298,11 @@ void Parser::					error_page_parse(t_args args)
 #endif
 }
 void Parser::					location_parse(t_args args) {
+	if (args.block_args[0] == "\\")
+	{
+		if (args.block_args.size() >= 2 && args.block_args[1].find('*') == std::string::npos)
+			show_error(args, "Expected '*' in regex.");
+	}
 	t_location *location = new t_location;
 	t_location *parent_location = args.location;
 	location->block_args = args.block_args;

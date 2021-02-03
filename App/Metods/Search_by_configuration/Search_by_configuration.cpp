@@ -62,6 +62,75 @@ t_location *check_path_with_complete_coincidence(T &param, Parse_input_handler &
 	return nullptr;
 }
 
+template<class T>
+t_location *check_path_with_simple_regex(T &param, Parse_input_handler &handlers)
+{
+	std::vector<t_location>::iterator it = param.locations.begin();
+	std::string regex = it->block_args[1];
+	std::string url	= handlers.getUrl();
+	int 		star = 0;
+	int 		tmp;
+	int 		reg_i = 0;
+	int 		url_i = 0;
+	int 		url_after_star = 0;
+
+	for (; it < param.locations.end(); ++it)
+	{
+		if (it->block_args[0] == "\\")
+		{
+			int 		star = 0;
+			int 		tmp;
+			int 		reg_i = 0;
+			int 		url_i = 0;
+			int 		url_after_star = 0;
+
+			for (; url_i < url.length(); ){
+				star1 = star;
+				if ((star = regex.find('*', reg_i)) == std::string::npos)
+					star = regex.length();
+				std::string s1 = regex.substr(reg_i, star - reg_i);
+				std::string s2 = url.substr(url_i, star - reg_i);
+				if (s1 != s2)
+					return nullptr;
+				if (!regex[star + 1])
+					return &(*it);
+				url_after_star = url.find(regex[star + 1], url_i);
+				if (url_after_star == std::string::npos)
+					return nullptr;
+				url_i = url_after_star;
+				reg_i = star + 1;
+			}
+			return &(*it);
+		}
+	}
+	return nullptr;
+}
+//			for (int i = 0; i < url.length(); ++i)
+//			{
+//				tmp = star + 1;
+//				// Если больше нет звездочек
+//				if ((star = regex.find('*', i)) == std::string::npos)
+//				{
+//					if (regex.length() - tmp != url.length() - i)
+//						return nullptr;
+//					if (regex.compare(tmp, regex.length() - tmp, url.substr(i)) == 0)
+//						return &(*it);
+//					else
+//						return nullptr;
+//				}
+//				if (!regex[star + 1])
+//					return &(*it);
+//				// сравнение между звездочками
+//				if (regex.substr(i, star - i) != url.substr(i, star - i))
+//					return nullptr;
+//				i = star + 1;
+//				if (!regex[star + 1])
+//					return &(*it);
+//				// символы под звездочкой
+//				while (url[i] && url[i] != regex[star + 1])
+//					i++;
+//			}
+
 void Search_by_configuration::update_global_params(t_params &global_params, t_location &location)
 {
 	global_params.index = location.ew.index;
