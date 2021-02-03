@@ -5,31 +5,26 @@
 #include "PUT.hpp"
 #include "POST.hpp"
 
-void Server::Method_selector(const Parse_input_handler &inputHandlers, std::string &handler, std::string &body, std::string &handler_body)
+void Server::Method_selector(std::string &handler, std::string &body, std::list<Client>::iterator &Iter)
 {
-	if (inputHandlers.getType() == "GET")
+	if (Iter->_client_handler->getType() == "GET")
 	{
-		GET get(_config, inputHandlers, _mime, handler, body);
+		GET get(_config, *Iter->_client_handler, _mime, handler, body);
 		get.start_processing();
 	}
-	if (inputHandlers.getType() == "HEAD")
+	if (Iter->_client_handler->getType() == "HEAD")
 	{
-		HEAD head(_config, inputHandlers, _mime, handler, body);
+		HEAD head(_config, *Iter->_client_handler, _mime, handler, body);
 		head.start_processing();
 	}
-	if (inputHandlers.getType() == "PUT")
+	if (Iter->_client_handler->getType() == "PUT")
 	{
-		PUT put(_config, inputHandlers, _mime, handler, handler_body, body);
+		PUT put(_config, *Iter->_client_handler, _mime, handler, Iter->_request_body, body);
 		put.start_processing();
 	}
-	if (inputHandlers.getType() == "POST")
+	if (Iter->_client_handler->getType() == "POST")
 	{
-		POST post(_config, inputHandlers, _mime, handler, body, handler_body, env);
+		POST post(_config, Iter, _mime, handler, body, Iter->_request_body, env);
 		post.start_processing();
-		handler = "HTTP/1.1 405 METHOD NOT ALLOWED\r\n"
-				  "Content-Type: text/plain\r\n"
-				  "Content-Length: 0\r\n"
-				  "Server: Webserver/1.0\r\n"
-				  "Allow: GET\r\n\r\n";
 	}
 }

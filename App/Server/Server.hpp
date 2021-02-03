@@ -52,7 +52,7 @@ class Server
 		void Check_write_set();
 		bool Reading_a_request(std::list<Client>::iterator &Iter);
 		static char *check_input_handler_buffer(char *input_buffer, std::list<Client>::iterator &);
-		void Method_selector(const Parse_input_handler &inputHandlers, std::string &handler, std::string &body, std::string &handler_body);
+		void Method_selector(std::string &handler, std::string &body, std::list<Client>::iterator &Iter);
 		static bool read_with_content_length(int size, std::list<Client>::iterator &);
 		static bool read_with_chunked(std::list<Client>::iterator &);
 	public:

@@ -28,7 +28,7 @@ class Cgi {
 		int 			_pipe_body[2];
 		std::string		_path_to_cgi;
 		t_data_for_cgi	_data;
-		char			**_args;
+		char			*_args[3];
 		std::string		_response;
 		char 			*_buf;
 		bool 			_is_end;

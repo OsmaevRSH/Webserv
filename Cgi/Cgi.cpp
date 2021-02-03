@@ -14,20 +14,20 @@
 Cgi::Cgi(const std::string &path_to_cgi, const t_data_for_cgi &data)
 {
 	_path_to_cgi = path_to_cgi;
+	_args[0] = const_cast<char *>(_path_to_cgi.c_str());
+	_args[1] = strdup("/Users/ltheresi/CLionProjects/Webserv/Tester/YoupiBanane/hello/youpi.bla");
+	_args[2] = NULL;
 	_env = get_meta_variables(data);
 	_buf = (char*)calloc(1025, 1);
 	_is_end = false;
 	handleRequest();
 }
+
 Cgi::~Cgi()
 {
 	free(_buf);
 	if (_is_end == false)
 		close(_pipe[0]);
-}
-static void send_body_to_cgi(const std::string &body)
-{
-	write(1, body.c_str(), strlen(body.c_str()));
 }
 
 void Cgi::handleRequest() {
@@ -35,11 +35,13 @@ void Cgi::handleRequest() {
 	_buf = (char*)calloc(1025, 1);
 
 	pipe(_pipe);
-
+	for (int j = 0; _env[j]; ++j)
+		std::cout << _env[j] << std::endl;
 	pipe(_pipe_body);
 	write(_pipe_body[1], _data.body.c_str(), _data.body.length());
 	close(_pipe_body[1]);
 
+	std::cout << _env[5] << std::endl;
 	pid = fork();
 	if (pid == 0)
 	{
@@ -50,7 +52,7 @@ void Cgi::handleRequest() {
 		dup2(_pipe[1], 1);
 		close(_pipe[1]);
 
-		execve(_path_to_cgi.c_str(), _args, _env);
+		execve(_args[0], _args, _env);
 		exit(0);
 	}
 	else
@@ -66,11 +68,11 @@ void Cgi::handleRequest() {
 const char *Cgi::getResponse()
 {
 	int res;
-	/*char *tmp = *_env;
+	char *tmp = *_env;
 	for (int i = 0; i < 100; ++i)
 	{
 		tmp = *(_env + i);
-	}*/
+	}
 
 	if (_is_end == true)
 		return NULL;
