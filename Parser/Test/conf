@@ -1,25 +1,7 @@
 server   {
-	ip 127.0.0.1;
-	port 5555;
-	server_name ltheresi.team;
+    ip sdfgsdfg;
+    port 11111111;
+    location / {
 
-	location / {
-		autoindex on;
-		cgi ./cgi;
-		root ./Parser/Test/conf;
-		alias ./Parser/Test/conf;
-		max_body_size 55;
-		index ./Parser/Test/conf;
-		location /html/page {
-            autoindex on;
-            max_body_size 100;
-            index ./ParserTest/conf;
-            location /html/page/var/ {
-                autoindex on;
-                max_body_size 666;
-                index ./Parser/Test/conf;
-                allow GET;
-            }
-        }
-	}
+    }
 }

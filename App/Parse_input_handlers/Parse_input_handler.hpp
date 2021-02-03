@@ -24,4 +24,6 @@ class Parse_input_handler
 		const std::string &getUrl() const;
 		const std::string &getServerIp() const;
 		const std::string &getClientIp() const;
+
+		bool headersIsOkey() const;
 };

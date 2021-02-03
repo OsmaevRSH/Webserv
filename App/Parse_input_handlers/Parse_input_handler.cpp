@@ -75,3 +75,19 @@ const std::string &Parse_input_handler::getClientIp() const
 {
 	return _client_ip;
 }
+
+bool Parse_input_handler::headersIsOkey() const
+{
+	std::map<std::string, std::string>::const_iterator cont_len = _variable_handlers.find("Content-Length");
+	std::map<std::string, std::string>::const_iterator tr_enc = _variable_handlers.find("Transfer-Encoding");
+	std::map<std::string, std::string>::const_iterator host = _variable_handlers.find("Host");
+	std::map<std::string, std::string>::const_iterator ite = _variable_handlers.end();
+
+	if (host == ite)
+		return (false);
+	if (cont_len == tr_enc)
+		return (true);
+	if (cont_len != ite && tr_enc != ite)
+		return (false);
+	return (true);
+}
