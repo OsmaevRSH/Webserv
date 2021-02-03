@@ -10,10 +10,10 @@ server   {
 		alias ./Tester/YoupiBanane;
 	}
 	location /test {
-    		allow GET POST;
-    		autoindex off;
-    		index youpi.bad_extension;
-    		alias ./Tester/YoupiBanane/hello;
+		allow GET POST;
+		autoindex off;
+		index youpi.bad_extension;
+		alias ./Tester/YoupiBanane/hello;
     	}
 	location /directory {
 		allow GET;

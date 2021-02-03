@@ -23,7 +23,7 @@ Parse_input_handler &Parse_input_handler::operator=(const Parse_input_handler &c
 }
 
 Parse_input_handler::Parse_input_handler(const char *input, std::string &server_ip, std::string &client_ip)
-		: _server_ip(server_ip), _client_ip(client_ip)
+		: _server_ip(server_ip), _client_ip(client_ip), _error(false)
 {
 	std::vector<std::string>::iterator it;
 	std::vector<std::string> handlers;

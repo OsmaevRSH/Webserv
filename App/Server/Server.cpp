@@ -84,7 +84,12 @@ void Server::Act_if_readfd_changed(std::list<Client>::iterator &Iter)
 		Method_selector(handler, body, Iter);
 	else
 	{
-		//Create server error page TODO
+		handler = "HTTP/1.1 400 BAD REQUEST\r\n"
+				  "Content-Type: text/html\r\n"
+	              "Content-Length: " + std::to_string(_config._error_pages[400].size()) + "\r\n"
+				  "Server: Webserver/1.0\r\n\r\n";
+		body = _config._error_pages[400];
+		//TODO
 	}
 	Iter->_ready_response_to_the_customer = handler + body;
 	Iter->_answer_is_ready = true;
