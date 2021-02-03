@@ -43,8 +43,17 @@ Parse_input_handler::Parse_input_handler(const char *input, std::string &server_
 	{
 		iter = (*it).find(':');
 		if (iter != std::string::npos)
-			_variable_handlers[(*it).substr(0, iter)] = (*it).substr(iter + 2);
+		{
+			if (_variable_handlers.find((*it).substr(0, iter)) == _variable_handlers.end())
+				_variable_handlers[(*it).substr(0, iter)] = (*it).substr(iter + 2);
+			else
+			{
+				_error = true;
+				break;
+			}
+		}
 	}
+	headersIsOk();
 }
 
 void Parse_input_handler::parse_first_handler_string(std::string &tmp, std::string &handler)
@@ -76,18 +85,19 @@ const std::string &Parse_input_handler::getClientIp() const
 	return _client_ip;
 }
 
-bool Parse_input_handler::headersIsOkey() const
+void Parse_input_handler::headersIsOk()
 {
 	std::map<std::string, std::string>::const_iterator cont_len = _variable_handlers.find("Content-Length");
 	std::map<std::string, std::string>::const_iterator tr_enc = _variable_handlers.find("Transfer-Encoding");
 	std::map<std::string, std::string>::const_iterator host = _variable_handlers.find("Host");
 	std::map<std::string, std::string>::const_iterator ite = _variable_handlers.end();
 
-	if (host == ite)
-		return (false);
-	if (cont_len == tr_enc)
-		return (true);
-	if (cont_len != ite && tr_enc != ite)
-		return (false);
-	return (true);
+	if (host == ite || (cont_len != ite && tr_enc != ite) || (_type != "GET" && _type != "HEAD" && _type != "PUT" && _type != "POST") ||
+		_protocol_type != "HTTP/1.1")
+		_error = true;
+}
+
+bool Parse_input_handler::isError() const
+{
+	return _error;
 }

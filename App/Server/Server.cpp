@@ -34,6 +34,7 @@ void Server::Act_if_writefd_changed(std::list<Client>::iterator &Iter)
 		return;
 	}
 	tmp_count = Iter->_ready_response_to_the_customer.size();
+	std::cout << Iter->_ready_response_to_the_customer.c_str() << std::endl;
 	if ((counter = send(Iter->_client_fd, Iter->_ready_response_to_the_customer.c_str(), Iter->_ready_response_to_the_customer.size(), 0)) < 0)
 	{
 		++Iter;
@@ -65,21 +66,26 @@ void Server::Act_if_readfd_changed(std::list<Client>::iterator &Iter)
 
 	if (Iter->_curent_progress == 0 && Reading_a_request(Iter))
 		return;
-	if (Iter->_curent_progress == 1 &&
-		(Iter->_client_handler->getVariableHandlers().find("Content-Length") != Iter->_client_handler->getVariableHandlers().end()))
+	if (Iter->_curent_progress == 1 && !Iter->_client_handler->isError() &&
+		Iter->_client_handler->getVariableHandlers().find("Content-Length") != Iter->_client_handler->getVariableHandlers().end())
 		if (read_with_content_length(std::stoi(Iter->_client_handler->getVariableHandlers().at("Content-Length")), Iter))
 		{
 			++Iter;
 			return;
 		}
-	if (Iter->_curent_progress == 1 &&
+	if (Iter->_curent_progress == 1 && !Iter->_client_handler->isError() &&
 		(Iter->_client_handler->getVariableHandlers().find("Transfer-Encoding") != Iter->_client_handler->getVariableHandlers().end()))
 		if (!read_with_chunked(Iter))
 		{
 			++Iter;
 			return;
 		}
-	Method_selector(*Iter->_client_handler, handler, body, Iter->_request_body);
+	if (!Iter->_client_handler->isError())
+		Method_selector(handler, body, Iter);
+	else
+	{
+		//Create server error page TODO
+	}
 	Iter->_ready_response_to_the_customer = handler + body;
 	Iter->_answer_is_ready = true;
 	++Iter;

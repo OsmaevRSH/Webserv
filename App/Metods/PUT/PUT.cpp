@@ -53,7 +53,6 @@ void PUT::get_hendler()
 		output << get_allow_methods();
 	output << "\r\n";
 	_head = output.str();
-//	std::cout << output.str() << std::endl;
 }
 
 std::string PUT::get_content_length()

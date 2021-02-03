@@ -19,15 +19,18 @@
 class POST : public Search_by_configuration
 {
 	private:
+		Cgi *_cgi;
 		std::string &_body;
 		std::string &_head;
 		std::string _handler_body;
 		t_data_for_cgi _cgi_struct;
+		std::list<Client>::iterator &_iter;
 		char **_env;
 		std::string get_content_length();
 	public:
-		POST(const Serv_conf &, const Parse_input_handler &, const MIME_ERROR &, std::string &, std::string &, std::string &, char **env);
+		POST(const Serv_conf &, std::list<Client>::iterator &Iter, const MIME_ERROR &, std::string &, std::string &, std::string &, char **env);
 		void start_processing();
+		void get_header_if_error();
 };
 
 

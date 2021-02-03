@@ -10,6 +10,7 @@ class Parse_input_handler
 		std::string _protocol_type;
 		std::string _server_ip;
 		std::string _client_ip;
+		bool		_error;
 		std::map<std::string, std::string> _variable_handlers;
 	public:
 		explicit Parse_input_handler(const char *, std::string &, std::string &);
@@ -24,6 +25,6 @@ class Parse_input_handler
 		const std::string &getUrl() const;
 		const std::string &getServerIp() const;
 		const std::string &getClientIp() const;
-
-		bool headersIsOkey() const;
+		bool isError() const;
+		void headersIsOk();
 };
