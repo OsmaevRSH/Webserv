@@ -31,6 +31,7 @@ class POST : public Search_by_configuration
 		POST(const Serv_conf &, std::list<Client>::iterator &Iter, const MIME_ERROR &, std::string &, std::string &, std::string &, char **env);
 		void start_processing();
 		void get_header_if_error();
+		void get_header_if_not_error();
 };
 
 

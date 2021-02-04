@@ -27,6 +27,7 @@ void POST::start_processing()
 			return;
 		}
 		++_iter->_curent_progress;
+//		get_header_if_not_error();
 	}
 	while(_cgi->getResponse()){}
 }
@@ -52,4 +53,20 @@ void POST::get_header_if_error()
 		output << get_allow_methods();
 	output << "\r\n";
 	_head = output.str();
+}
+
+void POST::get_header_if_not_error()
+{
+	std::stringstream output;
+
+	output << "HTTP/1.1 " << 200 << " " << "OK" << "\r\n";
+	output << get_server_name();
+	output << "Content-Length: 100000000\r\n";
+	output << get_date_handler();
+	output << "Content-Type: text/html\r\n";
+	output << "\r\n";
+	_head = output.str();
+	char *test = (char *)calloc(100000001, 1);
+	memset(test, 'E', 100000000);
+	_body = test;
 }
