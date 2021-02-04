@@ -75,3 +75,5 @@ template<class T>
 t_location *check_path_with_complete_coincidence(T &param, Parse_input_handler &handlers);
 template<class T>
 t_location *check_simple_location(T &param, Parse_input_handler &handlers);
+template<class T>
+t_location *check_path_with_simple_regex(T &param, Parse_input_handler &handlers);
