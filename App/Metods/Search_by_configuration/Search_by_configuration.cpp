@@ -66,16 +66,16 @@ t_location *check_utils(std::vector<t_location>::iterator &it, std::string &rege
 {
 	if (it->block_args[0] == "\\")
 	{
-		int 		star = 0;
-		int 		reg_i = 0;
-		int 		url_i = 0;
-		int 		url_after_star = 0;
+		int star = 0;
+		int reg_i = 0;
+		int url_i = 0;
+		int url_after_star = 0;
 
 		if (it->block_args.size() >= 2)
 			regex = it->block_args[1];
 		else
 			return nullptr;
-		for (; url_i < url.length(); )
+		for (; url_i < url.length();)
 		{
 			if (reg_i == 0 && regex.find('*', reg_i) == std::string::npos)
 				return nullptr;
@@ -103,8 +103,8 @@ t_location *check_path_with_simple_regex(T &param, Parse_input_handler &handlers
 {
 	t_location *result = nullptr;
 	std::vector<t_location>::iterator it = param.locations.begin();
-	std::string regex ;
-	std::string url	= handlers.getUrl();
+	std::string regex;
+	std::string url = handlers.getUrl();
 
 	for (; it < param.locations.end(); ++it)
 	{
@@ -119,7 +119,7 @@ t_location *check_path_with_simple_regex(T &param, Parse_input_handler &handlers
 void Search_by_configuration::update_global_params(t_params &global_params, t_location &location)
 {
 	global_params.index = location.ew.index;
-	if (location.block_args[0] == "=")
+	if (location.block_args[0] == "=" || location.block_args[0] == "\\")
 		global_params.curent_location = location.block_args[1];
 	else
 		global_params.curent_location = location.block_args[0];
@@ -147,8 +147,9 @@ bool search_folder(t_params &params, Parse_input_handler &handlers)
 	}
 	else
 	{
-		tmp_path = handlers.getUrl().substr(params.curent_location.size());
-		if (tmp_path.find("/") != 0)
+		tmp_path = handlers.getUrl().substr(params.curent_location.find("*") != std::string::npos ? handlers.getUrl().find_last_of("/")
+																								  : params.curent_location.size());
+		if (tmp_path.find("/") != 0 && tmp_path.size())
 			tmp_path = "/" + tmp_path;
 		if (!stat((params.alias + tmp_path).c_str(), &check))
 		{
@@ -215,8 +216,9 @@ bool search_file(t_params &params, Parse_input_handler &handlers)
 	}
 	else
 	{
-		tmp_path = handlers.getUrl().substr(params.curent_location.size());
-		if (tmp_path.find("/") != 0)
+		tmp_path = handlers.getUrl().substr(params.curent_location.find("*") != std::string::npos ? handlers.getUrl().find_last_of("/")
+																								  : params.curent_location.size());
+		if (tmp_path.find("/") != 0 && tmp_path.size())
 			tmp_path = "/" + tmp_path;
 		if (!stat((params.alias + tmp_path).c_str(), &check))
 		{
@@ -397,4 +399,4 @@ void Search_by_configuration::get_path(T &param, Parse_input_handler &handlers, 
 Search_by_configuration::Search_by_configuration(const Serv_conf &conf, const Parse_input_handler &handler, const MIME_ERROR &mime)
 		: _config(conf), _handler(handler), _mime(mime) {}
 
-		Search_by_configuration::~Search_by_configuration() {}
+Search_by_configuration::~Search_by_configuration() {}

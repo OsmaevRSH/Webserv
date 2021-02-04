@@ -25,7 +25,8 @@ std::string Search_by_configuration::create_autoindex_page(t_params &params, Par
 	}
 	else
 	{
-		tmp_path = params.alias + "/" + handler.getUrl().substr(params.curent_location.size());
+		tmp_path = params.alias + ((tmp_path.find("/") != 0 && tmp_path.size()) ? "/" : "") + handler.getUrl().substr(
+				params.curent_location.find("*") != std::string::npos ? handler.getUrl().find_last_of("/") : params.curent_location.size());
 		directory = opendir(tmp_path.c_str());
 	}
 	if (!directory)
