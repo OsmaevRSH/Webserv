@@ -38,38 +38,31 @@ void Cgi::handleRequest()
 
 	pipe(_pipe);
 	pipe(_pipe_body);
-	//	for (int j = 0; _env[j]; ++j)
-	//		std::cout << _env[j] << std::endl;
-//	fcntl(_pipe_body[1], F_SETFL, O_NONBLOCK);
-
-	//	std::cout << _env[5] << std::endl;
-
-	char *te = (char*)malloc(1000 * 1000 * 1000);
-	memset(te, 'c', 1000 * 1000 * 1000);
-	te[1000 * 1000 - 1] = '\0';
-
-	dup2(_pipe_body[1], 1);
-	close(_pipe_body[1]);
-	int count = write(1, te, 1000 * 1000);
 
 	pid = fork();
+	int count = write(_pipe_body[1], _data.body.c_str(), _data.body.size());
 	if (pid == 0)
 	{
 		close(_pipe[0]);
 		dup2(_pipe[1], 1);
-		//		close(_pipe[1]);
+		close(_pipe[1]);
+
 		close(_pipe_body[1]);
 		dup2(_pipe_body[0], 0);
-		//		close(_pipe_body[0]);
+		close(_pipe_body[0]);
+
 		execve(_args[0], _args, _env);
 		exit(0);
 	}
 	else
 	{
-		waitpid(pid, NULL, 0);
-		close(_pipe[1]);
 		close(_pipe_body[0]);
 		close(_pipe_body[1]);
+
+
+		close(_pipe[1]);
+
+		waitpid(pid, NULL, 0);
 	}
 }
 
