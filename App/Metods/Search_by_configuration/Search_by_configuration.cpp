@@ -84,7 +84,7 @@ t_location *check_path_with_simple_regex(T &param, Parse_input_handler &handlers
 				return nullptr;
 			for (; url_i < url.length(); )
 			{
-				if (star == 0 && (star = regex.find('*', reg_i)) == std::string::npos)
+				if (reg_i == 0 && (star = regex.find('*', reg_i)) == std::string::npos)
 					return nullptr;
 				if ((star = regex.find('*', reg_i)) == std::string::npos)
 					star = regex.length();
