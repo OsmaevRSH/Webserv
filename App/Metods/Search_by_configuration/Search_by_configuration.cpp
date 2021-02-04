@@ -66,7 +66,7 @@ template<class T>
 t_location *check_path_with_simple_regex(T &param, Parse_input_handler &handlers)
 {
 	std::vector<t_location>::iterator it = param.locations.begin();
-	std::string regex = it->block_args[1];
+	std::string regex ;
 	std::string url	= handlers.getUrl();
 
 	for (; it < param.locations.end(); ++it)
@@ -78,6 +78,10 @@ t_location *check_path_with_simple_regex(T &param, Parse_input_handler &handlers
 			int 		url_i = 0;
 			int 		url_after_star = 0;
 
+			if (it->block_args.size() >= 2)
+				regex = it->block_args[1];
+			else
+				return nullptr;
 			for (; url_i < url.length(); )
 			{
 				if (star == 0 && (star = regex.find('*', reg_i)) == std::string::npos)
