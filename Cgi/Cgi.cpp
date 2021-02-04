@@ -44,25 +44,22 @@ void Cgi::handleRequest()
 
 	//	std::cout << _env[5] << std::endl;
 
+	int count = write(_pipe_body[1], _data.body.c_str(), 10000000);
+
 	pid = fork();
 	if (pid == 0)
 	{
 		close(_pipe[0]);
 		dup2(_pipe[1], 1);
 		//		close(_pipe[1]);
-
 		close(_pipe_body[1]);
 		dup2(_pipe_body[0], 0);
 		//		close(_pipe_body[0]);
-
-
 		execve(_args[0], _args, _env);
 		exit(0);
 	}
 	else
 	{
-
-		int count = write(_pipe_body[1], _data.body.c_str(), 10000000);
 		waitpid(pid, NULL, 0);
 		close(_pipe[1]);
 		close(_pipe_body[0]);
@@ -74,10 +71,10 @@ const char *Cgi::getResponse()
 {
 	int res;
 	char *tmp = *_env;
-	for (int i = 0; i < 100; ++i)
+	/*for (int i = 0; i < 100; ++i)
 	{
 		tmp = *(_env + i);
-	}
+	}*/
 
 	if (_is_end == true)
 		return NULL;
