@@ -200,7 +200,7 @@ t_location *check_simple_location(T &param, Parse_input_handler &handlers)
 
 	for (; it < param.locations.end(); ++it)
 	{
-		if (it->block_args[0] != "=")
+		if (it->block_args[0] != "=" && it->block_args[0] != "\\")
 		{
 			if (!std::strncmp(it->block_args[0].c_str(), handlers.getUrl().c_str(), it->block_args[0].size()))
 				return &(*it);
