@@ -21,7 +21,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-//#define TESTER
+#define TESTER
 #define SERVER_IP_DEBUG
 //#define CONFIG_DEBUG
 //#define AUTOINDEX_DEBUG
