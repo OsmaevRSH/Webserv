@@ -355,6 +355,11 @@ void Search_by_configuration::get_path(T &param, Parse_input_handler &handlers, 
 			update_global_params(global_params, *location);
 			return Search_by_configuration::recursive_call_with_slash(handlers, global_params);
 		}
+		if ((location = check_path_with_simple_regex(param, handlers)))
+		{
+			update_global_params(global_params, *location);
+			return Search_by_configuration::recursive_call_with_slash(handlers, global_params);
+		}
 		if ((location = check_simple_location(param, handlers)))
 		{
 			update_global_params(global_params, *location);
@@ -376,6 +381,11 @@ void Search_by_configuration::get_path(T &param, Parse_input_handler &handlers, 
 	else
 	{
 		if ((location = check_path_with_complete_coincidence(param, handlers)))
+		{
+			update_global_params(global_params, *location);
+			return Search_by_configuration::recursive_call_without_slash(handlers, global_params);
+		}
+		if ((location = check_path_with_simple_regex(param, handlers)))
 		{
 			update_global_params(global_params, *location);
 			return Search_by_configuration::recursive_call_without_slash(handlers, global_params);

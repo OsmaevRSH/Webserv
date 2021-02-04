@@ -19,7 +19,7 @@ Cgi::Cgi(const std::string &path_to_cgi, const t_data_for_cgi &data)
 	_args[1] = strdup("/Users/ltheresi/CLionProjects/Webserv/Tester/YoupiBanane/hello/youpi.bla");
 	_args[2] = NULL;
 	_env = get_meta_variables(data);
-	_buf = (char*)calloc(1025, 1);
+	_buf = (char *) calloc(1025, 1);
 	_is_end = false;
 	handleRequest();
 }
@@ -27,41 +27,46 @@ Cgi::Cgi(const std::string &path_to_cgi, const t_data_for_cgi &data)
 Cgi::~Cgi()
 {
 	free(_buf);
-	if (_is_end == false)
+	if (!_is_end)
 		close(_pipe[0]);
 }
 
-void Cgi::handleRequest() {
-	pid_t	pid;
-	_buf = (char*)calloc(1025, 1);
+void Cgi::handleRequest()
+{
+	pid_t pid;
+	_buf = (char *) calloc(1025, 1);
 
 	pipe(_pipe);
-	for (int j = 0; _env[j]; ++j)
-		std::cout << _env[j] << std::endl;
 	pipe(_pipe_body);
+	//	for (int j = 0; _env[j]; ++j)
+	//		std::cout << _env[j] << std::endl;
 //	fcntl(_pipe_body[1], F_SETFL, O_NONBLOCK);
 
-	std::cout << _env[5] << std::endl;
+	//	std::cout << _env[5] << std::endl;
+
 	pid = fork();
 	if (pid == 0)
 	{
-		dup2(_pipe_body[0], 0);
-		close(_pipe_body[0]);
-
 		close(_pipe[0]);
 		dup2(_pipe[1], 1);
-		close(_pipe[1]);
+		//		close(_pipe[1]);
+
+		close(_pipe_body[1]);
+		dup2(_pipe_body[0], 0);
+		//		close(_pipe_body[0]);
+
 
 		execve(_args[0], _args, _env);
 		exit(0);
 	}
 	else
 	{
-		int count = write(_pipe_body[1], _data.body.c_str(), _data.body.size());
-		close(_pipe_body[1]);
-		close(_pipe_body[0]);
-		close(_pipe[1]);
+
+		int count = write(_pipe_body[1], _data.body.c_str(), 10000000);
 		waitpid(pid, NULL, 0);
+		close(_pipe[1]);
+		close(_pipe_body[0]);
+		close(_pipe_body[1]);
 	}
 }
 

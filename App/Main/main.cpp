@@ -6,7 +6,7 @@ int main(int argc, char **argv, char **env)
 {
 	MIME_ERROR mime;
 #ifndef TESTER
-	Config config("./App/Config/conf");
+	Parser config("./App/Config/conf");
 #endif
 #ifdef TESTER
 	Parser config("./App/Config/conf_for_tester");
