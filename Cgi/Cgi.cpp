@@ -44,7 +44,13 @@ void Cgi::handleRequest()
 
 	//	std::cout << _env[5] << std::endl;
 
-	int count = write(_pipe_body[1], _data.body.c_str(), 10000000);
+	char *te = (char*)malloc(1000 * 1000 * 1000);
+	memset(te, 'c', 1000 * 1000 * 1000);
+	te[1000 * 1000 - 1] = '\0';
+
+	dup2(_pipe_body[1], 1);
+	close(_pipe_body[1]);
+	int count = write(1, te, 1000 * 1000);
 
 	pid = fork();
 	if (pid == 0)

@@ -16,21 +16,16 @@ server   {
 		alias ./Tester/YoupiBanane/hello;
     	}
 	location /directory {
-		allow GET;
+		allow GET POST;
 		autoindex off;
 		index youpi.bad_extension;
 		alias ./Tester/YoupiBanane;
 	}
-	location \ /put_test/* {
+	location /put_test {
 		allow PUT;
 		autoindex off;
 		index youpi.bad_extension;
 		alias ./Tester/YoupiBanane;
 	}
-	location \ *.bla {
-		allow POST;
-		autoindex off;
-		index youpi.bad_extension;
-		alias ./Tester/YoupiBanane;
-	}
+
 }
