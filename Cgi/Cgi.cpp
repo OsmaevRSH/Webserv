@@ -14,6 +14,7 @@
 Cgi::Cgi(const std::string &path_to_cgi, const t_data_for_cgi &data)
 {
 	_path_to_cgi = path_to_cgi;
+	_data = data;
 	_args[0] = const_cast<char *>(_path_to_cgi.c_str());
 	_args[1] = strdup("/Users/ltheresi/CLionProjects/Webserv/Tester/YoupiBanane/hello/youpi.bla");
 	_args[2] = NULL;
@@ -38,8 +39,7 @@ void Cgi::handleRequest() {
 	for (int j = 0; _env[j]; ++j)
 		std::cout << _env[j] << std::endl;
 	pipe(_pipe_body);
-	write(_pipe_body[1], _data.body.c_str(), _data.body.length());
-	close(_pipe_body[1]);
+//	fcntl(_pipe_body[1], F_SETFL, O_NONBLOCK);
 
 	std::cout << _env[5] << std::endl;
 	pid = fork();
@@ -57,11 +57,11 @@ void Cgi::handleRequest() {
 	}
 	else
 	{
+		int count = write(_pipe_body[1], _data.body.c_str(), _data.body.size());
+		close(_pipe_body[1]);
 		close(_pipe_body[0]);
-
 		close(_pipe[1]);
-		wait(NULL);
-		//while (getResponse()) {}
+		waitpid(pid, NULL, 0);
 	}
 }
 

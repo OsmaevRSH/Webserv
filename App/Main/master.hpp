@@ -17,6 +17,9 @@
 #include <dirent.h>
 #include <ctime>
 #include <list>
+#include <sys/wait.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #define TESTER
 #define SERVER_IP_DEBUG

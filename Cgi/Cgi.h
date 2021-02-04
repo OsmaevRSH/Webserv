@@ -1,12 +1,7 @@
 
 #pragma once
-#include "../App/Main/master.hpp"
-#include <sys/wait.h>
-#include <cstring>
-#include <cstdlib>
-#include "../App/Parse_input_handlers/Parse_input_handler.hpp"
-#include <stdio.h>
-#include <stdlib.h>
+#include "Parse_input_handler.hpp"
+#include "master.hpp"
 
 typedef struct				s_data_for_cgi
 {

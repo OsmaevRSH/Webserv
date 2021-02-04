@@ -124,7 +124,7 @@ char		**get_meta_variables(const t_data_for_cgi &data)
 //	for (i = 0; data.env[i]; ++i)
 //		vars[i] = strdup(data.env[i]);
 
-	vars[i + 0] = strdup("CONTENT_LENGTH=28");
+	vars[i + 0] = strdup("CONTENT_LENGTH=10000000");
 	vars[i + 1] = strdup("CONTENT_TYPE=text/html");
 	vars[i + 2] = strdup("GATEWAY_INTERFACE=CGI/1.1");
 	vars[i + 3] = strdup("PATH_INFO=/");
