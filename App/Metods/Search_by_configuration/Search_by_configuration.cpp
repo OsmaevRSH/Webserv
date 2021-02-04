@@ -62,46 +62,56 @@ t_location *check_path_with_complete_coincidence(T &param, Parse_input_handler &
 	return nullptr;
 }
 
+t_location *check_utils(std::vector<t_location>::iterator &it, std::string &regex, std::string &url)
+{
+	if (it->block_args[0] == "\\")
+	{
+		int 		star = 0;
+		int 		reg_i = 0;
+		int 		url_i = 0;
+		int 		url_after_star = 0;
+
+		if (it->block_args.size() >= 2)
+			regex = it->block_args[1];
+		else
+			return nullptr;
+		for (; url_i < url.length(); )
+		{
+			if (reg_i == 0 && regex.find('*', reg_i) == std::string::npos)
+				return nullptr;
+			if ((star = regex.find('*', reg_i)) == std::string::npos)
+				star = regex.length();
+			std::string s1 = regex.substr(reg_i, star - reg_i);
+			std::string s2 = url.substr(url_i, star - reg_i);
+			if (s1 != s2)
+				return nullptr;
+			if (!regex[star + 1])
+				return &(*it);
+			url_after_star = url.find(regex[star + 1], url_i);
+			if (url_after_star == std::string::npos)
+				return nullptr;
+			url_i = url_after_star;
+			reg_i = star + 1;
+		}
+		return &(*it);
+	}
+	return nullptr;
+}
+
 template<class T>
 t_location *check_path_with_simple_regex(T &param, Parse_input_handler &handlers)
 {
+	t_location *result = nullptr;
 	std::vector<t_location>::iterator it = param.locations.begin();
 	std::string regex ;
 	std::string url	= handlers.getUrl();
 
 	for (; it < param.locations.end(); ++it)
 	{
-		if (it->block_args[0] == "\\")
-		{
-			int 		star = 0;
-			int 		reg_i = 0;
-			int 		url_i = 0;
-			int 		url_after_star = 0;
-
-			if (it->block_args.size() >= 2)
-				regex = it->block_args[1];
-			else
-				return nullptr;
-			for (; url_i < url.length(); )
-			{
-				if (reg_i == 0 && (star = regex.find('*', reg_i)) == std::string::npos)
-					return nullptr;
-				if ((star = regex.find('*', reg_i)) == std::string::npos)
-					star = regex.length();
-				std::string s1 = regex.substr(reg_i, star - reg_i);
-				std::string s2 = url.substr(url_i, star - reg_i);
-				if (s1 != s2)
-					return nullptr;
-				if (!regex[star + 1])
-					return &(*it);
-				url_after_star = url.find(regex[star + 1], url_i);
-				if (url_after_star == std::string::npos)
-					return nullptr;
-				url_i = url_after_star;
-				reg_i = star + 1;
-			}
-			return &(*it);
-		}
+		if (!(result = check_utils(it, regex, url)))
+			continue;
+		else
+			return result;
 	}
 	return nullptr;
 }
