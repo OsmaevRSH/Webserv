@@ -68,11 +68,6 @@ t_location *check_path_with_simple_regex(T &param, Parse_input_handler &handlers
 	std::vector<t_location>::iterator it = param.locations.begin();
 	std::string regex = it->block_args[1];
 	std::string url	= handlers.getUrl();
-	int 		star = 0;
-	int 		tmp;
-	int 		reg_i = 0;
-	int 		url_i = 0;
-	int 		url_after_star = 0;
 
 	for (; it < param.locations.end(); ++it)
 	{
@@ -84,14 +79,20 @@ t_location *check_path_with_simple_regex(T &param, Parse_input_handler &handlers
 			int 		url_i = 0;
 			int 		url_after_star = 0;
 
-			for (; url_i < url.length(); ){
-				star1 = star;
+			for (; url_i < url.length(); )
+			{
+				/* Ищем звездочку */
 				if ((star = regex.find('*', reg_i)) == std::string::npos)
+				{
+					/* если нету, то считаем zездочкой конец строки */
 					star = regex.length();
+				}
+				/* сравниваем между этой и последней звездочкой */
 				std::string s1 = regex.substr(reg_i, star - reg_i);
 				std::string s2 = url.substr(url_i, star - reg_i);
 				if (s1 != s2)
 					return nullptr;
+				/* пропускаем все символы под звзедочкой */
 				if (!regex[star + 1])
 					return &(*it);
 				url_after_star = url.find(regex[star + 1], url_i);
