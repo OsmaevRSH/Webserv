@@ -85,7 +85,7 @@ t_location *check_utils(std::vector<t_location>::iterator &it, std::string &rege
 			std::string s2 = url.substr(url_i, star - reg_i);
 			if (s1 != s2)
 				return nullptr;
-			if (!regex[star + 1])
+			if (star + 1 > it->block_args[1].length())
 				return &(*it);
 			url_after_star = url.find(regex[star + 1], url_i);
 			if (url_after_star == std::string::npos)
