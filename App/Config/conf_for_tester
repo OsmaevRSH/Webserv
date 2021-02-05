@@ -9,8 +9,14 @@ server   {
 		index youpi.bad_extension;
 		alias ./Tester/YoupiBanane;
 	}
+	location /test {
+		allow GET POST;
+		autoindex off;
+		index youpi.bad_extension;
+		alias ./Tester/YoupiBanane/hello;
+    	}
 	location /directory {
-		allow GET;
+		allow GET POST;
 		autoindex off;
 		index youpi.bad_extension;
 		alias ./Tester/YoupiBanane;
@@ -21,9 +27,5 @@ server   {
 		index youpi.bad_extension;
 		alias ./Tester/YoupiBanane;
 	}
-	location \ *.bla {
-		autoindex off;
-		index youpi.bad_extension;
-		alias ./Tester/YoupiBanane;
-	}
+
 }

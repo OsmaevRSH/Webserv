@@ -39,36 +39,43 @@ void Cgi::handleRequest()
 	pipe(_pipe);
 	pipe(_pipe_body);
 
-	std::cout << _data.body.size() << std::endl;
-
-	int count = write(_pipe_body[1], _data.body.c_str(), 100000000);
-
 	pid = fork();
+	int count = write(_pipe_body[1], _data.body.c_str(), _data.body.size());
 	if (pid == 0)
 	{
 		close(_pipe[0]);
 		dup2(_pipe[1], 1);
-		//		close(_pipe[1]);
+		close(_pipe[1]);
+
 		close(_pipe_body[1]);
 		dup2(_pipe_body[0], 0);
-		//		close(_pipe_body[0]);
+		close(_pipe_body[0]);
+
 		execve(_args[0], _args, _env);
 		exit(0);
 	}
 	else
 	{
-		waitpid(pid, NULL, 0);
-		close(_pipe[1]);
 		close(_pipe_body[0]);
 		close(_pipe_body[1]);
+
+
+		close(_pipe[1]);
+
+		waitpid(pid, NULL, 0);
 	}
 }
 
 const char *Cgi::getResponse()
 {
 	int res;
+	char *tmp = *_env;
+	/*for (int i = 0; i < 100; ++i)
+	{
+		tmp = *(_env + i);
+	}*/
 
-	if (_is_end)
+	if (_is_end == true)
 		return NULL;
 	bzero(_buf, 1024);
 	res = read(_pipe[0], _buf, 1024);
