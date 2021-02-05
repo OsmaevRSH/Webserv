@@ -39,8 +39,8 @@ void Cgi::handleRequest()
 	pipe(_pipe);
 	pipe(_pipe_body);
 
-	pid = fork();
 	int count = write(_pipe_body[1], _data.body.c_str(), _data.body.size());
+	pid = fork();
 	if (pid == 0)
 	{
 		close(_pipe[0]);
