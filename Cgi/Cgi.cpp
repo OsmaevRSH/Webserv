@@ -16,8 +16,9 @@ Cgi::Cgi(const std::string &path_to_cgi, const t_data_for_cgi &data)
 	_path_to_cgi = path_to_cgi;
 	_data = data;
 	_args[0] = const_cast<char *>(_path_to_cgi.c_str());
-	_args[1] = strdup("/Users/ltheresi/CLionProjects/Webserv/Tester/YoupiBanane/hello/youpi.bla");
+	_args[1] = strdup("/Users/ltheresi/CLionProjects/Webserv/Tester/YoupiBanane/youpi.bla");
 	_args[2] = NULL;
+	_data.body = "nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn";
 	_env = get_meta_variables(data);
 	_buf = (char *) calloc(1025, 1);
 	_is_end = false;
@@ -36,31 +37,38 @@ void Cgi::handleRequest()
 	pid_t pid;
 	_buf = (char *) calloc(1025, 1);
 
-	pipe(_pipe);
+//	pipe(_pipe);
 	pipe(_pipe_body);
 
 	pid = fork();
-	int count = write(_pipe_body[1], _data.body.c_str(), _data.body.size());
+	std::cout << _data.body.size() << std::endl;
 	if (pid == 0)
 	{
-		close(_pipe[0]);
-		dup2(_pipe[1], 1);
-		close(_pipe[1]);
+//		close(_pipe[0]);
+//		dup2(_pipe[1], 1);
+//		close(_pipe[1]);
 
 		close(_pipe_body[1]);
 		dup2(_pipe_body[0], 0);
 		close(_pipe_body[0]);
 
-		execve(_args[0], _args, _env);
+		int fd = open("/Users/ltheresi/CLionProjects/Webserv/Html/test.txt", O_CREAT);
+		if (execve(_args[0], _args, _env) == -1)
+		{
+			write(fd, "Error", 5);
+			close(fd);
+			exit(1);
+		}
+		close(fd);
 		exit(0);
 	}
 	else
 	{
 		close(_pipe_body[0]);
+		write(_pipe_body[1], _data.body.c_str(), _data.body.size());
 		close(_pipe_body[1]);
 
-
-		close(_pipe[1]);
+//		close(_pipe[1]);
 
 		waitpid(pid, NULL, 0);
 	}
@@ -79,7 +87,7 @@ const char *Cgi::getResponse()
 		return NULL;
 	bzero(_buf, 1024);
 	res = read(_pipe[0], _buf, 1024);
-	write(1, _buf, res);
+	//write(1, _buf, res);
 	if (res == 0)
 	{
 		_is_end = true;
