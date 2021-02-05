@@ -28,7 +28,7 @@ class Cgi {
 		char 			*_buf;
 		bool 			_is_end;
 		char 			**_env;
-
+		int 			tmp_fd;
 		int 			_save_stdout;
 		int 			_save_stdin;
 	public:

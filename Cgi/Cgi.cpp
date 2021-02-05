@@ -30,12 +30,13 @@ Cgi::~Cgi()
 
 void Cgi::handleRequest()
 {
-	int fd[2], status, tmp_fd, child;
+	int fd[2], status, child;
 
 	status = pipe(fd);
 	tmp_fd = open("./test", O_RDWR | O_CREAT | O_TRUNC, S_IRWXU);
-	if (status < 0 || tmp_fd < 0 || (child = fork ()) < 0)
-		throw (std::runtime_error(strerror(errno)));
+//	if (status < 0 || tmp_fd < 0 || (child = fork ()) < 0)
+//		throw (std::runtime_error(strerror(errno)));
+	child = fork();
 	if (child == 0)
 	{
 		close(fd[1]); //ничего не пишем
@@ -54,12 +55,16 @@ void Cgi::handleRequest()
 		close(fd[0]);
 		write(fd[1], _data.body.c_str(), _data.body.size());
 		close(fd[1]);
-		waitpid(child, &status, 0);
-		if (WIFEXITED(status)) {
-			int exit_code = WEXITSTATUS(status);
-			if (exit_code == 2)
-				return;
-		}
+		waitpid(child, NULL, 0);
+//		if (WIFEXITED(status)) {
+//			int exit_code = WEXITSTATUS(status);
+//			if (exit_code == 2)
+//				return;
+//		}
+		tmp_fd = open("./test", O_RDONLY);
+		_buf = (char*)calloc(1025, 1);
+		read(tmp_fd, _buf, 1024);
+		write(1, _buf, 1024);
 	}
 }
 
