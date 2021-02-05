@@ -16,7 +16,7 @@ Cgi::Cgi(const std::string &path_to_cgi, const t_data_for_cgi &data)
 	_path_to_cgi = path_to_cgi;
 	_data = data;
 	_args[0] = const_cast<char *>(_path_to_cgi.c_str());
-	_args[1] = strdup("/Users/ltheresi/CLionProjects/Webserv/Tester/YoupiBanane/youpi.bla");
+	_args[1] = strdup("./Tester/YoupiBanane/youpi.bla");
 	_args[2] = NULL;
 //	_data.body = "nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn";
 	_env = get_meta_variables(data);
@@ -52,14 +52,8 @@ void Cgi::handleRequest()
 		dup2(_pipe_body[0], 0);
 		close(_pipe_body[0]);
 
-		int fd = open("/Users/ltheresi/CLionProjects/Webserv/Html/test.txt", O_CREAT);
-		if (execve(_args[0], _args, _env) == -1)
-		{
-			write(fd, "Error", 5);
-			close(fd);
-			exit(1);
-		}
-		close(fd);
+		execve(_args[0], _args, _env);
+		std::cout << "End of child!!!" << std::endl;
 		exit(0);
 	}
 	else
@@ -87,7 +81,7 @@ const char *Cgi::getResponse()
 		return NULL;
 	bzero(_buf, 1024);
 	res = read(_pipe[0], _buf, 1024);
-	//write(1, _buf, res);
+	write(1, _buf, res);
 	if (res == 0)
 	{
 		_is_end = true;

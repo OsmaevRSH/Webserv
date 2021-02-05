@@ -18,7 +18,7 @@ void POST::start_processing()
 			_cgi_struct.script_name = _handler.getUrl();
 			_cgi_struct.server_ip = _handler.getServerIp();
 			_cgi_struct.env = _env;
-			_cgi = new Cgi("/Users/ltheresi/CLionProjects/Webserv/Tester/cgi_tester", _cgi_struct);
+			_cgi = new Cgi("./Tester/cgi_tester", _cgi_struct);
 		}
 		else
 		{
