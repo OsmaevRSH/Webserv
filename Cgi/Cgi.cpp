@@ -12,16 +12,12 @@
  * */
 
 Cgi::Cgi(const std::string &path_to_cgi, const t_data_for_cgi &data)
+		: _path_to_cgi(path_to_cgi), _data(data), _env(get_meta_variables(data)), _is_end(false)
 {
-	_path_to_cgi = path_to_cgi;
-	_data = data;
 	_args[0] = const_cast<char *>(_path_to_cgi.c_str());
 	_args[1] = strdup("./Tester/YoupiBanane/youpi.bla");
 	_args[2] = NULL;
-//	_data.body = "nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn";
-	_env = get_meta_variables(data);
-	_buf = (char *) calloc(1025, 1);
-	_is_end = false;
+//	_data.body = "nnnnnnnnnnnnnnnnnnnnn";
 	handleRequest();
 }
 
@@ -34,44 +30,42 @@ Cgi::~Cgi()
 
 void Cgi::handleRequest()
 {
-	pid_t pid;
-	_buf = (char *) calloc(1025, 1);
+	int fd[2], status, tmp_fd, child;
 
-//	pipe(_pipe);
-	pipe(_pipe_body);
-
-	pid = fork();
-	std::cout << _data.body.size() << std::endl;
-	if (pid == 0)
+	status = pipe(fd);
+	tmp_fd = open("./test", O_RDWR | O_CREAT | O_TRUNC, S_IRWXU);
+	if (status < 0 || tmp_fd < 0 || (child = fork ()) < 0)
+		throw (std::runtime_error(strerror(errno)));
+	if (child == 0)
 	{
-//		close(_pipe[0]);
-//		dup2(_pipe[1], 1);
-//		close(_pipe[1]);
-
-		close(_pipe_body[1]);
-		dup2(_pipe_body[0], 0);
-		close(_pipe_body[0]);
-
-		execve(_args[0], _args, _env);
-		std::cout << "End of child!!!" << std::endl;
-		exit(0);
+		close(fd[1]); //ничего не пишем
+		//заменяем stdout дочернего процесса на дескриптор временного файла
+		dup2(tmp_fd, 1);
+		//читать запрос будем от родителя
+		dup2(fd[0], 0);
+		close(tmp_fd);
+		close(fd[0]);
+		if (execve(_args[0], _args, _env) == -1)
+			exit(2);
+		exit(1);
 	}
 	else
 	{
-		close(_pipe_body[0]);
-		write(_pipe_body[1], _data.body.c_str(), _data.body.size());
-		close(_pipe_body[1]);
-
-//		close(_pipe[1]);
-
-		waitpid(pid, NULL, 0);
+		close(fd[0]);
+		write(fd[1], _data.body.c_str(), _data.body.size());
+		close(fd[1]);
+		waitpid(child, &status, 0);
+		if (WIFEXITED(status)) {
+			int exit_code = WEXITSTATUS(status);
+			if (exit_code == 2)
+				return;
+		}
 	}
 }
 
 const char *Cgi::getResponse()
 {
 	int res;
-	char *tmp = *_env;
 	/*for (int i = 0; i < 100; ++i)
 	{
 		tmp = *(_env + i);
@@ -79,8 +73,8 @@ const char *Cgi::getResponse()
 
 	if (_is_end == true)
 		return NULL;
-	bzero(_buf, 1024);
-	res = read(_pipe[0], _buf, 1024);
+	bzero(_buf, 100000001);
+	res = read(_pipe[0], _buf, 100000000);
 	write(1, _buf, res);
 	if (res == 0)
 	{

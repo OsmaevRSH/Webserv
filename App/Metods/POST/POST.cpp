@@ -29,7 +29,8 @@ void POST::start_processing()
 		++_iter->_curent_progress;
 //		get_header_if_not_error();
 	}
-	while(_cgi->getResponse()){}
+	std::cerr << "Read" << std::endl;
+//	while(_cgi->getResponse()){}
 }
 
 std::string POST::get_content_length()
