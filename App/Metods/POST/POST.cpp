@@ -1,12 +1,11 @@
 #include "POST.hpp"
 
 POST::POST(const Serv_conf &serv, std::list<Client>::iterator &Iter, const MIME_ERROR &mime, std::string &head, std::string &body, std::string &handler_body, char **env)
-		:	Search_by_configuration(serv, *Iter->_client_handler, mime),
+		:	Search_by_configuration(serv, *Iter->_client_handler, mime, Iter),
 			_body(body),
 			_head(head),
 			_handler_body(handler_body),
 			_env(env),
-			_iter(Iter),
 			_response_for_cgi(NULL) {}
 
 POST::~POST()

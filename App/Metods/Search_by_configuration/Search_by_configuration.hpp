@@ -40,6 +40,7 @@ class Search_by_configuration
 		Parse_input_handler _handler;
 		t_output _output;
 		MIME_ERROR _mime;
+		std::list<Client>::iterator &_iter;
 
 		t_server get_server();
 		void setup_global_params(t_params &global_params, t_server &server, bool save_server);
@@ -61,8 +62,9 @@ class Search_by_configuration
 		void Search_path();
 		std::string create_autoindex_page(t_params &params, Parse_input_handler &handler);
 	public:
-		Search_by_configuration(const Serv_conf &conf, const Parse_input_handler &handler, const MIME_ERROR &);
+		Search_by_configuration(const Serv_conf &conf, const Parse_input_handler &handler, const MIME_ERROR &, std::list<Client>::iterator &);
 		~Search_by_configuration();
+		void check_body_size(const t_params &param, Parse_input_handler &handlers);
 };
 
 bool check_slash(Parse_input_handler &handlers);

@@ -12,7 +12,6 @@ class POST : public Search_by_configuration
 		std::string &_head;
 		std::string _handler_body;
 		t_data_for_cgi _cgi_struct;
-		std::list<Client>::iterator &_iter;
 		char **_env;
 		std::string get_content_length();
 		char *_response_for_cgi;

@@ -14,9 +14,9 @@
  * */
 
 Cgi::Cgi(const std::string &path_to_cgi, const t_data_for_cgi &data) : _path_to_cgi(path_to_cgi), \
-																		_data(data), \
-																		_env(get_meta_variables(data)), \
-																		_is_end(false)
+                                                                        _data(data), \
+                                                                        _env(get_meta_variables(data)), \
+                                                                        _is_end(false)
 {
 	_args[0] = const_cast<char *>(_path_to_cgi.c_str());
 	_args[1] = NULL;
@@ -32,9 +32,9 @@ Cgi::~Cgi()
 
 void Cgi::handleRequest()
 {
-	int fd[2], status, child;
+	int fd[2], child;
 
-	status = pipe(fd);
+	pipe(fd);
 	tmp_fd = open("./.tmp_cgi", O_RDWR | O_CREAT | O_TRUNC, S_IRWXU);
 	child = fork();
 	if (child == 0)
@@ -54,40 +54,19 @@ void Cgi::handleRequest()
 		write(fd[1], _data.body.c_str(), _data.body.size());
 		close(fd[1]);
 		waitpid(child, NULL, 0);
-/*
-		tmp_fd = open("./.tmp_cgi", O_RDONLY);
-		_buf = (char*)calloc(100000000, 1);
-		read(tmp_fd, _buf, 100000000);
-		write(1, _buf, 100000000);*/
 	}
-}
-
-const char *Cgi::getResponse()
-{
-	int res;
-
-	if (_is_end == true)
-		return NULL;
-	bzero(_buf, 100000001);
-	res = read(_pipe[0], _buf, 100000000);
-	write(1, _buf, res);
-	if (res == 0)
-	{
-		_is_end = true;
-		close(_pipe[0]);
-	}
-	return _buf;
 }
 
 /* Тут нужно определиться с возвращаемым типом. Если тупо копировать строку, то это может быть долго.
  * Но тогда нужно выделять память под сишную строку, и потом не забыть ее отчистить.
  * Хм... Отдам-ка я сишную строку и отчистю ее в деструкторе поста.*/
 
-void Cgi::parse_cgi_response() {
+void Cgi::parse_cgi_response()
+{
 	std::ifstream in("./.tmp_cgi");
 	std::string all;
-	int 		hdr_end;
-	int 		hdr_start;
+	int hdr_end;
+	int hdr_start;
 
 	getline(in, all, '\0');
 
@@ -98,9 +77,10 @@ void Cgi::parse_cgi_response() {
 
 	for (int i = 0; i < all.length(); ++i)
 	{
-		if (isdigit(all[i])){
+		if (isdigit(all[i]))
+		{
 			_status_code = atoi(all.substr(i, 3).c_str());
-			break ;
+			break;
 		}
 	}
 	_headers = all.substr(hdr_start, hdr_end - hdr_start);

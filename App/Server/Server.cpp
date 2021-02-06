@@ -95,6 +95,7 @@ void Server::Act_if_readfd_changed(std::list<Client>::iterator &Iter)
 		body = _config._error_pages[400];
 		//TODO
 	}
+	std::cout << RED << handler << RESET << std::endl;
 	Iter->_ready_response_to_the_customer = handler + body;
 	Iter->_answer_is_ready = true;
 	++Iter;
@@ -124,7 +125,7 @@ bool Server::read_with_content_length(int size, std::list<Client>::iterator &Ite
 
 bool Server::read_with_chunked(std::list<Client>::iterator &Iter)
 {
-	static long length = 0;
+//	static long length = 0;
 	int tmp_chunked_length;
 	int count = 0;
 	char *buff;
@@ -157,7 +158,7 @@ bool Server::read_with_chunked(std::list<Client>::iterator &Iter)
 		Iter->_chunked_length -= count;
 //		std::cout << GREEN << "Chunked_len: " << Iter->_chunked_length << std::endl << RESET;
 		Iter->_request_body += buff;
-		std::cout << (length += strlen(buff)) << " | " << Iter->_request_body.size() << std::endl;
+//		std::cout << (length += strlen(buff)) << " | " << Iter->_request_body.size() << std::endl;
 		if (count < tmp_chunked_length)
 		{
 			delete[] buff;
@@ -227,7 +228,7 @@ bool Server::read_with_chunked(std::list<Client>::iterator &Iter)
 	Iter->_chunked_length -= count;
 //	std::cout << GREEN << "Chunked_len: " << Iter->_chunked_length << std::endl << RESET;
 	Iter->_request_body += buff;
-	std::cout << (length += strlen(buff)) << " | " << Iter->_request_body.size() << std::endl;
+//	std::cout << (length += strlen(buff)) << " | " << Iter->_request_body.size() << std::endl;
 	if (count < tmp_chunked_length)
 	{
 		delete[] buff;
@@ -270,6 +271,7 @@ bool Server::Reading_a_request(std::list<Client>::iterator &Iter)
 		delete[] buffer_for_request;
 		return true;
 	}
+	std::cout << GREEN << output << RESET << std::endl;
 	Iter->_client_handler = new Parse_input_handler(output, Iter->_server_ip, Iter->_client_ip);
 	++Iter->_curent_progress;
 	delete[] buffer_for_request;

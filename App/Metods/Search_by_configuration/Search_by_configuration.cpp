@@ -313,6 +313,12 @@ void Search_by_configuration::check_allow_metods(const t_params &param, Parse_in
 	}
 }
 
+void Search_by_configuration::check_body_size(const t_params &param, Parse_input_handler &handlers)
+{
+	if (param.max_body_size && _iter->_request_body.length() > param.max_body_size)
+		_output.status_code = 413;
+}
+
 void Search_by_configuration::Search_path()
 {
 	t_params global_params;
@@ -323,6 +329,7 @@ void Search_by_configuration::Search_path()
 	curent_server = get_server();
 	setup_global_params(global_params, curent_server, true);
 	get_path(curent_server, _handler, global_params);
+	check_body_size(global_params, _handler);
 	check_allow_metods(global_params, _handler);
 	_output.root = global_params.root;
 	_output.alias = global_params.alias;
@@ -396,7 +403,7 @@ void Search_by_configuration::get_path(T &param, Parse_input_handler &handlers, 
 	}
 }
 
-Search_by_configuration::Search_by_configuration(const Serv_conf &conf, const Parse_input_handler &handler, const MIME_ERROR &mime)
-		: _config(conf), _handler(handler), _mime(mime) {}
+Search_by_configuration::Search_by_configuration(const Serv_conf &conf, const Parse_input_handler &handler, const MIME_ERROR &mime, std::list<Client>::iterator &iter)
+		: _config(conf), _handler(handler), _mime(mime), _iter(iter) {}
 
 Search_by_configuration::~Search_by_configuration() {}

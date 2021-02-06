@@ -111,7 +111,7 @@ static char *remote_ident(const t_data_for_cgi &data)
 std::string get_meta_var(const std::string &str)
 {
 	std::string::const_iterator it = str.begin();
-	std::string output;
+	std::string output = "HTTP_";
 	for (; it != str.end(); ++it)
 	{
 		if (std::isalpha(*it))
@@ -143,18 +143,9 @@ char **get_meta_variables(const t_data_for_cgi &data)
 	vars[i++] = auth_type(data);
 	vars[i++] = remote_ident(data);
 	vars[i++] = remote_user(data);
-//	for (;it != data.headers->getVariableHandlers().end(); ++it)
-//	{
-//		vars[i++] = strdup((get_meta_var(it->first) + "=" + it->second).c_str());
-//	}
-	//	vars[9] = content_length(data);
-	//	vars[10] = content_type(data);
-
-	for (int j = 0; j < i; ++j)
-	{
-		std::cout << vars[j] << std::endl;
-	}
-
-	//	vars[10] = strdup(("REQUEST_URI=" + data.headers->getUrl()).c_str());
+	for (;it != data.headers->getVariableHandlers().end(); ++it)
+		vars[i++] = strdup((get_meta_var(it->first) + "=" + it->second).c_str());
+//	for (int j = 0; j < i; ++j)
+//		std::cout << vars[j] << std::endl;
 	return vars;
 }

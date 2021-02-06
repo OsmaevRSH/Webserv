@@ -14,6 +14,6 @@ class PUT : public Search_by_configuration
 		void get_hendler();
 		std::string get_content_location();
 	public:
-		PUT(const Serv_conf &, const Parse_input_handler &, const MIME_ERROR &, std::string &, std::string &, std::string &);
+		PUT(const Serv_conf &, const Parse_input_handler &, const MIME_ERROR &, std::string &, std::string &, std::string &, std::list<Client>::iterator &);
 		void start_processing();
 };

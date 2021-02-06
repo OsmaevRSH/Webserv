@@ -1,7 +1,7 @@
 #include "GET.hpp"
 
-GET::GET(const Serv_conf &serv, const Parse_input_handler &handler, const MIME_ERROR &mime, std::string &head, std::string &body)
-		: Search_by_configuration(serv, handler, mime), _body(body), _head(head) {}
+GET::GET(const Serv_conf &serv, const Parse_input_handler &handler, const MIME_ERROR &mime, std::string &head, std::string &body, std::list<Client>::iterator &Iter)
+		: Search_by_configuration(serv, handler, mime, Iter), _body(body), _head(head) {}
 
 void GET::get_page()
 {
