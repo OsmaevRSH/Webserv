@@ -6,11 +6,11 @@ POST::POST(const Serv_conf &serv, std::list<Client>::iterator &Iter, const MIME_
 			_head(head),
 			_handler_body(handler_body),
 			_env(env),
-			_response_for_cgi(NULL) {}
+			_cgi(nullptr){}
 
 POST::~POST()
 {
-	free(_response_for_cgi);
+	delete _cgi;
 }
 
 void POST::start_processing()
@@ -69,7 +69,7 @@ void POST::get_header_if_not_error()
 
 bool POST::check_сgi_extension(const std::string &url)
 {
-	std::string tmp = url.substr(url.find_last_of(".") == std::string::npos ? 0 : url.find_last_of("."));
+	std::string tmp = url.substr(url.find_last_of('.') == std::string::npos ? 0 : url.find_last_of('.'));
 	if (!strcmp(tmp.c_str(), ".bla"))
 		return true;
 	return false;

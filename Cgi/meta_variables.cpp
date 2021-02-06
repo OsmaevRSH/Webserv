@@ -145,7 +145,5 @@ char **get_meta_variables(const t_data_for_cgi &data)
 	vars[i++] = remote_user(data);
 	for (;it != data.headers->getVariableHandlers().end(); ++it)
 		vars[i++] = strdup((get_meta_var(it->first) + "=" + it->second).c_str());
-//	for (int j = 0; j < i; ++j)
-//		std::cout << vars[j] << std::endl;
 	return vars;
 }

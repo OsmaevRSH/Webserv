@@ -13,21 +13,23 @@
  * Если видим, что данная ячека пуста - просто пропускаем ее.
  * */
 
-Cgi::Cgi(const std::string &path_to_cgi, const t_data_for_cgi &data) : _path_to_cgi(path_to_cgi), \
-                                                                        _data(data), \
-                                                                        _env(get_meta_variables(data)), \
-                                                                        _is_end(false)
+Cgi::Cgi(const std::string &path_to_cgi, const t_data_for_cgi &data) : _path_to_cgi(path_to_cgi),
+                                                                        _data(data),
+                                                                        _env(get_meta_variables(data))
 {
 	_args[0] = const_cast<char *>(_path_to_cgi.c_str());
-	_args[1] = NULL;
+	_args[1] = nullptr;
 	handleRequest();
 }
 
 Cgi::~Cgi()
 {
-	free(_buf);
-	if (!_is_end)
-		close(_pipe[0]);
+	if (_env)
+	{
+		for (int i = 0; _env[i]; ++i)
+			free(_env[i]);
+		free(_env);
+	}
 }
 
 void Cgi::handleRequest()
@@ -53,7 +55,7 @@ void Cgi::handleRequest()
 		close(fd[0]);
 		write(fd[1], _data.body.c_str(), _data.body.size());
 		close(fd[1]);
-		waitpid(child, NULL, 0);
+		waitpid(child, nullptr, 0);
 	}
 }
 

@@ -111,12 +111,16 @@ bool Server::read_with_content_length(int size, std::list<Client>::iterator &Ite
 	buff = new char[Iter->_content_length_buffer + 1];
 	count = recv(Iter->_client_fd, buff, Iter->_content_length_buffer, 0);
 	if (count == -1)
+	{
+		delete[] buff;
 		return true;
+	}
 	buff[count] = '\0';
 	Iter->_request_body += buff;
 	if (count < Iter->_content_length_buffer)
 	{
 		Iter->_content_length_buffer -= count;
+		delete[] buff;
 		return true;
 	}
 	delete[] buff;
@@ -125,7 +129,6 @@ bool Server::read_with_content_length(int size, std::list<Client>::iterator &Ite
 
 bool Server::read_with_chunked(std::list<Client>::iterator &Iter)
 {
-//	static long length = 0;
 	int tmp_chunked_length;
 	int count = 0;
 	char *buff;
@@ -150,20 +153,18 @@ bool Server::read_with_chunked(std::list<Client>::iterator &Iter)
 		}
 		buff = new char[Iter->_chunked_length + 1];
 		count = recv(Iter->_client_fd, buff, Iter->_chunked_length, 0); // Считываем колличесво байт, которое было указано в первом блоке
-//		std::cout << "Line_length: " << count << std::endl;
 		if (count == -1)
-			return false;
-		buff[count] = '\0';
-		tmp_chunked_length = Iter->_chunked_length;
-		Iter->_chunked_length -= count;
-//		std::cout << GREEN << "Chunked_len: " << Iter->_chunked_length << std::endl << RESET;
-		Iter->_request_body += buff;
-//		std::cout << (length += strlen(buff)) << " | " << Iter->_request_body.size() << std::endl;
-		if (count < tmp_chunked_length)
 		{
 			delete[] buff;
 			return false;
 		}
+		buff[count] = '\0';
+		tmp_chunked_length = Iter->_chunked_length;
+		Iter->_chunked_length -= count;
+		Iter->_request_body += buff;
+		delete[] buff;
+		if (count < tmp_chunked_length)
+			return false;
 		count = recv(Iter->_client_fd, crlf_buffer, 2, MSG_PEEK);
 		if (count == -1 || std::strncmp(crlf_buffer, "\r\n", 2) != 0)
 			return false;
@@ -180,20 +181,26 @@ bool Server::read_with_chunked(std::list<Client>::iterator &Iter)
 		buff = new char[256];
 		count = recv(Iter->_client_fd, buff, 255, MSG_PEEK); // выделяем память для просмотра колличества букв в chunked
 		if (count == -1) // если читать нечего просто выходим для нового прохода через select
+		{
+			delete[] buff;
 			return false;
+		}
 		buff[count] = '\0';
 		checker = buff;
 		count = checker.find("\r\n"); //находит CRLF последовательность
 		if (count == std::string::npos)
+		{
+			delete[] buff;
 			return false;
+		}
 		count = recv(Iter->_client_fd, buff, count, 0); // Читаем до CRLF последовательности
 		if (count == -1) // если пришло только число
 			return false;
 		buff[count] = '\0';
 		checker = buff;
+		delete[] buff;
 		tmp << checker; // Переводим из HEX в DEC
 		tmp >> std::hex >> count;
-//		std::cout << GREEN << "Chunked_len: " << count << std::endl << RESET;
 	}
 	if (!count || Iter->_chunked_end_check_status)
 	{
@@ -217,23 +224,20 @@ bool Server::read_with_chunked(std::list<Client>::iterator &Iter)
 		Iter->_chunked_length = count;
 	}
 	recv(Iter->_client_fd, crlf_buffer, 2, 0); // можно не проверять на возможность прочитать, так как мы сюда не попадем до момента, пока не не сможем прочитать число + CRLF
-	delete[] buff;
 	buff = new char[Iter->_chunked_length + 1];
 	count = recv(Iter->_client_fd, buff, Iter->_chunked_length, 0); // Считываем колличесво байт, которое было указано в первом блоке
-//	std::cout << "Line_length: " << count << std::endl;
 	if (count == -1)
-		return false;
-	buff[count] = '\0';
-	tmp_chunked_length = Iter->_chunked_length;
-	Iter->_chunked_length -= count;
-//	std::cout << GREEN << "Chunked_len: " << Iter->_chunked_length << std::endl << RESET;
-	Iter->_request_body += buff;
-//	std::cout << (length += strlen(buff)) << " | " << Iter->_request_body.size() << std::endl;
-	if (count < tmp_chunked_length)
 	{
 		delete[] buff;
 		return false;
 	}
+	buff[count] = '\0';
+	tmp_chunked_length = Iter->_chunked_length;
+	Iter->_chunked_length -= count;
+	Iter->_request_body += buff;
+	delete[] buff;
+	if (count < tmp_chunked_length)
+		return false;
 	count = recv(Iter->_client_fd, crlf_buffer, 2, MSG_PEEK);
 	if (count == -1 || std::strncmp(crlf_buffer, "\r\n", 2) != 0)
 		return false;
@@ -243,7 +247,6 @@ bool Server::read_with_chunked(std::list<Client>::iterator &Iter)
 		Iter->_chunked_length_status = false;
 		Iter->_chunked_length = 0;
 	}
-	delete[] buff;
 	return false;
 }
 
@@ -274,6 +277,7 @@ bool Server::Reading_a_request(std::list<Client>::iterator &Iter)
 	std::cout << GREEN << output << RESET << std::endl;
 	Iter->_client_handler = new Parse_input_handler(output, Iter->_server_ip, Iter->_client_ip);
 	++Iter->_curent_progress;
+	delete [] output;
 	delete[] buffer_for_request;
 	return false;
 }
