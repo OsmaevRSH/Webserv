@@ -47,7 +47,7 @@ void POST::start_processing()
 //		get_header_if_not_error();
 	}
 	std::cerr << "Read" << std::endl;
-	_response_for_cgi = _cgi->parse_cgi_response();
+	_cgi->parse_cgi_response();
 }
 
 std::string POST::get_content_length()

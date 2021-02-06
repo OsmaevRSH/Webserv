@@ -20,23 +20,29 @@ typedef struct				s_data_for_cgi
 class Cgi {
 	private:
 		int 			_pipe[2];
-		int 			_pipe_body[2];
 		std::string		_path_to_cgi;
 		t_data_for_cgi	_data;
 		char			*_args[3];
-		std::string		_response;
 		char 			*_buf;
 		bool 			_is_end;
 		char 			**_env;
 		int 			tmp_fd;
-		int 			_save_stdout;
-		int 			_save_stdin;
-	public:
+
+		std::string 	_headers;
+		std::string 	_body;
+		long long		_content_length;
+		int 			_status_code;
+public:
 		Cgi(const std::string &path_to_cgi, const t_data_for_cgi &data);
 		~Cgi();
 		void handleRequest();
 		const char 	*getResponse();
-		char		*parse_cgi_response();
+		void		parse_cgi_response();
+
+		int getStatusCode() const;
+		const std::string &getHeaders() const;
+		const std::string &getBody() const;
+		long long getContentLength() const;
 };
 
 char **get_meta_variables(const t_data_for_cgi &data);

@@ -52,6 +52,7 @@ void Cgi::handleRequest()
 	else
 	{
 		close(fd[0]);
+		_data.body[0] = 'x';
 		write(fd[1], _data.body.c_str(), _data.body.size());
 		close(fd[1]);
 		waitpid(child, NULL, 0);
@@ -84,21 +85,46 @@ const char *Cgi::getResponse()
  * Но тогда нужно выделять память под сишную строку, и потом не забыть ее отчистить.
  * Хм... Отдам-ка я сишную строку и отчистю ее в деструкторе поста.*/
 
-char *Cgi::parse_cgi_response() {
+void Cgi::parse_cgi_response() {
 	std::ifstream in("./.tmp_cgi");
 	std::string all;
-	std::string body;
-	std::string headers;
-	long long 	len;
 	int 		hdr_end;
+	int 		hdr_start;
 
 	getline(in, all, '\0');
-	hdr_end = all.find("\r\n\r\n", 0);
-	headers = all.substr(0, hdr_end);
-	body = all.substr(hdr_end);
-	len = body.length() - 4;
-	headers = headers + "\r\nContent-Length: " + std::to_string(len);
-	all = headers + body;
 
-	return (strdup(all.c_str()));
+	hdr_end = all.find("\r\n\r\n", 0);
+	hdr_start = all.find("\r\n") + 2;
+	_body = all.substr(hdr_end + 4);
+	_content_length = _body.length();
+
+	for (int i = 0; i < all.length(); ++i)
+	{
+		if (isdigit(all[i])){
+			_status_code = atoi(all.substr(i, 3).c_str());
+			break ;
+		}
+	}
+	_headers = all.substr(hdr_start, hdr_end - hdr_start);
+	_headers = _headers + "\r\nContent-Length: " + std::to_string(_content_length);
+}
+
+int Cgi::getStatusCode() const
+{
+	return _status_code;
+}
+
+const std::string &Cgi::getHeaders() const
+{
+	return _headers;
+}
+
+const std::string &Cgi::getBody() const
+{
+	return _body;
+}
+
+long long Cgi::getContentLength() const
+{
+	return _content_length;
 }
