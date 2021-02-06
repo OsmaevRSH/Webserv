@@ -1,7 +1,12 @@
 server   {
-    ip sdfgsdfg;
-    port 11111111;
-    location / {
-
-    }
+    ip 111.111.111.111;
+    port 5555;
+}
+server   {
+    ip 222.222.222.2222;
+    port 5552;
+}
+server  {
+    ip 222.222.222.2222;
+    port 5552;
 }
