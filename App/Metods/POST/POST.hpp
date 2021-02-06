@@ -27,8 +27,16 @@ class POST : public Search_by_configuration
 		std::list<Client>::iterator &_iter;
 		char **_env;
 		std::string get_content_length();
+		char *_response_for_cgi;
 	public:
-		POST(const Serv_conf &, std::list<Client>::iterator &Iter, const MIME_ERROR &, std::string &, std::string &, std::string &, char **env);
+		POST(	const Serv_conf &, \
+				std::list<Client>::iterator &Iter, \
+				const MIME_ERROR &, \
+				std::string &, \
+				std::string &, \
+				std::string &, \
+				char **env);
+		~POST();
 		void start_processing();
 		void get_header_if_error();
 		void get_header_if_not_error();

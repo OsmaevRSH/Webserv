@@ -35,7 +35,8 @@ class Cgi {
 		Cgi(const std::string &path_to_cgi, const t_data_for_cgi &data);
 		~Cgi();
 		void handleRequest();
-		const char *getResponse();
+		const char 	*getResponse();
+		char		*parse_cgi_response();
 };
 
 char **get_meta_variables(const t_data_for_cgi &data);

@@ -1,4 +1,6 @@
 #include "Cgi.h"
+#include <fstream>
+#include <string>
 
 /*
  * Логика добавления переменных такая:
@@ -11,13 +13,14 @@
  * Если видим, что данная ячека пуста - просто пропускаем ее.
  * */
 
-Cgi::Cgi(const std::string &path_to_cgi, const t_data_for_cgi &data)
-		: _path_to_cgi(path_to_cgi), _data(data), _env(get_meta_variables(data)), _is_end(false)
+Cgi::Cgi(const std::string &path_to_cgi, const t_data_for_cgi &data) : _path_to_cgi(path_to_cgi), \
+																		_data(data), \
+																		_env(get_meta_variables(data)), \
+																		_is_end(false)
 {
 	_args[0] = const_cast<char *>(_path_to_cgi.c_str());
 	_args[1] = strdup("./Tester/YoupiBanane/youpi.bla");
 	_args[2] = NULL;
-//	_data.body = "nnnnnnnnnnnnnnnnnnnnn";
 	handleRequest();
 }
 
@@ -33,16 +36,12 @@ void Cgi::handleRequest()
 	int fd[2], status, child;
 
 	status = pipe(fd);
-	tmp_fd = open("./test", O_RDWR | O_CREAT | O_TRUNC, S_IRWXU);
-//	if (status < 0 || tmp_fd < 0 || (child = fork ()) < 0)
-//		throw (std::runtime_error(strerror(errno)));
+	tmp_fd = open("./.tmp_cgi", O_RDWR | O_CREAT | O_TRUNC, S_IRWXU);
 	child = fork();
 	if (child == 0)
 	{
 		close(fd[1]); //ничего не пишем
-		//заменяем stdout дочернего процесса на дескриптор временного файла
 		dup2(tmp_fd, 1);
-		//читать запрос будем от родителя
 		dup2(fd[0], 0);
 		close(tmp_fd);
 		close(fd[0]);
@@ -56,25 +55,17 @@ void Cgi::handleRequest()
 		write(fd[1], _data.body.c_str(), _data.body.size());
 		close(fd[1]);
 		waitpid(child, NULL, 0);
-//		if (WIFEXITED(status)) {
-//			int exit_code = WEXITSTATUS(status);
-//			if (exit_code == 2)
-//				return;
-//		}
-		tmp_fd = open("./test", O_RDONLY);
-		_buf = (char*)calloc(1025, 1);
-		read(tmp_fd, _buf, 1024);
-		write(1, _buf, 1024);
+/*
+		tmp_fd = open("./.tmp_cgi", O_RDONLY);
+		_buf = (char*)calloc(100000000, 1);
+		read(tmp_fd, _buf, 100000000);
+		write(1, _buf, 100000000);*/
 	}
 }
 
 const char *Cgi::getResponse()
 {
 	int res;
-	/*for (int i = 0; i < 100; ++i)
-	{
-		tmp = *(_env + i);
-	}*/
 
 	if (_is_end == true)
 		return NULL;
@@ -89,40 +80,25 @@ const char *Cgi::getResponse()
 	return _buf;
 }
 
-/*
- * Как работает этот кусок дерьма? Ха, да очень просто.
- * Создаем объект класса. Он сразу запускает cgi и все передает ему.
- * Формирует мета-переменные, всю хуйню и передает.
- * Далее мы просто вызываем функцию getResponse(), которая будет
- * получать от cgi данные по 1024 байт за раз и вот с ними мы будем уже работать.
- * Возвращается сишная строка. Ее нужно стрдапнуть, чистить ее не нужно! Как только
- * считаем все, фунция вернет NULL и вернет обратно подмененные fd. Если
- * вдруг считываение прерветься - не беда, в деструкторе все закроется и унчитожится,
- * главное, чтобы он был вызван.
- * */
+/* Тут нужно определиться с возвращаемым типом. Если тупо копировать строку, то это может быть долго.
+ * Но тогда нужно выделять память под сишную строку, и потом не забыть ее отчистить.
+ * Хм... Отдам-ка я сишную строку и отчистю ее в деструкторе поста.*/
 
-/*int		pipe_send[2];
-int		pipe_recv[2];
+char *Cgi::parse_cgi_response() {
+	std::ifstream in("./.tmp_cgi");
+	std::string all;
+	std::string body;
+	std::string headers;
+	long long 	len;
+	int 		hdr_end;
 
-pipe(pipe_send);
-pipe(pipe_recv);
+	getline(in, all, '\0');
+	hdr_end = all.find("\r\n\r\n", 0);
+	headers = all.substr(0, hdr_end);
+	body = all.substr(hdr_end);
+	len = body.length();
+	headers = headers + "\r\nContent-Length: " + std::to_string(len);
+	all = headers + body;
 
-_save_stdout = dup(1);
-_save_stdin = dup(0);
-
-dup2(pipe_send[1], 1);
-close(pipe_send[1]);
-send_body_to_cgi(_data.body);
-*/
-//close(fd_file);
-/*
-close(pipe_send[0]);
-close(pipe_recv[1]);
-waitpid(pid, NULL, 0);
-dup2(pipe_recv[0], 0);
-close(pipe_recv[0]);*/
-
-/*dup2(pipe_send[0], 0);
-		close(pipe_send[0]);
-		dup2(pipe_recv[1], 1);
-		close(pipe_recv[1]);*/
+	return (strdup(all.c_str()));
+}
