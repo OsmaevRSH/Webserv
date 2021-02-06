@@ -22,9 +22,9 @@ void Server::Act_if_writefd_changed(std::list<Client>::iterator &Iter)
 {
 	int counter;
 	int tmp_count;
-	if (Iter->_ready_response_to_the_customer.size() > 32768)
+	if (Iter->_ready_response_to_the_customer.size() > 1000000)
 	{
-		if ((counter = send(Iter->_client_fd, Iter->_ready_response_to_the_customer.substr(0, 32768).c_str(), 32768, MSG_DONTWAIT)) < 0)
+		if ((counter = send(Iter->_client_fd, Iter->_ready_response_to_the_customer.substr(0, 1000000).c_str(), 1000000, MSG_DONTWAIT)) < 0)
 		{
 			++Iter;
 			return;
