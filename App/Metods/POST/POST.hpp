@@ -1,20 +1,8 @@
 #ifndef WEBSERV_POST_HPP
 #define WEBSERV_POST_HPP
+
 #include "Search_by_configuration.hpp"
 #include "Cgi.h"
-
-//typedef struct				s_data_for_cgi
-//{
-//	std::string 			server_ip;
-//	std::string 			client_ip;
-//	std::string 			path_info; // Путь относительно директории сервера
-//	std::string 			path_translated; // Полный путь в файловой системе
-//	std::string 			script_name; // Виртуальный путь к скрипту (http путь)
-//
-//	int 					port;
-//	std::string				body;
-//	Parse_input_handler		headers;
-//}							t_data_for_cgi;
 
 class POST : public Search_by_configuration
 {
@@ -29,17 +17,13 @@ class POST : public Search_by_configuration
 		std::string get_content_length();
 		char *_response_for_cgi;
 	public:
-		POST(	const Serv_conf &, \
-				std::list<Client>::iterator &Iter, \
-				const MIME_ERROR &, \
-				std::string &, \
-				std::string &, \
-				std::string &, \
-				char **env);
+		POST(const Serv_conf &, std::list<Client>::iterator &Iter, const MIME_ERROR &, std::string &, std::string &, std::string &, char **env);
 		~POST();
 		void start_processing();
 		void get_header_if_error();
 		void get_header_if_not_error();
+		bool check_сgi_extension(const std::string &url);
+		void init_cgi_struct();
 };
 
 

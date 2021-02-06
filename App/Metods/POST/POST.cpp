@@ -1,19 +1,13 @@
 #include "POST.hpp"
 
-POST::POST(const Serv_conf &serv, \
-		   std::list<Client>::iterator &Iter, \
-		   const MIME_ERROR &mime, \
-		   std::string &head, \
-		   std::string &body, \
-		   std::string &handler_body, \
-		   char **env) : \
-		   Search_by_configuration(serv, *Iter->_client_handler, mime), \
-		   _body(body), \
-		   _head(head), \
-		   _handler_body(handler_body), \
-		   _env(env), \
-		   _iter(Iter), \
-		   _response_for_cgi(NULL) {}
+POST::POST(const Serv_conf &serv, std::list<Client>::iterator &Iter, const MIME_ERROR &mime, std::string &head, std::string &body, std::string &handler_body, char **env)
+		:	Search_by_configuration(serv, *Iter->_client_handler, mime),
+			_body(body),
+			_head(head),
+			_handler_body(handler_body),
+			_env(env),
+			_iter(Iter),
+			_response_for_cgi(NULL) {}
 
 POST::~POST()
 {
@@ -22,32 +16,20 @@ POST::~POST()
 
 void POST::start_processing()
 {
-	if (_iter->_curent_progress == 1)
+	Search_path();
+	if (check_сgi_extension(_handler.getUrl()) && _output.status_code != 405)
 	{
-		Search_path();
-		if (_output.status_code == 200)
-		{
-			_cgi_struct.body = _handler_body;
-			_cgi_struct.headers = &_handler;
-			_cgi_struct.port = _output.port;
-			_cgi_struct.client_ip = _handler.getClientIp();
-			_cgi_struct.path_info = "/";
-			_cgi_struct.script_name = _handler.getUrl();
-			_cgi_struct.server_ip = _handler.getServerIp();
-			_cgi_struct.env = _env;
-			_cgi = new Cgi("./Tester/cgi_tester", _cgi_struct);
-		}
-		else
-		{
-			get_header_if_error();
-			_body = _config._error_pages[_output.status_code];
-			return;
-		}
-		++_iter->_curent_progress;
-//		get_header_if_not_error();
+		init_cgi_struct();
+		_cgi = new Cgi("./Tester/cgi_tester", _cgi_struct);
+		_cgi->parse_cgi_response();
+		get_header_if_not_error();
 	}
-	std::cerr << "Read" << std::endl;
-	_cgi->parse_cgi_response();
+	else
+	{
+		get_header_if_error();
+		_body = _config._error_pages[_output.status_code];
+		return;
+	}
 }
 
 std::string POST::get_content_length()
@@ -75,16 +57,33 @@ void POST::get_header_if_error()
 
 void POST::get_header_if_not_error()
 {
-	std::stringstream output;
+		std::stringstream output;
 
-	output << "HTTP/1.1 " << 200 << " " << "OK" << "\r\n";
-	output << get_server_name();
-	output << "Content-Length: 100000000\r\n";
-	output << get_date_handler();
-	output << "Content-Type: text/html\r\n";
-	output << "\r\n";
-	_head = output.str();
-	char *test = (char *)calloc(100000001, 1);
-	memset(test, 'E', 100000000);
-	_body = test;
+		output << "HTTP/1.1 " << _cgi->getStatusCode() << " " << _mime.get_error(_cgi->getStatusCode()) << "\r\n";
+		output << get_server_name();
+		output << _cgi->getHeaders() << "\r\n";
+		output << get_date_handler();
+		output << "\r\n";
+		_head = output.str();
+		_body = _cgi->getBody();
+}
+
+bool POST::check_сgi_extension(const std::string &url)
+{
+	std::string tmp = url.substr(url.find_last_of(".") == std::string::npos ? 0 : url.find_last_of("."));
+	if (!strcmp(tmp.c_str(), ".bla"))
+		return true;
+	return false;
+}
+
+void POST::init_cgi_struct()
+{
+	_cgi_struct.body = _handler_body;
+	_cgi_struct.headers = &_handler;
+	_cgi_struct.port = _output.port;
+	_cgi_struct.client_ip = _handler.getClientIp();
+	_cgi_struct.path_info = "/";
+	_cgi_struct.script_name = _handler.getUrl();
+	_cgi_struct.server_ip = _handler.getServerIp();
+	_cgi_struct.env = _env;
 }

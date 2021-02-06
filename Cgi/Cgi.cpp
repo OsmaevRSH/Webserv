@@ -19,8 +19,7 @@ Cgi::Cgi(const std::string &path_to_cgi, const t_data_for_cgi &data) : _path_to_
 																		_is_end(false)
 {
 	_args[0] = const_cast<char *>(_path_to_cgi.c_str());
-	_args[1] = strdup("./Tester/YoupiBanane/youpi.bla");
-	_args[2] = NULL;
+	_args[1] = NULL;
 	handleRequest();
 }
 
@@ -52,7 +51,6 @@ void Cgi::handleRequest()
 	else
 	{
 		close(fd[0]);
-		_data.body[0] = 'x';
 		write(fd[1], _data.body.c_str(), _data.body.size());
 		close(fd[1]);
 		waitpid(child, NULL, 0);

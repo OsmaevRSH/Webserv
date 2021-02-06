@@ -3,8 +3,8 @@
 static char *content_type(const t_data_for_cgi &data)
 {
 	std::string tmp;
-	char *ret 										= NULL;
-	std::map<std::string, std::string>::const_iterator it = data.headers->getVariableHandlers().find("Content-type");
+	char *ret = NULL;
+	std::map<std::string, std::string>::const_iterator it = data.headers->getVariableHandlers().find("Content-Type");
 
 	if (it != data.headers->getVariableHandlers().end())
 	{
@@ -16,10 +16,10 @@ static char *content_type(const t_data_for_cgi &data)
 static char *content_length(const t_data_for_cgi &data)
 {
 	std::string tmp;
-	char *ret 										= NULL;
-	std::map<std::string, std::string>::const_iterator it = data.headers->getVariableHandlers().find("Content-length");
+	char *ret = NULL;
+	std::map<std::string, std::string>::const_iterator it = data.headers->getVariableHandlers().find("Content-Length");
 
-	if (data.body.empty() == true)
+	if (data.body.empty())
 		return ret;
 	if (it != data.headers->getVariableHandlers().end())
 	{
@@ -36,122 +36,125 @@ static char *content_length(const t_data_for_cgi &data)
 static char *query_string(const t_data_for_cgi &data)
 {
 	std::string tmp;
-	char		*ret = NULL;
-	size_t		start_pos = data.headers->getUrl().find('?');
+	size_t start_pos = data.headers->getUrl().find('?');
 
 	if (start_pos == std::string::npos)
-		return NULL;
+		return strdup("QUERY_STRING=");
 	tmp = "QUERY_STRING=" + data.headers->getUrl().substr(start_pos);
-	ret = strdup(tmp.c_str());
-	return ret;
+	return strdup(tmp.c_str());;
 }
 static char *auth_type(const t_data_for_cgi &data)
 {
 	std::string tmp;
-	char *ret 										= NULL;
 	std::map<std::string, std::string>::const_iterator it = data.headers->getVariableHandlers().find("Authorization");
 
 	if (it != data.headers->getVariableHandlers().end())
 	{
 		tmp = (*it).second;
 		int i = 0;
-		for (; i < tmp.length() || isalnum(tmp[i]) == false; ++i){}
+		for (; i < tmp.length() || isalnum(tmp[i]) == false; ++i)
+		{
+		}
 		tmp = tmp.substr(i);
 		i = 0;
-		for (; i < tmp.length() || isalnum(tmp[i]) == true; ++i){}
+		for (; i < tmp.length() || isalnum(tmp[i]) == true; ++i)
+		{
+		}
 		tmp = "AUTH_TYPE=" + tmp.substr(i);
-		ret = strdup(tmp.c_str());
+		return strdup(tmp.c_str());
 	}
-	return ret;
+	return strdup("AUTH_TYPE=");
 }
 static char *remote_user(const t_data_for_cgi &data)
 {
 	std::string tmp;
-	char *ret 										= NULL;
 	std::map<std::string, std::string>::const_iterator it = data.headers->getVariableHandlers().find("Authorization");
 
 	if (it != data.headers->getVariableHandlers().end())
 	{
 		tmp = (*it).second;
 		int i = tmp.length() - 1;
-		for (; i >= 0 || isalnum(tmp[i]) == false; --i){}
-		for (; i >= 0 || isalnum(tmp[i]) == true; --i){}
+		for (; i >= 0 || isalnum(tmp[i]) == false; --i)
+		{
+		}
+		for (; i >= 0 || isalnum(tmp[i]) == true; --i)
+		{
+		}
 		tmp = tmp.substr(i);
 		tmp = "REMOTE_USER=" + tmp;
-		ret = strdup(tmp.c_str());
+		return strdup(tmp.c_str());
 	}
-	return ret;
+	return strdup("REMOTE_USER=");
 }
 static char *remote_ident(const t_data_for_cgi &data)
 {
 	std::string tmp;
-	char *ret 										= NULL;
 	std::map<std::string, std::string>::const_iterator it = data.headers->getVariableHandlers().find("Authorization");
 
 	if (it != data.headers->getVariableHandlers().end())
 	{
 		tmp = (*it).second;
 		int i = tmp.length() - 1;
-		for (; i >= 0 || isalnum(tmp[i]) == false; --i){}
-		for (; i >= 0 || isalnum(tmp[i]) == true; --i){}
+		for (; i >= 0 || isalnum(tmp[i]) == false; --i)
+		{
+		}
+		for (; i >= 0 || isalnum(tmp[i]) == true; --i)
+		{
+		}
 		tmp = tmp.substr(i);
 		tmp = "REMOTE_IDENT=" + tmp + "." + (*it).second;
-		ret = strdup(tmp.c_str());
+		return strdup(("REMOTE_IDENT=" + tmp + "." + (*it).second).c_str());
 	}
-	return ret;
+	return strdup("REMOTE_IDENT=");
 }
 
-const int len_arr(char **env)
+std::string get_meta_var(const std::string &str)
 {
-	char **tmp = env;
-	int len = 0;
-
-	for (int i = 0; env[i]; ++i)
-		len++;
-	return len;
+	std::string::const_iterator it = str.begin();
+	std::string output;
+	for (; it != str.end(); ++it)
+	{
+		if (std::isalpha(*it))
+			output += static_cast<char>(std::toupper(*it));
+		if (*it == '-')
+			output += '_';
+	}
+	return output;
 }
 
-char		**get_meta_variables(const t_data_for_cgi &data)
+char **get_meta_variables(const t_data_for_cgi &data)
 {
-//	vars[2] = strdup("SERVER_PROTOCOL = HTTP/1.1");
-//	vars[8] = strdup(("REQUEST_METHOD = " + data.headers->getType()).c_str());
-
-	int darray_len = len_arr(data.env);
-
+	std::map<std::string, std::string>::const_iterator it;
+	it = data.headers->getVariableHandlers().begin();
 	int i = 0;
-	char **vars = (char**)calloc(sizeof(char*), (18 + darray_len));
+	char **vars = (char **) calloc(sizeof(char *), 40);
 
-//	for (i = 0; data.env[i]; ++i)
-//		vars[i] = strdup(data.env[i]);
+	vars[i++] = strdup("GATEWAY_INTERFACE=CGI/1.1");
+	vars[i++] = strdup("PATH_INFO=/");
+	vars[i++] = strdup(("REQUEST_METHOD=" + data.headers->getType()).c_str());
+	vars[i++] = strdup(("SERVER_NAME=" + data.server_ip).c_str());
+	vars[i++] = strdup(("SERVER_PORT=" + std::to_string(data.port)).c_str());
+	vars[i++] = strdup("SERVER_PROTOCOL=HTTP/1.1");
+	vars[i++] = strdup("SERVER_SOFTWARE=Webserver/1.0");
+	vars[i++] = strdup("SCRIPT_NAME=");
+	vars[i++] = query_string(data);
+	vars[i++] = strdup(("REMOTE_ADDR=" + data.client_ip).c_str());
+	vars[i++] = strdup(("PATH_TRANSLATED=" + data.path_translated).c_str());
+	vars[i++] = auth_type(data);
+	vars[i++] = remote_ident(data);
+	vars[i++] = remote_user(data);
+//	for (;it != data.headers->getVariableHandlers().end(); ++it)
+//	{
+//		vars[i++] = strdup((get_meta_var(it->first) + "=" + it->second).c_str());
+//	}
+	//	vars[9] = content_length(data);
+	//	vars[10] = content_type(data);
 
-	vars[i + 0] = strdup("CONTENT_LENGTH=100000000");
-	vars[i + 1] = strdup("CONTENT_TYPE=text/html");
-	vars[i + 2] = strdup("GATEWAY_INTERFACE=CGI/1.1");
-	vars[i + 3] = strdup("PATH_INFO=/");
-//	/Users/ltheresi/CLionProjects/Webserv/Tester/YoupiBanane/youpi.bla
-	vars[i + 4] = strdup("QUERY_STRING=");
-	vars[i + 5] = strdup("REQUEST_METHOD=POST");
-	vars[i + 6] = strdup("SERVER_NAME=127.0.0.1");
-	vars[i + 7] = strdup("SERVER_PORT=1234");
-	vars[i + 8] = strdup("SERVER_PROTOCOL=HTTP/1.1");
-	vars[i + 9] = strdup("SERVER_SOFTWARE=Webserver");
-	vars[i + 10] = strdup("SCRIPT_NAME="/* + data.script_name.substr(1)*//*.c_str()*/);
-	//vars[i + 11] = strdup("REQUEST_URI=/test/youpi.bla");
-//	vars[i + 11] = strdup("PATH_TRANSLATED=/Users/ltheresi/CLionProjects/Webserv/Tester/YoupiBanane");
+	for (int j = 0; j < i; ++j)
+	{
+		std::cout << vars[j] << std::endl;
+	}
 
-
-//	vars[i + 3] = strdup(("SERVER_NAME=" + data.server_ip).c_str());
-//	vars[i + 4] = strdup(("SERVER_PORT=" + std::to_string(data.port)).c_str());
-//	vars[i + 6] = strdup(("REQUEST_METHOD=" + data.headers->getType()).c_str());
-//	vars[i + 8] = strdup(("REMOTE_ADDR=" + data.client_ip).c_str());
-//	vars[i + 9] = content_type(data);
-//	vars[i + 10] = content_length(data);
-//	vars[i+ 6] = strdup(("PATH_TRANSLATED=" + data.path_translated)
-//	vars[i+ 7] = strdup(("REQUEST_URI=" + data.headers->getUrl()).c_str());.c_str());
-//	vars[i+ 13] = query_string(data);
-//	vars[i+ 14] = auth_type(data);
-//	vars[i+ 15] = remote_user(data);
-//	vars[i+ 16] = remote_ident(data);
-
+	//	vars[10] = strdup(("REQUEST_URI=" + data.headers->getUrl()).c_str());
 	return vars;
 }
