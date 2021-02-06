@@ -1,6 +1,6 @@
 #include "Server.hpp"
 
-void Server::ListenLoop()
+_Noreturn void Server::ListenLoop()
 {
 	int max_fd = 0;
 	int res;

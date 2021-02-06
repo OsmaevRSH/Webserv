@@ -51,7 +51,7 @@ std::string Search_by_configuration::create_autoindex_page(t_params &params, Par
 					  << (S_ISDIR(file_stat.st_mode) ? "/" : "") << "</a>";
 			for (int i = 0; i < static_cast<int>(51 - std::strlen(elem->d_name) - (S_ISDIR(file_stat.st_mode) ? 1 : 0)); ++i)
 				autoindex << " ";
-			time = localtime(&file_stat.st_mtim.tv_sec);
+			time = localtime(&file_stat.st_mtimespec.tv_sec);
 			std::string format = "%d-%b-%Y %H:%M";
 			strftime(time_buff, 1024, format.c_str(), time);
 			autoindex << time_buff;
