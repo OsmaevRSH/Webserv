@@ -96,7 +96,7 @@ char *Cgi::parse_cgi_response() {
 	hdr_end = all.find("\r\n\r\n", 0);
 	headers = all.substr(0, hdr_end);
 	body = all.substr(hdr_end);
-	len = body.length();
+	len = body.length() - 4;
 	headers = headers + "\r\nContent-Length: " + std::to_string(len);
 	all = headers + body;
 
