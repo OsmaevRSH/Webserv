@@ -23,21 +23,13 @@ add_executable(Webserv  App/Main/utils.cpp
                         App/Metods/Autoindex_generate.cpp
                         App/Metods/Select_metod.cpp
                         App/MIME&ERROR_CODE/MIME_ERROR.cpp
-                        App/MIME&ERROR_CODE/MIME_ERROR.hpp
                         App/Metods/GET/GET.cpp
-                        App/Metods/GET/GET.hpp
                         App/Metods/HEAD/HEAD.cpp
-                        App/Metods/HEAD/HEAD.hpp
                         App/Metods/Search_by_configuration/Search_by_configuration.cpp
-                        App/Metods/Search_by_configuration/Search_by_configuration.hpp
-                        App/Parser/Parser.cpp
                         App/Metods/Search_by_configuration/Header.cpp
                         App/Metods/PUT/PUT.cpp
-                        App/Metods/PUT/PUT.hpp
-                        App/Main/Color.hpp
-                        App/Client/Client.hpp
                         App/Metods/POST/POST.cpp
-                        App/Metods/POST/POST.hpp
                         App/Cgi/Cgi.cpp
-                        App/Cgi/meta_variables.cpp)
+                        App/Cgi/meta_variables.cpp
+                        App/Parser/Parser.cpp)
 
