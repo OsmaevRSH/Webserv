@@ -82,7 +82,7 @@ void Server::Accept(int fd)
 	addr_len = sizeof(addr);
 	client_addr_len = sizeof(client_addr);
 	new_client_fd = accept(fd, reinterpret_cast<struct sockaddr *>(&addr), &addr_len);
-	getsockname(new_client_fd, reinterpret_cast<struct sockaddr *>(&client_addr) ,&client_addr_len);
+	getsockname(new_client_fd, reinterpret_cast<struct sockaddr *>(&client_addr), &client_addr_len);
 	std::cout << "Client №" << client_num << " Client fd: " << new_client_fd << std::endl;
 	++client_num;
 	if (new_client_fd == -1)
@@ -155,11 +155,10 @@ void Server::Search_max_fd(int &max_fd)
 				read_max = Iter->_client_fd > read_max ? Iter->_client_fd : read_max;
 		for (Iter = _clients.begin(); Iter != _clients.end(); ++Iter)
 			if (Iter->_answer_is_ready)
-				write_max = Iter->_client_fd > write_max && Iter->_answer_is_ready ?
-						Iter->_client_fd : write_max;
+				write_max = Iter->_client_fd > write_max && Iter->_answer_is_ready ? Iter->_client_fd : write_max;
 	}
 	if (!_master_socket_fd.empty())
-		for (Iter_1 = _master_socket_fd.begin(); Iter_1 != _master_socket_fd.end() ; ++Iter_1)
+		for (Iter_1 = _master_socket_fd.begin(); Iter_1 != _master_socket_fd.end(); ++Iter_1)
 			master_max = *Iter_1 > master_max ? *Iter_1 : master_max;
 	max_fd = std::max(read_max, write_max);
 	max_fd = std::max(max_fd, master_max);
