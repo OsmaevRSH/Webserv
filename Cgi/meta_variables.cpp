@@ -127,7 +127,7 @@ char **get_meta_variables(const t_data_for_cgi &data)
 	std::map<std::string, std::string>::const_iterator it;
 	it = data.headers->getVariableHandlers().begin();
 	int i = 0;
-	char **vars = (char **) calloc(sizeof(char *), 40);
+	char **vars = new char *[40];
 
 	vars[i++] = strdup("GATEWAY_INTERFACE=CGI/1.1");
 	vars[i++] = strdup("PATH_INFO=/");
@@ -145,7 +145,6 @@ char **get_meta_variables(const t_data_for_cgi &data)
 	vars[i++] = remote_user(data);
 	for (;it != data.headers->getVariableHandlers().end(); ++it)
 		vars[i++] = strdup((get_meta_var(it->first) + "=" + it->second).c_str());
-//	for (int j = 0; j < i; ++j)
-//		std::cout << vars[j] << std::endl;
+	vars[i] = nullptr;
 	return vars;
 }

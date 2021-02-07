@@ -23,8 +23,6 @@ class Cgi {
 		std::string		_path_to_cgi;
 		t_data_for_cgi	_data;
 		char			*_args[3];
-		char 			*_buf;
-		bool 			_is_end;
 		char 			**_env;
 		int 			tmp_fd;
 
