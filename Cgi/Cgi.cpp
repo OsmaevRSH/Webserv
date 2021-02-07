@@ -28,7 +28,7 @@ Cgi::~Cgi()
 	{
 		for (int i = 0; _env[i]; ++i)
 			free(_env[i]);
-		free(_env);
+		delete [] _env;
 	}
 }
 
