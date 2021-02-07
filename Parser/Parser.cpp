@@ -265,6 +265,7 @@ void Parser::					server_parse(t_args args) {
 #endif
 	parse(args);
 	_servers.push_back(*server);
+	delete server;
 #ifdef CONFIG_DEBUG
 	std::cout << "}\n";
 #endif
@@ -321,6 +322,7 @@ void Parser::					location_parse(t_args args) {
 		args.server->locations.push_back(*location);
 	else
 		show_error(args, "Nested directive error\n");
+	delete location;
 #ifdef CONFIG_DEBUG
 	std::cout << "}\n";
 #endif
@@ -333,6 +335,11 @@ Parser::						Parser(const std::string &path_to_config) {
 	args.ew = &_ew;
 	args.fragment = args.text;
 	parse(args);
+	if (unique_ports() == false)
+	{
+		std::cout << "Ports is not unique.\n";
+		exit(1);
+	}
 }
 
 // Getters
@@ -384,4 +391,30 @@ t_args::			s_args() {
 	location_context.push_back("location");
 	location_context.push_back("allow");
 	location_context.push_back("cgi");
+}
+
+bool Parser::unique_ports()
+{
+	std::vector<int>	ports;
+	int 				find = 0;
+
+	for (int i = 0; i < _servers.size(); ++i)
+		ports.push_back(_servers[i].port);
+	for (int i = 0; i < ports.size(); ++i)
+	{
+		find = 0;
+		for (int j = 0; j < ports.size(); ++j)
+		{
+			if (ports[j] == ports[i])
+				find++;
+			if (find >= 2)
+				return false;
+		}
+	}
+	return true;
+}
+
+Parser::~Parser()
+{
+
 }
