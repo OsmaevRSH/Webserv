@@ -31,6 +31,7 @@ namespace ConfigParser
 		std::vector<std::string>		allow_methods;
 		std::vector<struct s_location>	locations;
 		std::string 					cgi_path;
+		std::string 					cgi_extension;
 		t_everywhere					ew;
 
 		s_location();

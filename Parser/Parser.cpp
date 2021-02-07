@@ -250,9 +250,9 @@ void Parser::					select_dir(t_args &args, std::string word) {
 	else if (word == "cgi")
 		args.location->cgi_path = string_parse(new_args);
 	else if (word == "alias")
-	{
 		args.ew->alias = string_parse(new_args);
-	}
+	else if (word == "cgi_extension")
+		args.location->cgi_extension = string_parse(new_args);
 }
 void Parser::					server_parse(t_args args) {
 	if (!args.block_args.empty())
@@ -391,6 +391,7 @@ t_args::			s_args() {
 	location_context.push_back("location");
 	location_context.push_back("allow");
 	location_context.push_back("cgi");
+	location_context.push_back("cgi_extension");
 }
 
 bool Parser::unique_ports()
