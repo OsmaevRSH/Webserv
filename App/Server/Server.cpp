@@ -54,12 +54,8 @@ void Server::Act_if_writefd_changed(std::list<Client>::iterator &Iter)
 	}
 	else
 	{
-		Iter->_answer_is_ready = false;
-		Iter->_curent_progress = 0;
-		Iter->_request_body.erase(0);
-		Iter->_ready_response_to_the_customer.erase(0);
-		Iter->_chunked_end_check.erase(0);
-		Iter->_request_header.erase(0);
+		Iter->resetClient();
+		++Iter;
 	}
 }
 
@@ -96,8 +92,7 @@ void Server::Act_if_readfd_changed(std::list<Client>::iterator &Iter)
 		//TODO
 	}
 	std::cout << RED << handler << RESET << std::endl;
-	Iter->_ready_response_to_the_customer = handler + body;
-	Iter->_answer_is_ready = true;
+	Iter->answerDone(body, handler);
 	++Iter;
 }
 
@@ -275,7 +270,7 @@ bool Server::Reading_a_request(std::list<Client>::iterator &Iter)
 		return true;
 	}
 	std::cout << GREEN << output << RESET << std::endl;
-	Iter->_client_handler = new Parse_input_handler(output, Iter->_server_ip, Iter->_client_ip);
+	Iter->setClientHandler(new Parse_input_handler(output, Iter->_server_ip, Iter->_client_ip));
 	++Iter->_curent_progress;
 	delete [] output;
 	delete[] buffer_for_request;
