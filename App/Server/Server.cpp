@@ -111,7 +111,7 @@ bool Server::read_with_content_length(int size, std::list<Client>::iterator &Ite
 		return true;
 	}
 	buff[count] = '\0';
-	Iter->_request_body += buff;
+	Iter->_request_body.append(buff);
 	if (count < Iter->_content_length_buffer)
 	{
 		Iter->_content_length_buffer -= count;
@@ -156,7 +156,7 @@ bool Server::read_with_chunked(std::list<Client>::iterator &Iter)
 		buff[count] = '\0';
 		tmp_chunked_length = Iter->_chunked_length;
 		Iter->_chunked_length -= count;
-		Iter->_request_body += buff;
+		Iter->_request_body.append(buff);
 		delete[] buff;
 		if (count < tmp_chunked_length)
 			return false;
@@ -229,7 +229,7 @@ bool Server::read_with_chunked(std::list<Client>::iterator &Iter)
 	buff[count] = '\0';
 	tmp_chunked_length = Iter->_chunked_length;
 	Iter->_chunked_length -= count;
-	Iter->_request_body += buff;
+	Iter->_request_body.append(buff);
 	delete[] buff;
 	if (count < tmp_chunked_length)
 		return false;
