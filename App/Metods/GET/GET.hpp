@@ -12,6 +12,6 @@ class GET : public Search_by_configuration
 		virtual void get_page();
 		virtual std::string get_content_length();
 	public:
-		GET(const Serv_conf &, const Parse_input_handler &, const MIME_ERROR &, std::string &, std::string &, std::list<Client>::iterator &);
+		GET(const Serv_conf &, const Parse_request_headers &, const MIME_ERROR &, std::string &, std::string &, std::list<Client>::iterator &);
 		void start_processing();
 };

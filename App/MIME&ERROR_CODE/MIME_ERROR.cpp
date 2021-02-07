@@ -4,8 +4,8 @@ MIME_ERROR::MIME_ERROR()
 {
 	size_t it;
 
-	std::ifstream mime_file("./App/MIME&ERROR_CODE/mime_types");
-	std::ifstream error_file("./App/MIME&ERROR_CODE/error_types");
+	std::ifstream mime_file("../App/MIME&ERROR_CODE/mime_types");
+	std::ifstream error_file("../App/MIME&ERROR_CODE/error_types");
 	if (!mime_file.is_open() || !error_file.is_open())
 	{
 		std::cout << "Error: Файл не может быть открыт!\n";

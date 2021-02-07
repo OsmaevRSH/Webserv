@@ -6,18 +6,18 @@ set(CMAKE_CXX_STANDARD 98)
 include_directories(App/Main)
 include_directories(App/Client)
 include_directories(App/MIME&ERROR_CODE)
-include_directories(App/Parse_input_handlers)
+include_directories(App/Parse_request_headers)
 include_directories(App/Server)
 include_directories(App/Metods/Search_by_configuration)
 include_directories(App/Metods/GET)
 include_directories(App/Metods/HEAD)
 include_directories(App/Metods/PUT)
 include_directories(App/Metods/POST)
-include_directories(Cgi)
-include_directories(Parser)
+include_directories(App/Cgi)
+include_directories(App/Parser)
 
 add_executable(Webserv  App/Main/utils.cpp
-                        App/Parse_input_handlers/Parse_input_handler.cpp
+                        App/Parse_request_headers/Parse_request_headers.cpp
                         App/Main/main.cpp
                         App/Server/Server.cpp
                         App/Metods/Autoindex_generate.cpp
@@ -30,7 +30,7 @@ add_executable(Webserv  App/Main/utils.cpp
                         App/Metods/HEAD/HEAD.hpp
                         App/Metods/Search_by_configuration/Search_by_configuration.cpp
                         App/Metods/Search_by_configuration/Search_by_configuration.hpp
-                        Parser/Parser.cpp
+                        App/Parser/Parser.cpp
                         App/Metods/Search_by_configuration/Header.cpp
                         App/Metods/PUT/PUT.cpp
                         App/Metods/PUT/PUT.hpp
@@ -38,6 +38,6 @@ add_executable(Webserv  App/Main/utils.cpp
                         App/Client/Client.hpp
                         App/Metods/POST/POST.cpp
                         App/Metods/POST/POST.hpp
-                        Cgi/Cgi.cpp
-                        Cgi/meta_variables.cpp)
+                        App/Cgi/Cgi.cpp
+                        App/Cgi/meta_variables.cpp)
 

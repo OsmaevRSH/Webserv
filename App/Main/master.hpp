@@ -33,6 +33,6 @@
 #include <algorithm>
 #include "Color.hpp"
 
-class Parse_input_handler;
+class Parse_request_headers;
 
 std::string			get_page_text(const std::string& path_to_file);

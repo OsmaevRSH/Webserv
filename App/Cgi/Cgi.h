@@ -1,6 +1,6 @@
 
 #pragma once
-#include "Parse_input_handler.hpp"
+#include "Parse_request_headers.hpp"
 #include "master.hpp"
 
 typedef struct				s_data_for_cgi
@@ -14,7 +14,7 @@ typedef struct				s_data_for_cgi
 	char					**env;
 	int 					port;
 	std::string				body;
-	Parse_input_handler		*headers;
+	Parse_request_headers		*headers;
 }							t_data_for_cgi;
 
 class Cgi {

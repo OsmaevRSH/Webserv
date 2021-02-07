@@ -1,6 +1,6 @@
 #include "PUT.hpp"
 
-PUT::PUT(const Serv_conf &serv, const Parse_input_handler &handler, const MIME_ERROR &mime, std::string &head, std::string &handler_body, std::string &body, std::list<Client>::iterator &Iter)
+PUT::PUT(const Serv_conf &serv, const Parse_request_headers &handler, const MIME_ERROR &mime, std::string &head, std::string &handler_body, std::string &body, std::list<Client>::iterator &Iter)
 		: Search_by_configuration(serv, handler, mime, Iter), _head(head), _handler_body(handler_body), _body(body) {}
 
 void PUT::get_PUT_status()

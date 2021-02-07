@@ -1,20 +1,20 @@
-#include "Parse_input_handler.hpp"
+#include "Parse_request_headers.hpp"
 
-const std::string &Parse_input_handler::getType() const
+const std::string &Parse_request_headers::getType() const
 {
 	return _type;
 }
 
-const std::string &Parse_input_handler::getUrl() const
+const std::string &Parse_request_headers::getUrl() const
 {
 	return _url;
 }
 
-Parse_input_handler::~Parse_input_handler()
+Parse_request_headers::~Parse_request_headers()
 {
 }
 
-Parse_input_handler &Parse_input_handler::operator=(const Parse_input_handler &copy)
+Parse_request_headers &Parse_request_headers::operator=(const Parse_request_headers &copy)
 {
 	_protocol_type = copy._protocol_type;
 	_type = copy._type;
@@ -22,7 +22,7 @@ Parse_input_handler &Parse_input_handler::operator=(const Parse_input_handler &c
 	return *this;
 }
 
-Parse_input_handler::Parse_input_handler(const char *input, std::string &server_ip, std::string &client_ip)
+Parse_request_headers::Parse_request_headers(const char *input, std::string &server_ip, std::string &client_ip)
 		: _server_ip(server_ip), _client_ip(client_ip), _error(false)
 {
 	std::vector<std::string>::iterator it;
@@ -56,7 +56,7 @@ Parse_input_handler::Parse_input_handler(const char *input, std::string &server_
 	headersIsOk();
 }
 
-void Parse_input_handler::parse_first_handler_string(std::string &tmp, std::string &handler)
+void Parse_request_headers::parse_first_handler_string(std::string &tmp, std::string &handler)
 {
 	size_t iter;
 
@@ -65,27 +65,27 @@ void Parse_input_handler::parse_first_handler_string(std::string &tmp, std::stri
 	tmp.erase(0, iter + 1);
 }
 
-void Parse_input_handler::setUrl(const std::string &url)
+void Parse_request_headers::setUrl(const std::string &url)
 {
 	_url = url;
 }
 
-const std::map<std::string, std::string> &Parse_input_handler::getVariableHandlers() const
+const std::map<std::string, std::string> &Parse_request_headers::getVariableHandlers() const
 {
 	return _variable_handlers;
 }
 
-const std::string &Parse_input_handler::getServerIp() const
+const std::string &Parse_request_headers::getServerIp() const
 {
 	return _server_ip;
 }
 
-const std::string &Parse_input_handler::getClientIp() const
+const std::string &Parse_request_headers::getClientIp() const
 {
 	return _client_ip;
 }
 
-void Parse_input_handler::headersIsOk()
+void Parse_request_headers::headersIsOk()
 {
 	std::map<std::string, std::string>::const_iterator cont_len = _variable_handlers.find("Content-Length");
 	std::map<std::string, std::string>::const_iterator tr_enc = _variable_handlers.find("Transfer-Encoding");
@@ -97,7 +97,7 @@ void Parse_input_handler::headersIsOk()
 		_error = true;
 }
 
-bool Parse_input_handler::isError() const
+bool Parse_request_headers::isError() const
 {
 	return _error;
 }

@@ -3,7 +3,7 @@
 Server::Server(const serv_vec &serv, const errp_map &err, const ew_str &ew, MIME_ERROR &mime, char **env, int family, int type, int protocol)
 		: _config(serv, err, ew), _type(type), _family(family), _protocol(protocol), _readfds(), _writefds(), _mime(mime), env(env) {}
 
-Server::~Server() {}
+Server::~Server() { unlink(".tmp_cgi"); }
 
 void Server::Socket()
 {
@@ -491,7 +491,7 @@ bool Server::Reading_a_request(std::list<Client>::iterator &Iter)
 		return true;
 	}
 	std::cout << GREEN << output << RESET << std::endl;
-	Iter->setClientHandler(new Parse_input_handler(output, Iter->_server_ip, Iter->_client_ip));
+	Iter->setClientHandler(new Parse_request_headers(output, Iter->_server_ip, Iter->_client_ip));
 	++Iter->_curent_progress;
 	delete [] output;
 	delete[] buffer_for_request;

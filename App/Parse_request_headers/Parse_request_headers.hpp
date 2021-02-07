@@ -2,7 +2,7 @@
 
 #include "master.hpp"
 
-class Parse_input_handler
+class Parse_request_headers
 {
 	private:
 		std::string _type;
@@ -13,9 +13,9 @@ class Parse_input_handler
 		bool		_error;
 		std::map<std::string, std::string> _variable_handlers;
 	public:
-		explicit Parse_input_handler(const char *, std::string &, std::string &);
-		Parse_input_handler &operator=(const Parse_input_handler &);
-		~Parse_input_handler();
+		explicit Parse_request_headers(const char *, std::string &, std::string &);
+		Parse_request_headers &operator=(const Parse_request_headers &);
+		~Parse_request_headers();
 
 		static void parse_first_handler_string(std::string &, std::string &);
 		const std::map<std::string, std::string> &getVariableHandlers() const;

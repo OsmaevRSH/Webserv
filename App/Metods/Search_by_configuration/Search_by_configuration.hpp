@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Server.hpp"
-#include "Parse_input_handler.hpp"
+#include "Parse_request_headers.hpp"
 
 typedef ConfigParser::t_server t_server;
 typedef ConfigParser::t_location t_location;
@@ -37,7 +37,7 @@ class Search_by_configuration
 {
 	protected:
 		Serv_conf _config;
-		Parse_input_handler _handler;
+		Parse_request_headers _handler;
 		t_output _output;
 		MIME_ERROR _mime;
 		std::list<Client>::iterator &_iter;
@@ -45,12 +45,12 @@ class Search_by_configuration
 		t_server get_server();
 		void setup_global_params(t_params &global_params, t_server &server, bool save_server);
 		void update_global_params(t_params &global_params, t_location &location);
-		void check_allow_metods(const t_params &param, Parse_input_handler &handlers);
+		void check_allow_metods(const t_params &param, Parse_request_headers &handlers);
 		template<class T>
-		void get_path(T &param, Parse_input_handler &handlers, t_params &global_params);
-		void recursive_call_with_slash(Parse_input_handler &handlers, t_params &global_params);
-		void recursive_call_without_slash(Parse_input_handler &handlers, t_params &global_params);
-		bool search_index(t_params &global_params, Parse_input_handler &handlers);
+		void get_path(T &param, Parse_request_headers &handlers, t_params &global_params);
+		void recursive_call_with_slash(Parse_request_headers &handlers, t_params &global_params);
+		void recursive_call_without_slash(Parse_request_headers &handlers, t_params &global_params);
+		bool search_index(t_params &global_params, Parse_request_headers &handlers);
 
 		std::string get_date_handler();
 		std::string get_first_line();
@@ -60,22 +60,22 @@ class Search_by_configuration
 		std::string get_last_modified();
 		std::string get_allow_methods();
 		void Search_path();
-		std::string create_autoindex_page(t_params &params, Parse_input_handler &handler);
+		std::string create_autoindex_page(t_params &params, Parse_request_headers &handler);
 	public:
-		Search_by_configuration(const Serv_conf &conf, const Parse_input_handler &handler, const MIME_ERROR &, std::list<Client>::iterator &);
+		Search_by_configuration(const Serv_conf &conf, const Parse_request_headers &handler, const MIME_ERROR &, std::list<Client>::iterator &);
 		~Search_by_configuration();
-		void check_body_size(const t_params &param, Parse_input_handler &handlers);
+		void check_body_size(const t_params &param, Parse_request_headers &handlers);
 };
 
-bool check_slash(Parse_input_handler &handlers);
-bool search_folder(t_params &params, Parse_input_handler &handlers);
-bool search_file(t_params &params, Parse_input_handler &handlers);
+bool check_slash(Parse_request_headers &handlers);
+bool search_folder(t_params &params, Parse_request_headers &handlers);
+bool search_file(t_params &params, Parse_request_headers &handlers);
 
 void location_sort(std::vector<t_location> &locations);
 
 template<class T>
-t_location *check_path_with_complete_coincidence(T &param, Parse_input_handler &handlers);
+t_location *check_path_with_complete_coincidence(T &param, Parse_request_headers &handlers);
 template<class T>
-t_location *check_simple_location(T &param, Parse_input_handler &handlers);
+t_location *check_simple_location(T &param, Parse_request_headers &handlers);
 template<class T>
-t_location *check_path_with_simple_regex(T &param, Parse_input_handler &handlers);
+t_location *check_path_with_simple_regex(T &param, Parse_request_headers &handlers);

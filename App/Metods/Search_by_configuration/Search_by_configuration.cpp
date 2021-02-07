@@ -1,13 +1,13 @@
 #include "Search_by_configuration.hpp"
 
-bool check_slash(Parse_input_handler &handlers)
+bool check_slash(Parse_request_headers &handlers)
 {
 	if (*handlers.getUrl().rbegin() == '/')
 		return true;
 	return false;
 }
 
-bool Search_by_configuration::search_index(t_params &global_params, Parse_input_handler &handlers)
+bool Search_by_configuration::search_index(t_params &global_params, Parse_request_headers &handlers)
 {
 	struct stat check = {};
 	std::string tmp_path;
@@ -46,7 +46,7 @@ bool Search_by_configuration::search_index(t_params &global_params, Parse_input_
 }
 
 template<class T>
-t_location *check_path_with_complete_coincidence(T &param, Parse_input_handler &handlers)
+t_location *check_path_with_complete_coincidence(T &param, Parse_request_headers &handlers)
 {
 	std::vector<t_location>::iterator it;
 	it = param.locations.begin();
@@ -99,7 +99,7 @@ t_location *check_utils(std::vector<t_location>::iterator &it, std::string &rege
 }
 
 template<class T>
-t_location *check_path_with_simple_regex(T &param, Parse_input_handler &handlers)
+t_location *check_path_with_simple_regex(T &param, Parse_request_headers &handlers)
 {
 	t_location *result = nullptr;
 	std::vector<t_location>::iterator it = param.locations.begin();
@@ -131,7 +131,7 @@ void Search_by_configuration::update_global_params(t_params &global_params, t_lo
 	_output.location = location;
 }
 
-bool search_folder(t_params &params, Parse_input_handler &handlers)
+bool search_folder(t_params &params, Parse_request_headers &handlers)
 {
 	struct stat check = {};
 	std::string tmp_path;
@@ -177,7 +177,7 @@ void location_sort(std::vector<t_location> &locations)
 }
 
 template<class T>
-t_location *check_simple_location(T &param, Parse_input_handler &handlers)
+t_location *check_simple_location(T &param, Parse_request_headers &handlers)
 {
 	std::vector<t_location>::iterator it;
 	location_sort(param.locations);
@@ -194,7 +194,7 @@ t_location *check_simple_location(T &param, Parse_input_handler &handlers)
 	return nullptr;
 }
 
-bool search_file(t_params &params, Parse_input_handler &handlers)
+bool search_file(t_params &params, Parse_request_headers &handlers)
 {
 	struct stat check = {};
 	std::string tmp_path;
@@ -268,7 +268,7 @@ void Search_by_configuration::setup_global_params(t_params &global_params, t_ser
 	global_params.max_body_size = _config._ew.max_body_size;
 }
 
-void Search_by_configuration::recursive_call_with_slash(Parse_input_handler &handlers, t_params &global_params)
+void Search_by_configuration::recursive_call_with_slash(Parse_request_headers &handlers, t_params &global_params)
 {
 	if (search_folder(global_params, handlers) && Search_by_configuration::search_index(global_params, handlers))
 		return Search_by_configuration::get_path(global_params.root_location, handlers, global_params);
@@ -276,7 +276,7 @@ void Search_by_configuration::recursive_call_with_slash(Parse_input_handler &han
 		_output.status_code = 404;
 }
 
-void Search_by_configuration::recursive_call_without_slash(Parse_input_handler &handlers, t_params &global_params)
+void Search_by_configuration::recursive_call_without_slash(Parse_request_headers &handlers, t_params &global_params)
 {
 	std::string tmp_path;
 
@@ -300,7 +300,7 @@ void Search_by_configuration::recursive_call_without_slash(Parse_input_handler &
 		_output.status_code = 404;
 }
 
-void Search_by_configuration::check_allow_metods(const t_params &param, Parse_input_handler &handlers)
+void Search_by_configuration::check_allow_metods(const t_params &param, Parse_request_headers &handlers)
 {
 	if (!param.allow_methods.empty())
 	{
@@ -313,7 +313,7 @@ void Search_by_configuration::check_allow_metods(const t_params &param, Parse_in
 	}
 }
 
-void Search_by_configuration::check_body_size(const t_params &param, Parse_input_handler &handlers)
+void Search_by_configuration::check_body_size(const t_params &param, Parse_request_headers &handlers)
 {
 	if (param.max_body_size && _iter->_request_body.length() > param.max_body_size)
 		_output.status_code = 413;
@@ -337,7 +337,7 @@ void Search_by_configuration::Search_path()
 }
 
 template<class T>
-void Search_by_configuration::get_path(T &param, Parse_input_handler &handlers, t_params &global_params)
+void Search_by_configuration::get_path(T &param, Parse_request_headers &handlers, t_params &global_params)
 {
 	t_location *location;
 
@@ -403,7 +403,7 @@ void Search_by_configuration::get_path(T &param, Parse_input_handler &handlers, 
 	}
 }
 
-Search_by_configuration::Search_by_configuration(const Serv_conf &conf, const Parse_input_handler &handler, const MIME_ERROR &mime, std::list<Client>::iterator &iter)
+Search_by_configuration::Search_by_configuration(const Serv_conf &conf, const Parse_request_headers &handler, const MIME_ERROR &mime, std::list<Client>::iterator &iter)
 		: _config(conf), _handler(handler), _mime(mime), _iter(iter) {}
 
 Search_by_configuration::~Search_by_configuration() {}

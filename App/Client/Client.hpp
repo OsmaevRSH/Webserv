@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Parse_input_handler.hpp"
+#include "Parse_request_headers.hpp"
 
 class Client
 {
 	public:
-		Parse_input_handler	*_client_handler;
+		Parse_request_headers	*_client_handler;
 		std::string			_request_header;
 		std::string			_request_body;
 		std::string			_ready_response_to_the_customer;
@@ -31,7 +31,7 @@ class Client
 			_answer_is_ready = true;
 		}
 
-		void setClientHandler(Parse_input_handler *clientHandler)
+		void setClientHandler(Parse_request_headers *clientHandler)
 		{
 			delete _client_handler;
 			_client_handler = clientHandler;

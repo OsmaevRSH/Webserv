@@ -17,7 +17,7 @@ void HEAD::get_page()
 		_tmp_body = get_page_text(_output.path_to_file);
 }
 
-HEAD::HEAD(const Serv_conf &serv, const Parse_input_handler &handler, const MIME_ERROR &mime, std::string &head, std::string &body, std::list<Client>::iterator &Iter)
+HEAD::HEAD(const Serv_conf &serv, const Parse_request_headers &handler, const MIME_ERROR &mime, std::string &head, std::string &body, std::list<Client>::iterator &Iter)
 		: GET(serv, handler, mime, head, body, Iter) {}
 
 std::string HEAD::get_content_length()
