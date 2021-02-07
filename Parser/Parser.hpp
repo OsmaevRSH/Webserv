@@ -25,12 +25,13 @@ namespace ConfigParser
 
 		s_everywhere();
 	}								t_everywhere;
-	typedef struct						s_location
+	typedef struct					s_location
 	{
 		std::vector<std::string>		block_args;
 		std::vector<std::string>		allow_methods;
 		std::vector<struct s_location>	locations;
 		std::string 					cgi_path;
+		std::string 					cgi_extension;
 		t_everywhere					ew;
 
 		s_location();
@@ -76,9 +77,11 @@ class Parser
 		void server_parse(ConfigParser::t_args args);
 		void location_parse(ConfigParser::t_args args);
 		void error_page_parse(ConfigParser::t_args args);
+		bool unique_ports();
 
 	public:
 		Parser(const std::string& path_to_config);
+		~Parser();
 		const std::vector<ConfigParser::t_server> &getServers() const;
 		const std::map<int, std::string> &getErrorPages() const;
 		const ConfigParser::t_everywhere &getEw() const;
