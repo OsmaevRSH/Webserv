@@ -21,7 +21,6 @@ add_executable(Webserv  App/Main/utils.cpp
                         App/Main/main.cpp
                         App/Server/Server.cpp
                         App/Metods/Autoindex_generate.cpp
-                        App/Server/Server_sys_function.cpp
                         App/Metods/Select_metod.cpp
                         App/MIME&ERROR_CODE/MIME_ERROR.cpp
                         App/MIME&ERROR_CODE/MIME_ERROR.hpp
@@ -36,6 +35,9 @@ add_executable(Webserv  App/Main/utils.cpp
                         App/Metods/PUT/PUT.cpp
                         App/Metods/PUT/PUT.hpp
                         App/Main/Color.hpp
-                        App/Client/Client.hpp App/Metods/POST/POST.cpp App/Metods/POST/POST.hpp
-                        Cgi/Cgi.cpp Cgi/meta_variables.cpp)
+                        App/Client/Client.hpp
+                        App/Metods/POST/POST.cpp
+                        App/Metods/POST/POST.hpp
+                        Cgi/Cgi.cpp
+                        Cgi/meta_variables.cpp)
 
