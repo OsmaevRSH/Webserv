@@ -9,7 +9,8 @@ int main(int argc, char **argv, char **env)
 	Parser config("./App/Config/conf");
 #endif
 #ifdef TESTER
-	Parser config(argv[1]);
+//	Parser config(argv[1]);
+	Parser config("./App/Config/conf_for_tester");
 #endif
 	Server server(config.getServers(), config.getErrorPages(), config.getEw(), mime,env);
 	server.server_start();

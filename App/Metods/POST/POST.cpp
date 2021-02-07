@@ -11,6 +11,7 @@ POST::POST(const Serv_conf &serv, std::list<Client>::iterator &Iter, const MIME_
 POST::~POST()
 {
 	delete _cgi;
+	unlink(".tmp_cgi");
 }
 
 void POST::start_processing()

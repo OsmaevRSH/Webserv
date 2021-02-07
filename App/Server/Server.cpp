@@ -3,7 +3,7 @@
 Server::Server(const serv_vec &serv, const errp_map &err, const ew_str &ew, MIME_ERROR &mime, char **env, int family, int type, int protocol)
 		: _config(serv, err, ew), _type(type), _family(family), _protocol(protocol), _readfds(), _writefds(), _mime(mime), env(env) {}
 
-Server::~Server() { unlink(".tmp_cgi"); }
+Server::~Server() {}
 
 void Server::Socket()
 {
