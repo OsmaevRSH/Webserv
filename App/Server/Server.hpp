@@ -40,7 +40,7 @@ class Server
 		void Listen() const;
 		void Accept(int);
 		static void Set_non_blocked(int);
-		void ListenLoop();
+		_Noreturn void ListenLoop();
 		void Reset_fd_set();
 		void Add_new_fd_to_set();
 		void Search_max_fd(int &);
