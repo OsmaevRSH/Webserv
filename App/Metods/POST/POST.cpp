@@ -17,7 +17,7 @@ POST::~POST()
 void POST::start_processing()
 {
 	Search_path();
-	if (check_сgi_extension(_handler.getUrl()) && _output.status_code != 405)
+	if (check_cgi_extension(_handler.getUrl()) && _output.status_code != 405)
 	{
 		init_cgi_struct();
 		_cgi = new Cgi("./Tester/cgi_tester", _cgi_struct);
@@ -68,7 +68,7 @@ void POST::get_header_if_not_error()
 		_body = _cgi->getBody();
 }
 
-bool POST::check_сgi_extension(const std::string &url)
+bool POST::check_cgi_extension(const std::string &url)
 {
 	std::string tmp = url.substr(url.find_last_of('.') == std::string::npos ? 0 : url.find_last_of('.'));
 	if (!strcmp(tmp.c_str(), ".bla"))

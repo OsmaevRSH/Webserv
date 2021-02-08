@@ -79,14 +79,18 @@ std::string Search_by_configuration::get_allow_methods()
 
 std::string Search_by_configuration::get_content_lang(const std::map<std::string, std::string> &headers, const std::string &body)
 {
-	std::string client_lang = (*headers.find("Accept-Language")).second;
+	std::string client_lang;
 	std::vector<std::string> page_langs;
 	std::string common_lang;
 	int 		lang_pos = 0;
 	int			count_occur = 0;
 
-	if (client_lang == "*")
-		return ("*\r\n");
+	if (headers.find("Accept-Language") != headers.end())
+		client_lang = (*headers.find("Accept-Language")).second;
+	else
+		return "";
+	if (client_lang == "*" || client_lang.empty())
+		return ("Content-Language: *\r\n");
 	while (lang_pos != std::string::npos)
 	{
 		lang_pos = body.find("lang=\"");
@@ -95,7 +99,9 @@ std::string Search_by_configuration::get_content_lang(const std::map<std::string
 		page_langs.push_back(body.substr(lang_pos + strlen("lang=\""), 2));
 	}
 	if (std::find(page_langs.begin(), page_langs.end(), client_lang.substr(0, 2)) != page_langs.end())
-		return (client_lang.substr((0, 2)) + "\r\n");
+		return ("Content-Language: " + client_lang.substr((0, 2)) + "\r\n");
+	if (common_lang.empty())
+		return ("Content-Language: *\r\n");
 	for (std::vector<std::string>::iterator i = page_langs.begin(); i != page_langs.end(); ++i) {
 		int occur = 0;
 		for (std::vector<std::string>::iterator j = page_langs.begin(); j != page_langs.end(); ++j) {
@@ -107,5 +113,5 @@ std::string Search_by_configuration::get_content_lang(const std::map<std::string
 			common_lang = *i;
 		}
 	}
-	return (common_lang + "\r\n");
+	return ("Content-Language: " + common_lang + "\r\n");
 }

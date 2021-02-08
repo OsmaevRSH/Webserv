@@ -221,7 +221,7 @@ void Server::Check_write_set()
 	}
 }
 
-_Noreturn void Server::ListenLoop()
+void Server::ListenLoop()
 {
 	int max_fd = 0;
 	int res;

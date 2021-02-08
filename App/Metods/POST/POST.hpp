@@ -20,7 +20,7 @@ class POST : public Search_by_configuration
 		void start_processing();
 		void get_header_if_error();
 		void get_header_if_not_error();
-		static bool check_сgi_extension(const std::string &url);
+		static bool check_cgi_extension(const std::string &url);
 		void init_cgi_struct();
 };
 
