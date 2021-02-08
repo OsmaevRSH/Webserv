@@ -61,6 +61,7 @@ class Search_by_configuration
 		std::string get_allow_methods();
 		void Search_path();
 		std::string create_autoindex_page(t_params &params, Parse_request_headers &handler);
+		std::string get_content_lang(const std::map<std::string, std::string> &headers, const std::string &body);
 	public:
 		Search_by_configuration(const Serv_conf &conf, const Parse_request_headers &handler, const MIME_ERROR &, std::list<Client>::iterator &);
 		~Search_by_configuration();

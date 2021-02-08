@@ -76,3 +76,36 @@ std::string Search_by_configuration::get_allow_methods()
 	}
 	return tmp.str();
 }
+
+std::string Search_by_configuration::get_content_lang(const std::map<std::string, std::string> &headers, const std::string &body)
+{
+	std::string client_lang = (*headers.find("Accept-Language")).second;
+	std::vector<std::string> page_langs;
+	std::string common_lang;
+	int 		lang_pos = 0;
+	int			count_occur = 0;
+
+	if (client_lang == "*")
+		return ("*\r\n");
+	while (lang_pos != std::string::npos)
+	{
+		lang_pos = body.find("lang=\"");
+		if (lang_pos == std::string::npos)
+			break ;
+		page_langs.push_back(body.substr(lang_pos + strlen("lang=\""), 2));
+	}
+	if (std::find(page_langs.begin(), page_langs.end(), client_lang.substr(0, 2)) != page_langs.end())
+		return (client_lang.substr((0, 2)) + "\r\n");
+	for (std::vector<std::string>::iterator i = page_langs.begin(); i != page_langs.end(); ++i) {
+		int occur = 0;
+		for (std::vector<std::string>::iterator j = page_langs.begin(); j != page_langs.end(); ++j) {
+			if (*j == *i)
+				occur++;
+		}
+		if (occur > count_occur) {
+			count_occur = occur;
+			common_lang = *i;
+		}
+	}
+	return (common_lang + "\r\n");
+}
