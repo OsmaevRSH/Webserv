@@ -102,7 +102,7 @@ std::string Search_by_configuration::get_content_lang(const std::map<std::string
 	}
 	if (std::find(page_langs.begin(), page_langs.end(), client_lang.substr(0, 2)) != page_langs.end())
 		return ("Content-Language: " + client_lang.substr((0, 2)) + "\r\n");
-	if (common_lang.empty())
+	if (page_langs.empty())
 		return ("Content-Language: *\r\n");
 	for (std::vector<std::string>::iterator i = page_langs.begin(); i != page_langs.end(); ++i) {
 		int occur = 0;
