@@ -84,6 +84,7 @@ std::string Search_by_configuration::get_content_lang(const std::map<std::string
 	std::string common_lang;
 	int 		lang_pos = 0;
 	int			count_occur = 0;
+	int 		cur_pos = 0;
 
 	if (headers.find("Accept-Language") != headers.end())
 		client_lang = (*headers.find("Accept-Language")).second;
@@ -93,7 +94,8 @@ std::string Search_by_configuration::get_content_lang(const std::map<std::string
 		return ("Content-Language: *\r\n");
 	while (lang_pos != std::string::npos)
 	{
-		lang_pos = body.find("lang=\"");
+		lang_pos = body.find("lang=\"", cur_pos);
+		cur_pos += lang_pos + strlen("lang=\"") + 2;
 		if (lang_pos == std::string::npos)
 			break ;
 		page_langs.push_back(body.substr(lang_pos + strlen("lang=\""), 2));
