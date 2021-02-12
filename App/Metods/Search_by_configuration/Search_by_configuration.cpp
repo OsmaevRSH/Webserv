@@ -26,8 +26,9 @@ bool Search_by_configuration::search_index(t_params &global_params, Parse_reques
 		}
 		else
 		{
-			tmp_path = handlers.getUrl().substr(global_params.curent_location.size());
-			if (tmp_path.find("/") != 0)
+			tmp_path = handlers.getUrl().substr(global_params.curent_location.find("*") != std::string::npos ? handlers.getUrl().find_last_of("/")
+			                                                                                          : global_params.curent_location.size());
+			if (tmp_path.find("/") != 0 && tmp_path.size())
 				tmp_path = "/" + tmp_path;
 			if (!stat((global_params.alias + tmp_path + *it).c_str(), &check))
 			{
@@ -290,8 +291,9 @@ void Search_by_configuration::recursive_call_without_slash(Parse_request_headers
 			_output.path_to_file = global_params.root + handlers.getUrl();
 		else
 		{
-			tmp_path = handlers.getUrl().substr(global_params.curent_location.size());
-			if (tmp_path.find("/") != 0)
+			tmp_path = handlers.getUrl().substr(global_params.curent_location.find("*") != std::string::npos ? handlers.getUrl().find_last_of("/")
+			                                                                                          : global_params.curent_location.size());
+			if (tmp_path.find("/") != 0 && tmp_path.size())
 				tmp_path = "/" + tmp_path;
 			_output.path_to_file = global_params.alias + tmp_path;
 		}
