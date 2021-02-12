@@ -11,4 +11,5 @@ class MIME_ERROR
 		MIME_ERROR();
 		std::string get_document_types(const std::string &);
 		std::string get_error(int);
+		std::string get_error_page(int errorCode);
 };

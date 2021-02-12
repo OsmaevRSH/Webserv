@@ -35,7 +35,7 @@ void PUT::start_processing()
 		file.close();
 	}
 	else
-		_body = get_page_text(_config._error_pages[_status_code]);
+		_body = _mime.get_error_page(_output.status_code);
 	get_hendler();
 }
 

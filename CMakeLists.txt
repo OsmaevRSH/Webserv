@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 11)
 
 include_directories(App/Main)
 include_directories(App/Client)
-include_directories(App/MIME&ERROR_CODE)
+include_directories(App/MimeType_And_ErrorPageCode)
 include_directories(App/Parse_request_headers)
 include_directories(App/Server)
 include_directories(App/Metods/Search_by_configuration)
@@ -23,7 +23,7 @@ add_executable(Webserv  App/Main/utils.cpp
                         App/Server/Server.cpp
                         App/Metods/Autoindex_generate.cpp
                         App/Metods/Select_metod.cpp
-                        App/MIME&ERROR_CODE/MIME_ERROR.cpp
+        App/MimeType_And_ErrorPageCode/GetMimeTypeAndErrorPageCode.cpp
                         App/Metods/GET/GET.cpp
                         App/Metods/HEAD/HEAD.cpp
                         App/Metods/Search_by_configuration/Search_by_configuration.cpp

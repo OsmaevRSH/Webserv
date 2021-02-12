@@ -1,7 +1,7 @@
 #pragma once
 
 #include "master.hpp"
-#include "MIME_ERROR.hpp"
+#include "GetMimeTypeAndErrorPageCode.hpp"
 #include "GET.hpp"
 
 class HEAD : public GET

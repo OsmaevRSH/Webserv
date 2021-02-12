@@ -5,7 +5,7 @@ std::string Search_by_configuration::create_autoindex_page(t_params &params, Par
 {
 	std::stringstream autoindex;
 	std::stringstream buff;
-	DIR *directory = nullptr;
+	DIR *directory;
 	char time_buff[1024];
 	struct dirent *elem = nullptr;
 	struct stat file_stat = {};
@@ -30,9 +30,7 @@ std::string Search_by_configuration::create_autoindex_page(t_params &params, Par
 		directory = opendir(tmp_path.c_str());
 	}
 	if (!directory)
-	{//		elem = readdir(directory); //TODO
 		return "";
-	}
 	elem = readdir(directory);
 	while (elem)
 	{

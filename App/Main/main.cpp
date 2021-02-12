@@ -1,6 +1,6 @@
 #include "Server.hpp"
 #include "Parser.hpp"
-#include "MIME_ERROR.hpp"
+#include "GetMimeTypeAndErrorPageCode.hpp"
 
 int main(int argc, char **argv, char **env)
 {

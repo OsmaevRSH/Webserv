@@ -18,7 +18,8 @@ Cgi::Cgi(const std::string &path_to_cgi, const t_data_for_cgi &data) : _path_to_
                                                                         _env(get_meta_variables(data))
 {
 	_args[0] = const_cast<char *>(_path_to_cgi.c_str());
-	_args[1] = nullptr;
+	_args[1] = _data.pathToCgiScript;
+	_args[2] = nullptr;
 	handleRequest();
 }
 

@@ -3,7 +3,7 @@
 #include "Parse_request_headers.hpp"
 #include "master.hpp"
 #include "Parser.hpp"
-#include "MIME_ERROR.hpp"
+#include "GetMimeTypeAndErrorPageCode.hpp"
 #include "Client.hpp"
 
 typedef std::vector<ConfigParser::t_server> serv_vec;

@@ -101,7 +101,7 @@ std::string Search_by_configuration::get_content_lang(const std::map<std::string
 		page_langs.push_back(body.substr(lang_pos + strlen("lang=\""), 2));
 	}
 	if (std::find(page_langs.begin(), page_langs.end(), client_lang.substr(0, 2)) != page_langs.end())
-		return ("Content-Language: " + client_lang.substr((0, 2)) + "\r\n");
+		return ("Content-Language: " + client_lang.substr(0, 2) + "\r\n");
 	if (page_langs.empty())
 		return ("Content-Language: *\r\n");
 	for (std::vector<std::string>::iterator i = page_langs.begin(); i != page_langs.end(); ++i) {
