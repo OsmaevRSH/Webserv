@@ -332,6 +332,11 @@ void Parser::					location_parse(t_args args) {
 Parser::						Parser(const std::string &path_to_config) {
 	t_args args;
 	args.text = get_page_text(path_to_config);
+	if (args.text.empty())
+	{
+		std::cout << "Error: bad config file\n";
+		exit(1);
+	}
 	args.ew = &_ew;
 	args.fragment = args.text;
 	parse(args);

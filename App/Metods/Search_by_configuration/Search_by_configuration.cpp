@@ -88,8 +88,8 @@ t_location *check_utils(std::vector<t_location>::iterator &it, std::string &rege
 			if (star + 1 > it->block_args[1].length())
 				return &(*it);
 			url_after_star = url.find(regex[star + 1], url_i);
-			if (url_after_star == std::string::npos)
-				return nullptr;
+//			if (url_after_star == std::string::npos)
+//				return nullptr;
 			url_i = url_after_star;
 			reg_i = star + 1;
 		}
