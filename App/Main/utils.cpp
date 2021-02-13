@@ -44,3 +44,19 @@ std::string get_page_text(const std::string &path_to_file)
 
 	return (text);
 }
+
+char *get_document(const std::string &path_to_file, size_t *len)
+{
+	std::ifstream input(path_to_file.c_str(), std::ios::binary);
+	std::vector<unsigned char> buffer(std::istream_iterator<char>(input), {});
+
+	char *res = new char[buffer.size()];
+	*len = buffer.size();
+	int j = 0;
+	for (std::vector<unsigned char>::iterator i = buffer.begin(); i != buffer.end(); ++i)
+	{
+		res[j] = *i;
+		j++;
+	}
+	return res;
+}
