@@ -74,7 +74,18 @@ void Cgi::parse_cgi_response()
 	getline(in, all, '\0');
 
 	hdr_end = all.find("\r\n\r\n", 0);
-	hdr_start = all.find("\r\n") + 2;
+	if (hdr_end == std::string::npos)
+	{
+		std::cout << "cgi error: \'\\r\\n\\r\\n\' no found";
+		return ;
+	}
+	hdr_start = all.find("\r\n");
+	if (hdr_start == std::string::npos)
+	{
+		std::cout << "cgi error: \'\\r\\n\\' no found";
+		return ;
+	}
+	hdr_start += 2;
 	_body = all.substr(hdr_end + 4);
 	_content_length = _body.length();
 
