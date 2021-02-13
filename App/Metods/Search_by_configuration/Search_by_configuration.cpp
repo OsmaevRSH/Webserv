@@ -301,7 +301,7 @@ void Search_by_configuration::check_allow_metods(const t_params &param, Parse_re
 	{
 		for (int i = 0; i < static_cast<int>(param.allow_methods.size()); ++i)
 		{
-			if (param.allow_methods[i] == handlers.getType())
+			if (param.allow_methods[i] == handlers.getType().)
 				return;
 		}
 		_output.status_code = 405;
@@ -310,7 +310,23 @@ void Search_by_configuration::check_allow_metods(const t_params &param, Parse_re
 
 void Search_by_configuration::check_users(const t_params &param, Parse_request_headers &handlers)
 {
-	if (!param.)
+	if (_output.location.users.empty())
+		return ;
+	std::map<std::string, std::string>::const_iterator it = handlers.getVariableHandlers().find("Authorization");
+	if (it == handlers.getVariableHandlers().end())
+	{
+		_output.status_code = 401;
+		return ;
+	}
+
+
+
+	std::stringstream auth_tokens((*it).second);
+	std::string name;
+	auth_tokens >> name;
+	auth_tokens >> name;
+
+	if (std::find(_output.location.users.begin(), _output.location.users.end(), ) == _output.location.users.end())
 }
 
 void Search_by_configuration::check_body_size(const t_params &param, Parse_request_headers &handlers)
