@@ -33,7 +33,7 @@ namespace ConfigParser
 		std::string 					cgi_path;
 		std::string 					cgi_extension;
 		t_everywhere					ew;
-
+		std::vector<std::string>		users;
 		s_location();
 	}								t_location;
 	typedef struct					s_server

@@ -127,6 +127,12 @@ static void 					allow_methods_parse(t_args args)
 	 * Сделать проверку на наличие существование этих методов!
 	 */
 }
+static void 					users_parse(t_args args)
+{
+	std::string word;
+	while (!(word = get_next_word(args.fragment, args.rel_pos)).empty())
+		args.location->users.push_back(word);
+}
 static void 					index_parse(t_args args) {
 	std::string word;
 	while (!(word = get_next_word(args.fragment, args.rel_pos)).empty())
@@ -253,6 +259,8 @@ void Parser::					select_dir(t_args &args, std::string word) {
 		args.ew->alias = string_parse(new_args);
 	else if (word == "cgi_extension")
 		args.location->cgi_extension = string_parse(new_args);
+	else if (word == "users")
+		users_parse(new_args);
 }
 void Parser::					server_parse(t_args args) {
 	if (!args.block_args.empty())
@@ -397,6 +405,7 @@ t_args::			s_args() {
 	location_context.push_back("allow");
 	location_context.push_back("cgi");
 	location_context.push_back("cgi_extension");
+	location_context.push_back("users");
 }
 
 bool Parser::unique_ports()

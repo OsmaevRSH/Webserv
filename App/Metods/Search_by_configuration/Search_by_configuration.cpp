@@ -308,6 +308,11 @@ void Search_by_configuration::check_allow_metods(const t_params &param, Parse_re
 	}
 }
 
+void Search_by_configuration::check_users(const t_params &param, Parse_request_headers &handlers)
+{
+	if (!param.)
+}
+
 void Search_by_configuration::check_body_size(const t_params &param, Parse_request_headers &handlers)
 {
 	if (param.max_body_size && _iter->_request_body.length() > param.max_body_size)
