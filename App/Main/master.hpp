@@ -37,4 +37,4 @@ class Parse_request_headers;
 
 std::string			get_page_text(const std::string& path_to_file);
 std::string 		get_text(const std::string &path_to_file);
-char 				*get_document(const std::string &path_to_file, size_t *len);
+char 				*get_document(const std::string &path_to_file, size_t &len);

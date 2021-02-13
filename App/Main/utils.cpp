@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   get_page_text.cpp                                  :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jeldora <jeldora@student.21-school.ru>     +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/17 21:00:58 by jeldora           #+#    #+#             */
-/*   Updated: 2020/12/17 21:15:24 by jeldora          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "master.hpp"
 
 std::string get_text(const std::string &path_to_file)
@@ -35,28 +23,13 @@ std::string get_page_text(const std::string &path_to_file)
 		getline(ifs, text, '\0');
 		ifs.close();
 	}
-	else{
-		std::ifstream input(path_to_file.c_str(), std::ios::binary);
-		std::vector<unsigned char> buffer(std::istream_iterator<char>(input), {});
-
-		text = std::string(buffer.begin(), buffer.end());
-	}
-
-	return (text);
-}
-
-char *get_document(const std::string &path_to_file, size_t *len)
-{
-	std::ifstream input(path_to_file.c_str(), std::ios::binary);
-	std::vector<unsigned char> buffer(std::istream_iterator<char>(input), {});
-
-	char *res = new char[buffer.size()];
-	*len = buffer.size();
-	int j = 0;
-	for (std::vector<unsigned char>::iterator i = buffer.begin(); i != buffer.end(); ++i)
+	else
 	{
-		res[j] = *i;
-		j++;
+		std::ifstream input(path_to_file.c_str());
+		input.unsetf(std::ios::skipws);
+		std::vector<unsigned char> buffer(std::istream_iterator<unsigned char>(input), {});
+		text = std::string(buffer.begin(), buffer.end());
+		std::cout << buffer.size() << std::endl << text.size() << std::endl << text << std::endl;
 	}
-	return res;
+	return (text);
 }
