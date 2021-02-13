@@ -50,7 +50,7 @@ class Search_by_configuration
 		void get_path(T &param, Parse_request_headers &handlers, t_params &global_params);
 		void recursive_call_with_slash(Parse_request_headers &handlers, t_params &global_params);
 		void recursive_call_without_slash(Parse_request_headers &handlers, t_params &global_params);
-		bool search_index(t_params &global_params, Parse_request_headers &handlers);
+		bool search_index(t_params &global_params, Parse_request_headers &handlers, const std::string &indexPageDirectory);
 
 		std::string get_date_handler();
 		std::string get_first_line();
@@ -69,7 +69,7 @@ class Search_by_configuration
 };
 
 bool check_slash(Parse_request_headers &handlers);
-bool search_folder(t_params &params, Parse_request_headers &handlers);
+bool search_folder(t_params &params, Parse_request_headers &handlers, std::string &directoryForIndexFile);
 bool search_file(t_params &params, Parse_request_headers &handlers);
 
 void location_sort(std::vector<t_location> &locations);

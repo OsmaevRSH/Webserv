@@ -14,8 +14,8 @@ int main(int argc, char **argv, char **env)
 		std::cout << "Error: bad number of argument\n";
 		exit(1);
 	}
-	Parser config(argv[1]);
-//	Parser config("./App/Config/conf_for_tester");
+//	Parser config(argv[1]);
+	Parser config("./App/Config/conf_for_tester");
 #endif
 	Server server(config.getServers(), config.getErrorPages(), config.getEw(), mime,env);
 	server.server_start();

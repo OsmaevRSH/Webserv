@@ -7,7 +7,7 @@ bool check_slash(Parse_request_headers &handlers)
 	return false;
 }
 
-bool Search_by_configuration::search_index(t_params &global_params, Parse_request_headers &handlers)
+bool Search_by_configuration::search_index(t_params &global_params, Parse_request_headers &handlers, const std::string &indexPageDirectory)
 {
 	struct stat check = {};
 	std::string tmp_path;
@@ -26,11 +26,7 @@ bool Search_by_configuration::search_index(t_params &global_params, Parse_reques
 		}
 		else
 		{
-			tmp_path = handlers.getUrl().substr(global_params.curent_location.find("*") != std::string::npos ? handlers.getUrl().find_last_of("/")
-			                                                                                          : global_params.curent_location.size());
-			if (tmp_path.find("/") != 0 && tmp_path.size())
-				tmp_path = "/" + tmp_path;
-			if (!stat((global_params.alias + tmp_path + *it).c_str(), &check))
+			if (!stat((global_params.alias + indexPageDirectory + *it).c_str(), &check))
 			{
 				handlers.setUrl(handlers.getUrl() + *it);
 				return true;
@@ -89,8 +85,8 @@ t_location *check_utils(std::vector<t_location>::iterator &it, std::string &rege
 			if (star + 1 > it->block_args[1].length())
 				return &(*it);
 			url_after_star = url.find(regex[star + 1], url_i);
-//			if (url_after_star == std::string::npos)
-//				return nullptr;
+			//			if (url_after_star == std::string::npos)
+			//				return nullptr;
 			url_i = url_after_star;
 			reg_i = star + 1;
 		}
@@ -132,10 +128,9 @@ void Search_by_configuration::update_global_params(t_params &global_params, t_lo
 	_output.location = location;
 }
 
-bool search_folder(t_params &params, Parse_request_headers &handlers)
+bool search_folder(t_params &params, Parse_request_headers &handlers, std::string &directoryForIndexFile)
 {
 	struct stat check = {};
-	std::string tmp_path;
 
 	if (!params.root.empty())
 	{
@@ -148,11 +143,10 @@ bool search_folder(t_params &params, Parse_request_headers &handlers)
 	}
 	else
 	{
-		tmp_path = handlers.getUrl().substr(params.curent_location.find("*") != std::string::npos ? handlers.getUrl().find_last_of("/")
-																								  : params.curent_location.size());
-		if (tmp_path.find("/") != 0 && tmp_path.size())
-			tmp_path = "/" + tmp_path;
-		if (!stat((params.alias + tmp_path).c_str(), &check))
+		directoryForIndexFile = handlers.getUrl().substr(params.curent_location.find("*") != std::string::npos ? handlers.getUrl().find_last_of("/") : params.curent_location.size());
+		if (directoryForIndexFile.find("/") != 0/* && directoryForIndexFile.size()*/)
+			directoryForIndexFile = "/" + directoryForIndexFile;
+		if (!stat((params.alias + directoryForIndexFile).c_str(), &check))
 		{
 			if (S_ISDIR(check.st_mode))
 				return true;
@@ -217,9 +211,8 @@ bool search_file(t_params &params, Parse_request_headers &handlers)
 	}
 	else
 	{
-		tmp_path = handlers.getUrl().substr(params.curent_location.find("*") != std::string::npos ? handlers.getUrl().find_last_of("/")
-																								  : params.curent_location.size());
-		if (tmp_path.find("/") != 0 && tmp_path.size())
+		tmp_path = handlers.getUrl().substr(params.curent_location.find("*") != std::string::npos ? handlers.getUrl().find_last_of("/") : params.curent_location.size());
+		if (tmp_path.find("/") != 0/* && tmp_path.size()*/)
 			tmp_path = "/" + tmp_path;
 		if (!stat((params.alias + tmp_path).c_str(), &check))
 		{
@@ -249,7 +242,7 @@ t_server Search_by_configuration::get_server()
 		if (it->ip == "127.0.0.1" || it->ip == "localhost")
 		{
 			if ("127.0.0.1:" + std::to_string(it->port) == _handler.getServerIp() + port ||
-				"localhost:" + std::to_string(it->port) == _handler.getServerIp() + port)
+			    "localhost:" + std::to_string(it->port) == _handler.getServerIp() + port)
 				return *it;
 		}
 		if (it->ip + ":" + std::to_string(it->port) == _handler.getServerIp() + port)
@@ -271,7 +264,10 @@ void Search_by_configuration::setup_global_params(t_params &global_params, t_ser
 
 void Search_by_configuration::recursive_call_with_slash(Parse_request_headers &handlers, t_params &global_params)
 {
-	if (search_folder(global_params, handlers) && Search_by_configuration::search_index(global_params, handlers))
+	std::string directoryForIndexPage;
+
+	if (search_folder(global_params, handlers, directoryForIndexPage) &&
+	    Search_by_configuration::search_index(global_params, handlers, directoryForIndexPage))
 		return Search_by_configuration::get_path(global_params.root_location, handlers, global_params);
 	if (_output.autoindex_page.empty())
 		_output.status_code = 404;
@@ -291,9 +287,8 @@ void Search_by_configuration::recursive_call_without_slash(Parse_request_headers
 			_output.path_to_file = global_params.root + handlers.getUrl();
 		else
 		{
-			tmp_path = handlers.getUrl().substr(global_params.curent_location.find("*") != std::string::npos ? handlers.getUrl().find_last_of("/")
-			                                                                                          : global_params.curent_location.size());
-			if (tmp_path.find("/") != 0 && tmp_path.size())
+			tmp_path = handlers.getUrl().substr(global_params.curent_location.find("*") != std::string::npos ? handlers.getUrl().find_last_of("/") : global_params.curent_location.size());
+			if (tmp_path.find("/") != 0/* && tmp_path.size()*/)
 				tmp_path = "/" + tmp_path;
 			_output.path_to_file = global_params.alias + tmp_path;
 		}
