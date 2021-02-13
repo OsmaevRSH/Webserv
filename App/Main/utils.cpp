@@ -23,12 +23,13 @@ std::string get_text(const std::string &path_to_file)
 	return (text);
 }
 
-std::string get_page_text(const std::string &path_to_file)
+char *get_page_text(const std::string &path_to_file)
 {
 
 	std::string		text;
+	char *res;
 
-	if (path_to_file.find(".html"))
+	if (path_to_file.find(".html") != std::string::npos)
 	{
 		std::ifstream	ifs(path_to_file.c_str());
 
@@ -41,6 +42,8 @@ std::string get_page_text(const std::string &path_to_file)
 
 		text = std::string(buffer.begin(), buffer.end());
 	}
+
+	res = strdup(text.c_str());
 
 	return (text);
 }
