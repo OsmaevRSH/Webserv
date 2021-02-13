@@ -5,7 +5,9 @@ GET::GET(const Serv_conf &serv, const Parse_request_headers &handler, const MIME
 
 void GET::get_page()
 {
+//	size_t len;
 	this->Search_path();
+//	char *body;
 	if (_output.status_code != 200)
 		_body = _config._error_pages.find(_output.status_code) == _config._error_pages.end() ? _mime.get_error_page(_output.status_code) : _config._error_pages[_output.status_code];
 	else if (!_output.autoindex_page.empty())
@@ -15,6 +17,12 @@ void GET::get_page()
 	}
 	else
 		_body = get_page_text(_output.path_to_file);
+//	body = get_document(_output.path_to_file, len);
+//	std::cout << len << std::endl << body << std::endl;
+//	char test[] = "HTTP/1.1 200 OK\r\nContent-Type: image/jpeg\r\nContent-Length: 15983\r\nServer: Webserver/1.0\r\n\r\n";
+//	std::cout << test << body << std::endl;
+//	send(4, test, strlen(test), 0);
+//	send(4, body, 15983, 0);
 }
 
 void GET::get_hendler()
