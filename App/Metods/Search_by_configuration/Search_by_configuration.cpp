@@ -63,10 +63,10 @@ t_location *check_utils(std::vector<t_location>::iterator &it, std::string &rege
 {
 	if (it->block_args[0] == "\\")
 	{
-		int star = 0;
+		int star;
 		int reg_i = 0;
 		int url_i = 0;
-		int url_after_star = 0;
+		int url_after_star;
 
 		if (it->block_args.size() >= 2)
 			regex = it->block_args[1];
@@ -85,8 +85,6 @@ t_location *check_utils(std::vector<t_location>::iterator &it, std::string &rege
 			if (star + 1 > it->block_args[1].length())
 				return &(*it);
 			url_after_star = url.find(regex[star + 1], url_i);
-			//			if (url_after_star == std::string::npos)
-			//				return nullptr;
 			url_i = url_after_star;
 			reg_i = star + 1;
 		}
@@ -98,7 +96,7 @@ t_location *check_utils(std::vector<t_location>::iterator &it, std::string &rege
 template<class T>
 t_location *check_path_with_simple_regex(T &param, Parse_request_headers &handlers)
 {
-	t_location *result = nullptr;
+	t_location *result;
 	std::vector<t_location>::iterator it = param.locations.begin();
 	std::string regex;
 	std::string url = handlers.getUrl();

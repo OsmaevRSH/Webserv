@@ -48,8 +48,8 @@ void Cgi::handleRequest()
 		close(tmp_fd);
 		close(fd[0]);
 		if (execve(_args[0], _args, _env) == -1)
-			exit(2);
-		exit(1);
+			exit(EXIT_FAILURE);
+		exit(EXIT_SUCCESS);
 	}
 	else
 	{
@@ -103,9 +103,4 @@ const std::string &Cgi::getHeaders() const
 const std::string &Cgi::getBody() const
 {
 	return _body;
-}
-
-long long Cgi::getContentLength() const
-{
-	return _content_length;
 }

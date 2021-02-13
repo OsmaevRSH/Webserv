@@ -43,7 +43,7 @@ std::string Search_by_configuration::get_server_name()
 std::string Search_by_configuration::get_last_modified()
 {
 	struct stat buf = {0};
-	struct tm *time = nullptr;
+	struct tm *time;
 	char time_buff[1024];
 	std::stringstream tmp;
 
@@ -92,7 +92,7 @@ std::string Search_by_configuration::get_content_lang(const std::map<std::string
 		return "";
 	if (client_lang == "*" || client_lang.empty())
 		return ("Content-Language: *\r\n");
-	while (lang_pos != std::string::npos)
+	while (true)
 	{
 		lang_pos = body.find("lang=\"", cur_pos);
 		cur_pos += lang_pos + strlen("lang=\"") + 2;

@@ -5,7 +5,7 @@ void HEAD::get_page()
 	this->Search_path();
 	if (_output.status_code != 200)
 	{
-		_body = _mime.get_error_page(_output.status_code);
+		_body = _config._error_pages.find(_output.status_code) == _config._error_pages.end() ? _mime.get_error_page(_output.status_code) : _config._error_pages[_output.status_code];
 	}
 	else if (!_output.autoindex_page.empty())
 	{

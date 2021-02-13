@@ -13,26 +13,7 @@ static char *content_type(const t_data_for_cgi &data)
 	}
 	return ret;
 }
-static char *content_length(const t_data_for_cgi &data)
-{
-	std::string tmp;
-	char *ret = NULL;
-	std::map<std::string, std::string>::const_iterator it = data.headers->getVariableHandlers().find("Content-Length");
 
-	if (data.body.empty())
-		return ret;
-	if (it != data.headers->getVariableHandlers().end())
-	{
-		tmp = "CONTENT_LENGTH=" + (*it).second;
-		ret = strdup(tmp.c_str());
-	}
-	else
-	{
-		size_t len = data.body.length();
-		ret = strdup(std::to_string(len).c_str());
-	}
-	return ret;
-}
 static char *query_string(const t_data_for_cgi &data)
 {
 	std::string tmp;

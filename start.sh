@@ -1,1 +1,0 @@
-mkdir -p Eval && cd Eval/ && cmake ../ && make && ./Webserv ../App/Config/conf_for_tester;

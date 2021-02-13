@@ -43,7 +43,7 @@ static void 					show_error(const t_args &args, const std::string &message) {
 	}
 	std::cout << "\nParser error: " << line << " line, " << c_pos << " character.\n";
 	std::cout << message;
-	exit(1);
+	exit(EXIT_FAILURE);
 }
 static std::string 				get_next_word(std::string text, size_t &pos) {
 	std::string ret_word;
@@ -335,7 +335,7 @@ Parser::						Parser(const std::string &path_to_config) {
 	if (args.text.empty())
 	{
 		std::cout << "Error: bad config file\n";
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 	args.ew = &_ew;
 	args.fragment = args.text;
@@ -343,7 +343,7 @@ Parser::						Parser(const std::string &path_to_config) {
 	if (unique_ports() == false)
 	{
 		std::cout << "Ports is not unique.\n";
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 }
 

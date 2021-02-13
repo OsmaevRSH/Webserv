@@ -11,7 +11,6 @@ POST::POST(const Serv_conf &serv, std::list<Client>::iterator &Iter, const MIME_
 POST::~POST()
 {
 	delete _cgi;
-//	unlink(".tmp_cgi");
 }
 
 void POST::start_processing()
@@ -27,7 +26,7 @@ void POST::start_processing()
 	else
 	{
 		get_header_if_error();
-		_body = _mime.get_error_page(_output.status_code);
+		_body = _config._error_pages.find(_output.status_code) == _config._error_pages.end() ? _mime.get_error_page(_output.status_code) : _config._error_pages[_output.status_code];
 		return;
 	}
 }
@@ -36,7 +35,7 @@ std::string POST::get_content_length()
 {
 	std::string tmp;
 
-	tmp = "Content-Length: " + std::to_string(_mime.get_error_page(_output.status_code).size()) + "\r\n";
+	tmp = "Content-Length: " + std::to_string((_config._error_pages.find(_output.status_code) == _config._error_pages.end() ? _mime.get_error_page(_output.status_code) : _config._error_pages[_output.status_code]).size()) + "\r\n";
 	return tmp;
 }
 
@@ -83,8 +82,5 @@ void POST::init_cgi_struct()
 	_cgi_struct.headers = &_handler;
 	_cgi_struct.port = _output.port;
 	_cgi_struct.client_ip = _handler.getClientIp();
-	_cgi_struct.path_info = "/";
-	_cgi_struct.script_name = _handler.getUrl();
 	_cgi_struct.server_ip = _handler.getServerIp();
-	_cgi_struct.env = _env;
 }

@@ -23,7 +23,7 @@ add_executable(Webserv  App/Main/utils.cpp
                         App/Server/Server.cpp
                         App/Metods/Autoindex_generate.cpp
                         App/Metods/Select_metod.cpp
-        App/MimeType_And_ErrorPageCode/GetMimeTypeAndErrorPageCode.cpp
+                        App/MimeType_And_ErrorPageCode/GetMimeTypeAndErrorPageCode.cpp
                         App/Metods/GET/GET.cpp
                         App/Metods/HEAD/HEAD.cpp
                         App/Metods/Search_by_configuration/Search_by_configuration.cpp

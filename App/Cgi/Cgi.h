@@ -7,12 +7,9 @@ typedef struct				s_data_for_cgi
 {
 	std::string 			server_ip;
 	std::string 			client_ip;
-	std::string 			path_info; // Путь относительно директории сервера
 	std::string 			path_translated; // Полный путь в файловой системе
-	std::string 			script_name; // Виртуальный путь к скрипту (http путь)
 	char*                   pathToCgiScript;
 
-	char					**env;
 	int 					port;
 	std::string				body;
 	Parse_request_headers	*headers;
@@ -35,13 +32,11 @@ public:
 		Cgi(const std::string &path_to_cgi, const t_data_for_cgi &data);
 		~Cgi();
 		void handleRequest();
-		const char 	*getResponse();
 		void		parse_cgi_response();
 
 		int getStatusCode() const;
 		const std::string &getHeaders() const;
 		const std::string &getBody() const;
-		long long getContentLength() const;
 };
 
 char **get_meta_variables(const t_data_for_cgi &data);
