@@ -27,8 +27,9 @@ std::string get_page_text(const std::string &path_to_file)
 	{
 		std::ifstream input(path_to_file.c_str());
 		input.unsetf(std::ios::skipws);
-		std::vector<unsigned char> buffer(std::istream_iterator<unsigned char>(input), {});
-		text = std::string(buffer.begin(), buffer.end());
+		std::istream_iterator<unsigned char> tmp(input);
+		for (; tmp != std::istream_iterator<unsigned char>(); ++tmp)
+			text += *tmp;
 	}
 	return (text);
 }
