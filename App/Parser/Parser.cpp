@@ -163,6 +163,25 @@ static void 					autoindex_parse(t_args args) {
 	std::cout << "Autoindex:" << args.ew->autoindex << "\n";
 #endif
 }
+static void 					is_auth_parse(t_args args) {
+	std::string value;
+
+	value = get_next_word(args.fragment, args.rel_pos);
+	for (size_t i = 0; i < value.length(); i++)
+		value[i] = std::tolower(value[i]);
+
+	if (value == "on")
+		args.location->is_auth = true;
+	else if (value == "off")
+		args.location->is_auth = false;
+	else
+		show_error(args, "Invalid is_auth mode\n");
+	if (args.rel_pos != args.fragment.length())
+		show_error(args, "is_auth error\n");
+#ifdef CONFIG_DEBUG
+	std::cout << "Autoindex:" << args.ew->autoindex << "\n";
+#endif
+}
 static void 					root_parse(t_args args) {
 	args.ew->root = get_next_word(args.fragment, args.rel_pos);
 	std::ifstream ifs(args.ew->root.c_str());
@@ -261,6 +280,8 @@ void Parser::					select_dir(t_args &args, std::string word) {
 		args.location->cgi_extension = string_parse(new_args);
 	else if (word == "users")
 		users_parse(new_args);
+	else if (word == "is_auth")
+		is_auth_parse(new_args);
 }
 void Parser::					server_parse(t_args args) {
 	if (!args.block_args.empty())
@@ -370,7 +391,9 @@ t_everywhere::					s_everywhere() {
 	max_body_size = 0;
 	autoindex = false;
 }
-t_location::					s_location() {}
+t_location::					s_location() {
+	is_auth = false;
+}
 t_args::			s_args() {
 	base_pos = 0;
 	rel_pos = 0;
@@ -406,6 +429,7 @@ t_args::			s_args() {
 	location_context.push_back("cgi");
 	location_context.push_back("cgi_extension");
 	location_context.push_back("users");
+	location_context.push_back("is_auth");
 }
 
 bool Parser::unique_ports()

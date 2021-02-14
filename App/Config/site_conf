@@ -6,5 +6,10 @@ server {
         autoindex on;
         root Tester/site;
         users jeldora ltheresi;
+        index index.html;
+        is_auth on;
+    }
+    location /site {
+
     }
 }
