@@ -5,11 +5,11 @@ server {
     location / {
         autoindex on;
         root Tester/site;
-        users jeldora ltheresi;
-        index index.html;
         is_auth on;
     }
-    location /site {
-
+    location = /index.html
+    {
+    	users jeldora ltheresi;
+    	root Tester/site;
     }
 }

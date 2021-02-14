@@ -77,6 +77,17 @@ std::string Search_by_configuration::get_allow_methods()
 	return tmp.str();
 }
 
+std::string Search_by_configuration::Authenticate()
+{
+	std::stringstream tmp;
+
+	if (_output.status_code == 401)
+	{
+		tmp << "WWW-Authenticate: Basic realm=Access to the staging site, charset=UTF-8" << "\r\n";
+	}
+	return tmp.str();
+}
+
 std::string Search_by_configuration::get_content_lang(const std::map<std::string, std::string> &headers, const std::string &body)
 {
 	std::string client_lang;

@@ -67,6 +67,7 @@ class Search_by_configuration
 		Search_by_configuration(const Serv_conf &conf, const Parse_request_headers &handler, const MIME_ERROR &, std::list<Client>::iterator &);
 		~Search_by_configuration();
 		void check_body_size(const t_params &param, Parse_request_headers &handlers);
+		std::string Authenticate();
 };
 
 bool check_slash(Parse_request_headers &handlers);

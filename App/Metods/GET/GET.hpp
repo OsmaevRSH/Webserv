@@ -6,7 +6,6 @@ class GET : public Search_by_configuration
 {
 	protected:
 		std::string &_body;
-//		char *_body;
 		std::string &_head;
 
 		void get_hendler();

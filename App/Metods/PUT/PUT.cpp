@@ -35,7 +35,11 @@ void PUT::start_processing()
 		file.close();
 	}
 	else
-		_body = _config._error_pages.find(_output.status_code) == _config._error_pages.end() ? _mime.get_error_page(_output.status_code) : _config._error_pages[_output.status_code];
+	{
+		_body = _config._error_pages.find(_output.status_code) == _config._error_pages.end() ? _mime.get_error_page(_output.status_code)
+		                                                                                     : _config._error_pages[_output.status_code];
+		_output.path_to_file = "index.html";
+	}
 	get_hendler();
 }
 
