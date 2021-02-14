@@ -19,6 +19,7 @@
         cgi
         cgi_extension
         users
+        is_auth
 
 Аккаунты:
    amVsZG9yYTphZG1pbg==
@@ -28,7 +29,8 @@
     Location - могут быть вложенными друг в друга
     cgi - путь к cgi интерпретатору
     cgi_extension - расширения, с которыми должен работать cgi
-
+    users - пользователи, которым доступна для просмотра эта страница
+    is_auth - на этой страницы будет происходить авторизация
 Пример конфига:
 
 root simple_site;
@@ -43,7 +45,7 @@ server {
     }
     location /auth/
     {
-        is_auth on;
-        users amVsZG9yYTphZG1pbg== bHRoZXJlc2k6YWRtaW4=;
+        is_auth on; <-- на этой странице будет происхожить авторизация
+        users amVsZG9yYTphZG1pbg== bHRoZXJlc2k6YWRtaW4=; <-- закодированные логин и пароль для каждого юзера
     }
 }
