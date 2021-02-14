@@ -81,10 +81,10 @@ std::string Search_by_configuration::Authenticate()
 {
 	std::stringstream tmp;
 
-//	if (_output.location == "on")
-//	{
-//		tmp << "WWW-Authenticate: Basic, charset=UTF-8" << "\r\n";
-//	}
+	if (_output.status_code == 401)
+	{
+		tmp << "WWW-Authenticate: Basic realm=Access to the staging site, charset=UTF-8" << "\r\n";
+	}
 	return tmp.str();
 }
 

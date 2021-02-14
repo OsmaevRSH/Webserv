@@ -5,6 +5,7 @@ server {
     location / {
         autoindex on;
         root Tester/site;
+        is_auth on;
     }
     location = /index.html
     {
