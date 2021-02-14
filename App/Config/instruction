@@ -1,0 +1,38 @@
+Контексты:
+    Везде:
+        index
+        max_body_size
+        root
+        alias
+        autoindex
+    Главный:
+        server
+        error_pages
+    Server:
+        ip
+        port
+        server_name
+        location
+    Location:
+        allow_mthods
+        location
+        cgi
+        cgi_extension
+        users
+
+Директивы:
+    Location - могут быть вложенными друг в друга
+    cgi - путь к cgi интерпретатору
+    cgi_extension - расширения, с которыми должен работать cgi
+
+Пример конфига:
+
+error_pages 404 ./folder_with_error_pages/404.html
+error_pages 401 ./folder_with_error_pages/401.html
+
+server {
+    ip 127.0.0.2;
+    port 5555;
+    server_name server.serv;
+
+}

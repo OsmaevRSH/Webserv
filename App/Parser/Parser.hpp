@@ -34,6 +34,7 @@ namespace ConfigParser
 		std::string 					cgi_extension;
 		t_everywhere					ew;
 		std::vector<std::string>		users;
+		bool 							is_auth;
 		s_location();
 	}								t_location;
 	typedef struct					s_server
