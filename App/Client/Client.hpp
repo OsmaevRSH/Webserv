@@ -44,8 +44,6 @@ class Client
 			_request_header.clear();
 			_request_body.clear();
 			_ready_response_to_the_customer.clear();
-			_server_ip.clear();
-			_client_ip.clear();
 			_chunked_end_check.clear();
 			_chunked_end_check_status = false;
 			_content_length_buffer = 0;

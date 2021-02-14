@@ -191,6 +191,7 @@ void Server::Search_max_fd(int &max_fd)
 //		else
 //			exit(0);
 //	}
+//TODO Delete client
 //}
 
 void Server::Check_read_set()

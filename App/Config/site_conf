@@ -4,12 +4,12 @@ server {
     server_name site.site;
     location / {
         autoindex on;
-        root Tester/site;
-        is_auth on;
+        root Tester;
     }
-    location = /index.html
+    location /site
     {
-    	users jeldora ltheresi;
-    	root Tester/site;
+    	autoindex on;
+    	users amVsZG9yYTphZG1pbg== bHRoZXJlc2k6YWRtaW4=;
+    	root Tester;
     }
 }

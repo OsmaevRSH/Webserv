@@ -35,8 +35,7 @@ void POST::start_processing()
 			output << get_content_length();
 			output << get_content_type();
 			output << get_date_handler();
-			if (_output.status_code == 401)
-				output << Authenticate();
+			output << Authenticate();
 			output << "\r\n";
 			_head = output.str();
 			return;

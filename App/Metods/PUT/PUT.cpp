@@ -52,6 +52,7 @@ void PUT::get_hendler()
 	output << get_server_name();
 	output << get_content_length();
 	output << get_date_handler();
+	output << Authenticate();
 	output << get_content_type();
 	if (_status_code == 405)
 		output << get_allow_methods();
