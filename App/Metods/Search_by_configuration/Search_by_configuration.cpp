@@ -301,7 +301,7 @@ void Search_by_configuration::check_allow_metods(const t_params &param, Parse_re
 	{
 		for (int i = 0; i < static_cast<int>(param.allow_methods.size()); ++i)
 		{
-			if (param.allow_methods[i] == handlers.getType().)
+			if (param.allow_methods[i] == handlers.getType())
 				return;
 		}
 		_output.status_code = 405;
@@ -318,15 +318,12 @@ void Search_by_configuration::check_users(const t_params &param, Parse_request_h
 		_output.status_code = 401;
 		return ;
 	}
-
-
-
 	std::stringstream auth_tokens((*it).second);
 	std::string name;
 	auth_tokens >> name;
 	auth_tokens >> name;
-
-	if (std::find(_output.location.users.begin(), _output.location.users.end(), ) == _output.location.users.end())
+	if (std::find(_output.location.users.begin(), _output.location.users.end(), name) == _output.location.users.end())
+		_output.status_code = 401;
 }
 
 void Search_by_configuration::check_body_size(const t_params &param, Parse_request_headers &handlers)
@@ -347,6 +344,7 @@ void Search_by_configuration::Search_path()
 	get_path(curent_server, _handler, global_params);
 	check_body_size(global_params, _handler);
 	check_allow_metods(global_params, _handler);
+	check_users(global_params, _handler);
 	_output.root = global_params.root;
 	_output.alias = global_params.alias;
 	_output.curent_location = global_params.curent_location;

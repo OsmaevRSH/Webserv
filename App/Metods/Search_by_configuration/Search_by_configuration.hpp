@@ -62,6 +62,7 @@ class Search_by_configuration
 		void Search_path();
 		std::string create_autoindex_page(t_params &params, Parse_request_headers &handler);
 		std::string get_content_lang(const std::map<std::string, std::string> &headers, const std::string &body);
+		void check_users(const t_params &param, Parse_request_headers &handlers);
 	public:
 		Search_by_configuration(const Serv_conf &conf, const Parse_request_headers &handler, const MIME_ERROR &, std::list<Client>::iterator &);
 		~Search_by_configuration();
