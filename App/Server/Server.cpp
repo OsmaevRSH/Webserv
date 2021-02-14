@@ -164,35 +164,12 @@ void Server::Search_max_fd(int &max_fd)
 	max_fd = std::max(max_fd, master_max);
 }
 
-//void Server::Checkout_call_to_select(const int &res)
-//{
-//	if (res <= 0)
-//	{
-//		if (errno == EINTR)
-//		{
-//			perror("Select error");
-//			exit(1);
-//		}
-//		else if (errno == EBADF)
-//		{
-//			perror("Select error");
-//			exit(2);
-//		}
-//		else if (errno == EINVAL)
-//		{
-//			perror("Select error");
-//			exit(3);
-//		}
-//		else if (errno == ENOMEM)
-//		{
-//			perror("Select error");
-//			exit(4);
-//		}
-//		else
-//			exit(0);
-//	}
-//TODO Delete client
-//}
+bool Server::Checkout_call_to_select(const int &res)
+{
+	if (res <= 0)
+		return true;
+	return false;
+}
 
 void Server::Check_read_set()
 {
@@ -232,8 +209,9 @@ void Server::ListenLoop()
 		Reset_fd_set();
 		Add_new_fd_to_set();
 		Search_max_fd(max_fd);
-		/*res = */select(max_fd + 1, &_readfds, &_writefds, nullptr, nullptr);
-//		Checkout_call_to_select(res);
+		res = select(max_fd + 1, &_readfds, &_writefds, nullptr, nullptr);
+		if (Checkout_call_to_select(res))
+			continue;
 		Accept_if_serv_fd_changed();
 		Check_read_set();
 		Check_write_set();
@@ -305,7 +283,7 @@ void Server::Act_if_readfd_changed(std::list<Client>::iterator &Iter)
 		Method_selector(handler, body, Iter);
 	else
 	{
-		body = _mime.get_error_page(400);
+		body = _config._error_pages.find(400) == _config._error_pages.end() ? _mime.get_error_page(400) : _config._error_pages[400];
 		handler = "HTTP/1.1 400 BAD REQUEST\r\n"
 				  "Content-Type: text/html\r\n"
 	              "Content-Length: " + std::to_string(body.size()) + "\r\n"

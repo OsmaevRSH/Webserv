@@ -29,6 +29,10 @@ void Server::Method_selector(std::string &handler, std::string &body, std::list<
 	}
 	else
 	{
-		//TODO Method not implemented
+		body = _config._error_pages.find(501) == _config._error_pages.end() ? _mime.get_error_page(501) : _config._error_pages[501];
+		handler = "HTTP/1.1 501 NOT IMPLEMENTED\r\n"
+		          "Content-Type: text/html\r\n"
+		          "Content-Length: " + std::to_string(body.size()) + "\r\n"
+		                                                             "Server: Webserver/1.0\r\n\r\n";
 	}
 }

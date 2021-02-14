@@ -44,7 +44,7 @@ class Server
 		void Reset_fd_set();
 		void Add_new_fd_to_set();
 		void Search_max_fd(int &);
-//		static void Checkout_call_to_select(const int &);
+		static bool Checkout_call_to_select(const int &);
 		void Accept_if_serv_fd_changed();
 		void Act_if_readfd_changed(std::list<Client>::iterator &);
 		void Act_if_writefd_changed(std::list<Client>::iterator &);
