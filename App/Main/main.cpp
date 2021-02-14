@@ -4,6 +4,8 @@
 
 int main(int argc, char **argv, char **env)
 {
+	signal(SIGPIPE, SIG_IGN);
+
 	if (argc != 2)
 	{
 		std::cout << "Error: bad number of argument\n";

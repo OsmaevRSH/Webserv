@@ -43,7 +43,7 @@ void POST::start_processing()
 		{
 			get_header_if_error();
 			_body = _config._error_pages.find(_output.status_code) == _config._error_pages.end() ? _mime.get_error_page(_output.status_code)
-			                                                                                     : _config._error_pages[_output.status_code];
+			                                                                                     : get_page_text(_config._error_pages[_output.status_code]);
 			_output.path_to_file = "index.html";
 		}
 		return;
@@ -58,7 +58,7 @@ std::string POST::get_content_length()
 	if (_output.status_code == 200)
 		size = std::to_string(_body.size());
 	else
-		size = std::to_string((_config._error_pages.find(_output.status_code) == _config._error_pages.end() ? _mime.get_error_page(_output.status_code) : _config._error_pages[_output.status_code]).size());
+		size = std::to_string((_config._error_pages.find(_output.status_code) == _config._error_pages.end() ? _mime.get_error_page(_output.status_code) : get_page_text(_config._error_pages[_output.status_code])).size());
 
 	tmp = "Content-Length: " + size + "\r\n";
 	return tmp;

@@ -12,17 +12,17 @@ void Server::Method_selector(std::string &handler, std::string &body, std::list<
 		GET get(_config, *Iter->_client_handler, _mime, handler, body, Iter);
 		get.start_processing();
 	}
-	if (Iter->_client_handler->getType() == "HEAD")
+	else if (Iter->_client_handler->getType() == "HEAD")
 	{
 		HEAD head(_config, *Iter->_client_handler, _mime, handler, body, Iter);
 		head.start_processing();
 	}
-	if (Iter->_client_handler->getType() == "PUT")
+	else if (Iter->_client_handler->getType() == "PUT")
 	{
 		PUT put(_config, *Iter->_client_handler, _mime, handler, Iter->_request_body, body, Iter);
 		put.start_processing();
 	}
-	if (Iter->_client_handler->getType() == "POST")
+	else if (Iter->_client_handler->getType() == "POST")
 	{
 		POST post(_config, Iter, _mime, handler, body, Iter->_request_body, env);
 		post.start_processing();

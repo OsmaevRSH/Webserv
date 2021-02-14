@@ -1,0 +1,1 @@
+mkdir -p Eval && cd Eval/ && cmake ../ && make
