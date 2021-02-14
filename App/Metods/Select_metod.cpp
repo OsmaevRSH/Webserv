@@ -27,4 +27,8 @@ void Server::Method_selector(std::string &handler, std::string &body, std::list<
 		POST post(_config, Iter, _mime, handler, body, Iter->_request_body, env);
 		post.start_processing();
 	}
+	else
+	{
+		//TODO Method not implemented
+	}
 }

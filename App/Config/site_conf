@@ -5,6 +5,10 @@ server {
     location / {
         autoindex on;
         root Tester/site;
-        users jeldora ltheresi;
+    }
+    location = /index.html
+    {
+    	users jeldora ltheresi;
+    	root Tester/site;
     }
 }

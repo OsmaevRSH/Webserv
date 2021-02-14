@@ -25,8 +25,23 @@ void POST::start_processing()
 	}
 	else
 	{
+		if (_output.status_code == 200)
+		{
+			_body = get_page_text(_output.path_to_file);
+			std::stringstream output;
+
+			output << "HTTP/1.1 " << _output.status_code << " " << _mime.get_error(_output.status_code) << "\r\n";
+			output << get_server_name();
+			output << get_content_length();
+			output << get_content_type();
+			output << get_date_handler();
+			output << "\r\n";
+			_head = output.str();
+			return;
+		}
 		get_header_if_error();
 		_body = _config._error_pages.find(_output.status_code) == _config._error_pages.end() ? _mime.get_error_page(_output.status_code) : _config._error_pages[_output.status_code];
+		_output.path_to_file = "index.html";
 		return;
 	}
 }
